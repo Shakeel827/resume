@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingScreenProps {
   isLoading: boolean;
-  progress?: number;
-  message?: string;
 }
 
 // Memoize the loading messages to prevent re-renders
@@ -20,9 +18,7 @@ const LOADING_MESSAGES = [
 const TOTAL_MESSAGES = LOADING_MESSAGES.length;
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ 
-  isLoading, 
-  progress = 0, 
-  message = "Loading CareerPanda..." 
+  isLoading 
 }) => {
   // Use state for dynamic values
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -102,7 +98,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       }
       
       // Continue animation if not complete
-      if (progress < 1) {
+      if (rawProgress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate);
       }
     };
@@ -133,7 +129,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       lastCountRef.current = 0;
       startTimeRef.current = 0;
     };
-  }, [isLoading, easeOutQuart]);
+  }, [isLoading, customEase]);
 
   if (!isLoading) return null;
 
