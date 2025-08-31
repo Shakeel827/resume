@@ -12,7 +12,6 @@
     "server": "node server.cjs"
   },
   "dependencies": {
-    "@vercel/node": "^4.2.5",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
@@ -45,6 +44,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^5.4.19"
+    "vite": "^5.4.19",
+    "vercel": "^34.0.0"
   }
 }

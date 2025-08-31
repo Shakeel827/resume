@@ -43,15 +43,20 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   const startTimeRef = React.useRef<number>(0);
   const animationFrameRef = React.useRef<number>();
   
-  // Easing function for smooth animation (using useCallback to prevent recreation)
-  const easeOutQuart = useCallback((t: number): number => 1 - Math.pow(1 - t, 4), []);
+  // Custom easing function for smoother progress (starts slow, speeds up, then slows down at the end)
+  const customEase = useCallback((t: number): number => {
+    // Ease in-out cubic for smooth start and end
+    return t < 0.5 
+      ? 4 * t * t * t 
+      : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+  }, []);
 
-  // Combined animation and message update effect for better performance
+  // Combined animation and message update effect for smooth progress
   useEffect(() => {
     if (!isLoading) return;
 
-    const DURATION = 3000; // Reduced from 4000ms to 3000ms for faster loading
-    const MESSAGE_INTERVAL = 2500; // Slightly faster message rotation
+    const DURATION = 8000; // Increased to 8 seconds for smoother progress
+    const MESSAGE_INTERVAL = 3000; // Slightly slower message rotation
     const DOTS_INTERVAL = 500;
     
     // Initialize state
@@ -64,16 +69,33 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       if (!startTimeRef.current) startTimeRef.current = timestamp;
       
       const elapsed = timestamp - startTimeRef.current;
-      const progress = Math.min(elapsed / DURATION, 1);
-      const easedProgress = easeOutQuart(progress);
+      const rawProgress = Math.min(elapsed / DURATION, 1);
+      const easedProgress = customEase(rawProgress);
+      
+      // Ensure we don't show 0% - start from 1%
+      const displayProgress = Math.max(0.01, easedProgress);
       
       // Update progress bar using CSS custom property (most performant way)
       if (progressRef.current) {
-        progressRef.current.style.setProperty('--progress', `${easedProgress * 100}%`);
+        progressRef.current.style.setProperty('--progress', `${displayProgress * 100}%`);
       }
       
-      // Update count (throttled to reduce re-renders)
-      const newCount = Math.floor(easedProgress * 100);
+      // Update count with slower progression at start and end
+      let newCount;
+      if (rawProgress < 0.1) {
+        // Slow start (first 10% of time = first 20% of progress)
+        newCount = Math.floor(20 * (rawProgress / 0.1));
+      } else if (rawProgress > 0.9) {
+        // Slow finish (last 10% of time = last 5% of progress)
+        newCount = 95 + Math.floor(5 * ((rawProgress - 0.9) / 0.1));
+      } else {
+        // Middle section (80% of time = 75% of progress)
+        const middleProgress = (rawProgress - 0.1) / 0.8;
+        newCount = 20 + Math.floor(75 * middleProgress);
+      }
+      
+      // Ensure we don't go over 100%
+      newCount = Math.min(100, newCount);
       if (newCount !== lastCountRef.current) {
         lastCountRef.current = newCount;
         setCount(newCount);
@@ -205,18 +227,19 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           </motion.div>
 
           {/* Progress Bar - Optimized for mobile */}
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md h-1.5 sm:h-2 bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden mx-4">
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md h-2.5 sm:h-3 bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden mx-4">
             <div 
               ref={progressRef}
-              className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-transform duration-300 ease-out"
+              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-purple-600 rounded-full transition-all duration-1000 ease-out"
               style={{
-                transform: 'scaleX(var(--progress, 0))',
+                transform: 'scaleX(var(--progress, 0.01))',
                 transformOrigin: 'left center',
                 width: '100%',
                 willChange: 'transform',
                 content: '""', // Force GPU acceleration
                 backfaceVisibility: 'hidden',
-                perspective: '1000px'
+                perspective: '1000px',
+                boxShadow: '0 0 10px rgba(99, 102, 241, 0.5)'
               }}
             />
           </div>
