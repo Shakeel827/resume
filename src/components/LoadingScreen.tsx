@@ -310,5 +310,6 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       </motion.div>
     </AnimatePresence>
   );
+};
 
 export default React.memo(LoadingScreen);
