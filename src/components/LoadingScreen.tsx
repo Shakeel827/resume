@@ -276,109 +276,39 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           <motion.p 
             className="mt-6 text-xs text-gray-500 dark:text-gray-400 text-center max-w-xs px-4"
             initial={{ opacity: 0 }}
-            >
-              🐼
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Loading Text - Optimized for mobile */}
-        <motion.div 
-          className="text-center mb-4 sm:mb-6 w-full max-w-md px-4"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2">
-            {currentMessage}
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
-            Loading{dots}
-          </p>
-        </motion.div>
-
-        {/* Progress Bar - Optimized for mobile */}
-        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md h-1.5 sm:h-2 bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden mx-4">
-          <div 
-            ref={progressRef}
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-transform duration-300 ease-out"
-            style={{
-              transform: 'scaleX(var(--progress, 0))',
-              transformOrigin: 'left center',
-              width: '100%',
-              willChange: 'transform',
-              content: '""', // Force GPU acceleration
-              backfaceVisibility: 'hidden',
-              perspective: '1000px'
-            }}
-          />
-        </div>
-        <div className="text-center mt-2 text-gray-700 dark:text-gray-300 text-sm font-medium">
-          {count}%
+            animate={{ opacity: 0.8 }}
+            transition={{ delay: 0.8 }}
+          >
+            Optimizing for your device...
+          </motion.p>
         </div>
 
-        {/* Loading Dots - Lighter animation for mobile */}
-        <motion.div 
-          className="mt-6 sm:mt-8 flex space-x-2 sm:space-x-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {[0, 1, 2].map((i) => (
+        {/* Floating Elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(8)].map((_, i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500/90 dark:bg-blue-400/90 rounded-full"
+              className="absolute text-4xl opacity-10"
+              initial={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+              }}
               animate={{
-                y: [0, -6, 0],
-                scale: [1, 1.1, 1]
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
               }}
               transition={{
-                duration: 1.2,
+                duration: 10 + Math.random() * 10,
                 repeat: Infinity,
-                delay: i * 0.15,
-                ease: "easeInOut"
+                repeatType: "reverse"
               }}
-            />
+            >
+              {['📄', '💼', '🎯', '⭐', '🚀', '💡', '🏆', '📊'][i]}
+            </motion.div>
           ))}
-        </motion.div>
-        
-        {/* Subtle hint for mobile users */}
-        <motion.p 
-          className="mt-6 text-xs text-gray-500 dark:text-gray-400 text-center max-w-xs px-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.8 }}
-          transition={{ delay: 0.8 }}
-        >
-          Optimizing for your device...
-        </motion.p>
-      </div>
-
-      {/* Floating Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-4xl opacity-10"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            animate={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            transition={{
-              duration: 10 + Math.random() * 10,
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-          >
-            {['📄', '💼', '🎯', '⭐', '🚀', '💡', '🏆', '📊'][i]}
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  </AnimatePresence>
-);
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
 
 export default React.memo(LoadingScreen);
