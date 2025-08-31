@@ -33,19 +33,28 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
   const toggleMobileMenu = useRef(() => {
     setIsOpen(prev => !prev);
     // Ensure only one menu is open at a time
-    setShowUserMenu(false);
+    if (showUserMenu) setShowUserMenu(false);
+    if (showSettings) setShowSettings(false);
   }).current;
 
   const toggleUserMenu = useRef(() => {
-    setShowUserMenu(prev => !prev);
+    const newShowUserMenu = !showUserMenu;
+    setShowUserMenu(newShowUserMenu);
     // Ensure only one menu is open at a time
-    setIsOpen(false);
+    if (isOpen) setIsOpen(false);
+    if (showSettings) setShowSettings(false);
+    
+    // Close menu if clicking the same button
+    if (!newShowUserMenu) {
+      setShowUserMenu(false);
+    }
   }).current;
 
   // Close all menus
   const closeAllMenus = useRef(() => {
     setIsOpen(false);
     setShowUserMenu(false);
+    setShowSettings(false);
   }).current;
 
   // Detect mobile view and handle cleanup
@@ -87,8 +96,8 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as HTMLElement;
       
-      // Don't close if clicking on a menu button
-      if (target.closest('button[aria-label*="menu"], button[aria-label*="settings"]')) {
+      // Don't close if clicking on a menu button or inside the dropdown
+      if (target.closest('button[aria-label*="menu"], button[aria-label*="settings"], .user-menu-dropdown')) {
         return;
       }
       
@@ -99,7 +108,10 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
       
       // Close user menu if click is outside
       if (showUserMenu && dropdownRef.current && !dropdownRef.current.contains(target)) {
-        setShowUserMenu(false);
+        const dropdownMenu = dropdownRef.current.querySelector('.user-menu-dropdown');
+        if (dropdownMenu && !dropdownMenu.contains(target)) {
+          setShowUserMenu(false);
+        }
       }
       
       // Close mobile menu if click is outside
@@ -199,7 +211,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
               </motion.button>
               
               {user ? (
-                <div className="relative" ref={dropdownRef}>
+                <div className="relative flex items-center" ref={dropdownRef}>
                   <motion.button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -209,7 +221,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         toggleUserMenu();
                       }
                     }}
-                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all"
+                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all relative z-10"
                     whileHover={{ scale: isMobile ? 1 : 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     aria-expanded={showUserMenu}
@@ -243,9 +255,13 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
                         transition={{ duration: 0.2, ease: 'easeOut' }}
-                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md py-1 z-[9999] border border-gray-200 dark:border-gray-700 shadow-2xl"
+                        className="user-menu-dropdown absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md py-1 z-50 border border-gray-200 dark:border-gray-700 shadow-2xl"
                         style={{
                           boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                          position: 'absolute',
+                          top: '100%',
+                          right: 0,
+                          minWidth: '12rem',
                         }}
                       >
                         <button 

@@ -4,11 +4,18 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": { 
+        "distDir": "dist",
+        "maxLambdaSize": "15mb",
+        "includeFiles": ["dist/**", "public/**"]
+      }
     },
     {
       "src": "server.cjs",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "15mb"
+      }
     }
   ],
   "routes": [
