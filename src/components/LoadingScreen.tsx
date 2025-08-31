@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingScreenProps {
@@ -7,49 +7,111 @@ interface LoadingScreenProps {
   message?: string;
 }
 
+// Memoize the loading messages to prevent re-renders
+const LOADING_MESSAGES = [
+  "🐼 Initializing CareerPanda...",
+  "🚀 Loading AI-powered features...",
+  "📄 Preparing resume templates...",
+  "💼 Setting up career portal...",
+  "✨ Almost ready to help you succeed!"
+] as const;
+
+// Pre-calculate the total number of messages
+const TOTAL_MESSAGES = LOADING_MESSAGES.length;
+
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ 
   isLoading, 
   progress = 0, 
   message = "Loading CareerPanda..." 
 }) => {
-  const [currentMessage, setCurrentMessage] = useState(message);
+  // Use state for dynamic values
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [dots, setDots] = useState('');
+  const [count, setCount] = useState(0);
+  
+  // Memoize the current message to prevent unnecessary re-renders
+  const currentMessage = useMemo(() => 
+    LOADING_MESSAGES[currentMessageIndex % TOTAL_MESSAGES], 
+    [currentMessageIndex]
+  );
 
-  const loadingMessages = [
-    "🐼 Initializing CareerPanda...",
-    "🚀 Loading AI-powered features...",
-    "📄 Preparing resume templates...",
-    "💼 Setting up career portal...",
-    "✨ Almost ready to help you succeed!"
-  ];
+  // Refs for animation control
+  const animationRef = React.useRef<number>();
+  const dotsIntervalRef = React.useRef<ReturnType<typeof setInterval>>();
+  const progressRef = React.useRef<HTMLDivElement>(null);
+  const lastCountRef = React.useRef<number>(0);
+  const startTimeRef = React.useRef<number>(0);
+  const animationFrameRef = React.useRef<number>();
+  
+  // Easing function for smooth animation (using useCallback to prevent recreation)
+  const easeOutQuart = useCallback((t: number): number => 1 - Math.pow(1 - t, 4), []);
 
+  // Combined animation and message update effect for better performance
   useEffect(() => {
     if (!isLoading) return;
 
-    // Even slower message rotation (every 7-8 seconds)
-    const messageInterval = setInterval(() => {
-      setCurrentMessage(prev => {
-        const otherMessages = loadingMessages.filter(m => m !== prev);
-        return otherMessages[Math.floor(Math.random() * otherMessages.length)] || prev;
-      });
-    }, 7500);
-
-    // Slower dots animation (every 1000ms)
-    const dotsInterval = setInterval(() => {
-      setDots(prev => prev.length >= 3 ? '' : prev + '.');
-    }, 1000);
-
-    // Initial delay before showing first message change
-    const initialDelay = setTimeout(() => {
-      setCurrentMessage(loadingMessages[1]);
-    }, 2000);
-
-    return () => {
-      clearInterval(messageInterval);
-      clearInterval(dotsInterval);
-      clearTimeout(initialDelay);
+    const DURATION = 3000; // Reduced from 4000ms to 3000ms for faster loading
+    const MESSAGE_INTERVAL = 2500; // Slightly faster message rotation
+    const DOTS_INTERVAL = 500;
+    
+    // Initialize state
+    setCount(0);
+    setCurrentMessageIndex(0);
+    setDots('');
+    
+    // Animation frame function
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      
+      const elapsed = timestamp - startTimeRef.current;
+      const progress = Math.min(elapsed / DURATION, 1);
+      const easedProgress = easeOutQuart(progress);
+      
+      // Update progress bar using CSS custom property (most performant way)
+      if (progressRef.current) {
+        progressRef.current.style.setProperty('--progress', `${easedProgress * 100}%`);
+      }
+      
+      // Update count (throttled to reduce re-renders)
+      const newCount = Math.floor(easedProgress * 100);
+      if (newCount !== lastCountRef.current) {
+        lastCountRef.current = newCount;
+        setCount(newCount);
+      }
+      
+      // Continue animation if not complete
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
     };
-  }, [isLoading]);
+    
+    // Start animation
+    startTimeRef.current = 0;
+    animationFrameRef.current = requestAnimationFrame(animate);
+    
+    // Set up message rotation
+    const messageInterval = setInterval(() => {
+      setCurrentMessageIndex(prev => (prev + 1) % TOTAL_MESSAGES);
+    }, MESSAGE_INTERVAL);
+    
+    // Set up dots animation
+    dotsIntervalRef.current = setInterval(() => {
+      setDots(prev => prev.length >= 3 ? '' : prev + '.');
+    }, DOTS_INTERVAL);
+    
+    // Cleanup function
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (dotsIntervalRef.current) {
+        clearInterval(dotsIntervalRef.current);
+      }
+      clearInterval(messageInterval);
+      lastCountRef.current = 0;
+      startTimeRef.current = 0;
+    };
+  }, [isLoading, easeOutQuart]);
 
   if (!isLoading) return null;
 
@@ -122,145 +184,178 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                 }}
                 className="w-32 h-32 mx-auto mb-4 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center shadow-2xl"
               >
-                <div className="text-6xl">🐼</div>
+                🐼
               </motion.div>
-              
-              {/* Glowing Ring */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 w-32 h-32 mx-auto border-4 border-transparent border-t-white/50 border-r-blue-400/50 rounded-full"
-              />
             </div>
           </motion.div>
 
-          {/* Brand Name */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+          {/* Loading Text - Optimized for mobile */}
+          <motion.div 
+            className="text-center mb-4 sm:mb-6 w-full max-w-md px-4"
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-5xl font-bold text-white mb-4"
+            transition={{ duration: 0.3, delay: 0.1 }}
           >
-            Career<span className="text-blue-400">Panda</span>
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="text-xl text-white/80 mb-8"
-          >
-            AI-Powered Career Success Platform
-          </motion.p>
-
-          {/* Loading Message */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="mb-8"
-          >
-            <p className="text-lg text-white/90 mb-2">
-              {currentMessage}{dots}
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2">
+              {currentMessage}
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+              Loading{dots}
             </p>
           </motion.div>
 
-          {/* Progress Bar */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.2 }}
-            className="w-80 max-w-full mx-auto"
-          >
-            <div className="bg-white/20 rounded-full h-3 overflow-hidden backdrop-blur-sm">
-              <motion.div
-                className="h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              />
-            </div>
-            <p className="text-white/70 text-sm mt-2">{Math.round(progress)}% Complete</p>
-          </motion.div>
+          {/* Progress Bar - Optimized for mobile */}
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md h-1.5 sm:h-2 bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden mx-4">
+            <div 
+              ref={progressRef}
+              className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-transform duration-300 ease-out"
+              style={{
+                transform: 'scaleX(var(--progress, 0))',
+                transformOrigin: 'left center',
+                width: '100%',
+                willChange: 'transform',
+                content: '""', // Force GPU acceleration
+                backfaceVisibility: 'hidden',
+                perspective: '1000px'
+              }}
+            />
+          </div>
+          <div className="text-center mt-2 text-gray-700 dark:text-gray-300 text-sm font-medium">
+            {count}%
+          </div>
 
-          {/* Loading Dots */}
-          <motion.div
+          {/* Loading Dots - Lighter animation for mobile */}
+          <motion.div 
+            className="mt-6 sm:mt-8 flex space-x-2 sm:space-x-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="flex justify-center space-x-2 mt-8"
+            transition={{ delay: 0.2 }}
           >
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-3 h-3 bg-white/60 rounded-full"
+                className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500/90 dark:bg-blue-400/90 rounded-full"
                 animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.6, 1, 0.6]
+                  y: [0, -6, 0],
+                  scale: [1, 1.1, 1]
                 }}
                 transition={{
-                  duration: 1.5,
+                  duration: 1.2,
                   repeat: Infinity,
-                  delay: i * 0.2
+                  delay: i * 0.15,
+                  ease: "easeInOut"
                 }}
               />
             ))}
           </motion.div>
+          
+          {/* Subtle hint for mobile users */}
+          <motion.p 
+            className="mt-6 text-xs text-gray-500 dark:text-gray-400 text-center max-w-xs px-4"
+            initial={{ opacity: 0 }}
+            >
+              🐼
+            </motion.div>
+          </div>
+        </motion.div>
 
-          {/* Features Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2 }}
-            className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto"
-          >
-            {[
-              { icon: "🤖", text: "AI Resume Analysis" },
-              { icon: "💼", text: "Smart Job Matching" },
-              { icon: "📊", text: "Career Insights" }
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 2.2 + index * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
-              >
-                <div className="text-2xl mb-2">{feature.icon}</div>
-                <p className="text-white/80 text-sm">{feature.text}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+        {/* Loading Text - Optimized for mobile */}
+        <motion.div 
+          className="text-center mb-4 sm:mb-6 w-full max-w-md px-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-1 sm:mb-2">
+            {currentMessage}
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+            Loading{dots}
+          </p>
+        </motion.div>
+
+        {/* Progress Bar - Optimized for mobile */}
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md h-1.5 sm:h-2 bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden mx-4">
+          <div 
+            ref={progressRef}
+            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-transform duration-300 ease-out"
+            style={{
+              transform: 'scaleX(var(--progress, 0))',
+              transformOrigin: 'left center',
+              width: '100%',
+              willChange: 'transform',
+              content: '""', // Force GPU acceleration
+              backfaceVisibility: 'hidden',
+              perspective: '1000px'
+            }}
+          />
+        </div>
+        <div className="text-center mt-2 text-gray-700 dark:text-gray-300 text-sm font-medium">
+          {count}%
         </div>
 
-        {/* Floating Elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(8)].map((_, i) => (
+        {/* Loading Dots - Lighter animation for mobile */}
+        <motion.div 
+          className="mt-6 sm:mt-8 flex space-x-2 sm:space-x-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="absolute text-4xl opacity-10"
-              initial={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-              }}
+              className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500/90 dark:bg-blue-400/90 rounded-full"
               animate={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
+                y: [0, -6, 0],
+                scale: [1, 1.1, 1]
               }}
               transition={{
-                duration: 10 + Math.random() * 10,
+                duration: 1.2,
                 repeat: Infinity,
-                repeatType: "reverse"
+                delay: i * 0.15,
+                ease: "easeInOut"
               }}
-            >
-              {['📄', '💼', '🎯', '⭐', '🚀', '💡', '🏆', '📊'][i]}
-            </motion.div>
+            />
           ))}
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+        </motion.div>
+        
+        {/* Subtle hint for mobile users */}
+        <motion.p 
+          className="mt-6 text-xs text-gray-500 dark:text-gray-400 text-center max-w-xs px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.8 }}
+          transition={{ delay: 0.8 }}
+        >
+          Optimizing for your device...
+        </motion.p>
+      </div>
 
-export default LoadingScreen;
+      {/* Floating Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-4xl opacity-10"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            animate={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            transition={{
+              duration: 10 + Math.random() * 10,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+          >
+            {['📄', '💼', '🎯', '⭐', '🚀', '💡', '🏆', '📊'][i]}
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  </AnimatePresence>
+);
+
+export default React.memo(LoadingScreen);

@@ -113,25 +113,31 @@ function App() {
     setShowAuthModal(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    console.group('=== Logout Process ===');
     try {
-      // Clear all user-related data from localStorage
+      // 1. Log current state
+      console.log('1. Current user state:', user);
+      
+      // 2. Clear all user-related data
+      console.log('2. Clearing user data from localStorage');
       localStorage.removeItem('user');
-      // Clear any other user-related data if needed
-      // localStorage.removeItem('userToken');
       
-      // Reset user state
+      // 3. Clear all state
+      console.log('3. Resetting React state');
       setUser(null);
-      
-      // Close any open modals or dropdowns
       setShowAuthModal(false);
       
-      // Force a re-render to ensure UI updates
-      window.dispatchEvent(new Event('storage'));
+      // 4. Force a hard redirect to clear any cached state
+      console.log('4. Forcing page reload to clear state');
+      window.location.href = window.location.origin + window.location.pathname;
       
-      console.log('User logged out successfully');
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error('!!! Logout Error:', error);
+      // Force a full page reload on error
+      window.location.href = window.location.origin + window.location.pathname + '?logout=error';
+    } finally {
+      console.groupEnd();
     }
   };
 
