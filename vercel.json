@@ -6,14 +6,6 @@
       "use": "@vercel/static-build",
       "config": { 
         "distDir": "dist",
-        "maxLambdaSize": "15mb",
-        "includeFiles": ["dist/**", "public/**"]
-      }
-    },
-    {
-      "src": "server.cjs",
-      "use": "@vercel/node",
-      "config": {
         "maxLambdaSize": "15mb"
       }
     }
@@ -21,7 +13,7 @@
   "routes": [
     {
       "src": "/api/parse-pdf",
-      "dest": "/server.cjs",
+      "dest": "/api/parse-pdf",
       "methods": ["POST", "OPTIONS"]
     },
     {
