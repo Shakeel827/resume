@@ -22,11 +22,31 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const settingsModalRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const settingsModalRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const isMounted = useRef(true);
+  const resizeTimeout = useRef<ReturnType<typeof setTimeout>>();
+
+  // Toggle functions with proper state management
+  const toggleMobileMenu = useRef(() => {
+    setIsOpen(prev => !prev);
+    // Ensure only one menu is open at a time
+    setShowUserMenu(false);
+  }).current;
+
+  const toggleUserMenu = useRef(() => {
+    setShowUserMenu(prev => !prev);
+    // Ensure only one menu is open at a time
+    setIsOpen(false);
+  }).current;
+
+  // Close all menus
+  const closeAllMenus = useRef(() => {
+    setIsOpen(false);
+    setShowUserMenu(false);
+  }).current;
 
   // Detect mobile view and handle cleanup
   useEffect(() => {
@@ -36,8 +56,8 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
       setIsMobile(mobile);
       
       // Close mobile menu when switching to desktop
-      if (!mobile && isOpen) {
-        setIsOpen(false);
+      if (!mobile) {
+        closeAllMenus();
       }
     };
     
@@ -45,10 +65,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
     checkIfMobile();
     
     // Add event listener for window resize with debounce
-    let timeoutId: NodeJS.Timeout;
     const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(checkIfMobile, 100);
+      clearTimeout(resizeTimeout.current);
+      resizeTimeout.current = setTimeout(checkIfMobile, 100);
     };
     
     window.addEventListener('resize', handleResize);
@@ -57,34 +76,34 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
     return () => {
       isMounted.current = false;
       window.removeEventListener('resize', handleResize);
-      clearTimeout(timeoutId);
+      clearTimeout(resizeTimeout.current);
     };
-  }, [isOpen]);
+  }, [closeAllMenus]);
 
+  // Handle click outside and keyboard events
   useEffect(() => {
+    if (!isMounted.current) return;
+
     function handleClickOutside(event: MouseEvent) {
-      if (!isMounted.current) return;
-      
       const target = event.target as HTMLElement;
       
-      // Close settings modal if click is outside
-      if (showSettings && settingsModalRef.current && !settingsModalRef.current.contains(target) && 
-          !target.closest('button[aria-label*="settings"]')) {
-        setShowSettings(false);
+      // Don't close if clicking on a menu button
+      if (target.closest('button[aria-label*="menu"], button[aria-label*="settings"]')) {
         return;
       }
       
-      // Close user menu if click is outside and not on mobile menu button
-      if (showUserMenu && dropdownRef.current && !dropdownRef.current.contains(target) && 
-          !target.closest('button[aria-label*="menu"]')) {
+      // Close settings modal if click is outside
+      if (showSettings && settingsModalRef.current && !settingsModalRef.current.contains(target)) {
+        setShowSettings(false);
+      }
+      
+      // Close user menu if click is outside
+      if (showUserMenu && dropdownRef.current && !dropdownRef.current.contains(target)) {
         setShowUserMenu(false);
       }
       
-      // Close mobile menu if click is outside and not on user menu
-      if (isMobile && isOpen && mobileMenuRef.current && 
-          !mobileMenuRef.current.contains(target) && 
-          !target.closest('button[aria-label*="menu"]') &&
-          !dropdownRef.current?.contains(target)) {
+      // Close mobile menu if click is outside
+      if (isOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
         setIsOpen(false);
       }
     }
@@ -92,29 +111,30 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
     // Handle storage events to sync logout across tabs
     function handleStorageChange(event: StorageEvent) {
       if (event.key === 'user' && !event.newValue) {
-        console.log('Storage event: User logged out from another tab');
-        setShowUserMenu(false);
+        closeAllMenus();
       }
     }
 
-    // Handle escape key to close menu
+    // Handle escape key to close menus
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        setShowUserMenu(false);
-        setIsOpen(false);
+        closeAllMenus();
+        setShowSettings(false);
       }
     }
 
+      // Add event listeners
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
     window.addEventListener('storage', handleStorageChange);
     
+    // Cleanup function
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [isMobile, isOpen, showUserMenu]);
+  }, [isOpen, showUserMenu, showSettings, isMobile]);
 
   const { theme, toggleTheme } = useTheme();
 
@@ -184,12 +204,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                     onClick={(e) => {
                       e.stopPropagation();
                       if (isMobile) {
-                        // On mobile, toggle mobile menu and close user menu if open
-                        setIsOpen(prev => !prev);
-                        setShowUserMenu(false);
+                        toggleMobileMenu();
                       } else {
-                        // On desktop, toggle user menu
-                        setShowUserMenu(prev => !prev);
+                        toggleUserMenu();
                       }
                     }}
                     className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all"
@@ -296,12 +313,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
               <motion.button
                 onClick={() => {
                   if (user) {
-                    // For logged-in users, show user menu on mobile
-                    setShowUserMenu(prev => !prev);
-                    setIsOpen(false);
+                    toggleUserMenu();
                   } else {
-                    // For guests, show mobile menu
-                    setIsOpen(prev => !prev);
+                    toggleMobileMenu();
                   }
                 }}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
