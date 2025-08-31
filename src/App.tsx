@@ -20,6 +20,23 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
+  // Handle storage events to sync auth state across tabs
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        try {
+          setUser(e.newValue ? JSON.parse(e.newValue) : null);
+        } catch (e) {
+          console.error('Failed to parse user data from storage:', e);
+          setUser(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   useEffect(() => {
     // Simulate loading process
     const loadingSteps = [
@@ -40,15 +57,18 @@ function App() {
     });
 
     // Check for saved user data
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+    const loadUser = () => {
       try {
-        setUser(JSON.parse(savedUser));
+        const savedUser = localStorage.getItem('user');
+        setUser(savedUser ? JSON.parse(savedUser) : null);
       } catch (e) {
+        console.error('Failed to load user data:', e);
         localStorage.removeItem('user');
         setUser(null);
       }
-    }
+    };
+
+    loadUser();
 
     // Load resume data
     const savedResumeData = localStorage.getItem('resumeData');
@@ -56,20 +76,63 @@ function App() {
       try {
         setResumeData(JSON.parse(savedResumeData));
       } catch (e) {
+        console.error('Failed to load resume data:', e);
         localStorage.removeItem('resumeData');
         setResumeData(undefined);
       }
     }
   }, []);
 
-  const handleLogin = (userData: any) => {
+  const handleLogin = (email: string, password: string) => {
+    // In a real app, this would be an API call to your authentication service
+    const userData = {
+      id: 'user-' + Math.random().toString(36).substr(2, 9),
+      name: email.split('@')[0],
+      email,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(email.split('@')[0])}&background=random`
+    };
+    
+    // Save user data to localStorage
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    setShowAuthModal(false);
+  };
+
+  const handleSignup = (email: string, password: string, name: string) => {
+    // In a real app, this would be an API call to your authentication service
+    const userData = {
+      id: 'user-' + Math.random().toString(36).substr(2, 9),
+      name,
+      email,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`
+    };
+    
+    // Save user data to localStorage
+    localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     setShowAuthModal(false);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+    try {
+      // Clear all user-related data from localStorage
+      localStorage.removeItem('user');
+      // Clear any other user-related data if needed
+      // localStorage.removeItem('userToken');
+      
+      // Reset user state
+      setUser(null);
+      
+      // Close any open modals or dropdowns
+      setShowAuthModal(false);
+      
+      // Force a re-render to ensure UI updates
+      window.dispatchEvent(new Event('storage'));
+      
+      console.log('User logged out successfully');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -119,6 +182,7 @@ function App() {
           isOpen={showAuthModal}
           onClose={() => setShowAuthModal(false)}
           onLogin={handleLogin}
+          onSignup={handleSignup}
         />
       </div>
     </ThemeProvider>

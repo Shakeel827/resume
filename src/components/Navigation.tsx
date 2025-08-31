@@ -13,6 +13,21 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -72,7 +87,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
               </motion.button>
               
               {user ? (
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <motion.button
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all"
@@ -80,11 +95,15 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                     whileTap={{ scale: 0.95 }}
                   >
                     <img 
-                      src={user.avatar} 
-                      alt={user.name}
+                      src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}`} 
+                      alt={user.name || 'User'}
                       className="w-6 h-6 rounded-full"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}`;
+                      }}
                     />
-                    <span>{user.name}</span>
+                    <span>{user.name || user.email?.split('@')[0] || 'User'}</span>
                   </motion.button>
 
                   <AnimatePresence>
@@ -96,7 +115,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2"
                       >
                         <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name || user.email?.split('@')[0] || 'User'}</p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                         </div>
                         
@@ -106,7 +125,12 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         </button>
                         
                         <button 
-                          onClick={onLogout}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onLogout();
+                            setShowUserMenu(false);
+                          }}
                           className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
                         >
                           <LogOut className="w-4 h-4" />
@@ -175,18 +199,27 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                     <div className="px-3 py-2 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex items-center space-x-2 mb-2">
                         <img 
-                          src={user.avatar} 
-                          alt={user.name}
+                          src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'U')}`} 
+                          alt={user.name || 'User'}
                           className="w-8 h-8 rounded-full"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email?.charAt(0) || 'U')}`;
+                          }}
                         />
                         <div>
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name || user.email?.split('@')[0] || 'User'}</p>
+                          {user.email && <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>}
                         </div>
                       </div>
                       <button 
-                        onClick={onLogout}
-                        className="w-full text-left text-red-600 dark:text-red-400 text-sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onLogout();
+                          setIsOpen(false);
+                        }}
+                        className="w-full text-left text-red-600 dark:text-red-400 text-sm py-2 px-3 -mx-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                       >
                         Logout
                       </button>
