@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { forwardRef } from 'react';
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -8,13 +8,13 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
+const SettingsModal = forwardRef<HTMLDivElement, SettingsModalProps>(({ isOpen, onClose }, ref) => {
   const { theme, toggleTheme } = useTheme();
 
   if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
+    <div ref={ref}>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         {/* Backdrop */}
         <motion.div
@@ -92,8 +92,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </div>
   );
-};
+});
+
+SettingsModal.displayName = 'SettingsModal';
 
 export default SettingsModal;

@@ -1,11 +1,31 @@
 {
   "version": 2,
   "builds": [
-    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    },
+    {
+      "src": "server.cjs",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "api/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/api/parse-pdf",
+      "dest": "/server.cjs",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "src": "/health",
+      "dest": "/server.cjs",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ],
   "build": {
     "env": {
@@ -14,5 +34,9 @@
   },
   "devCommand": "vite",
   "framework": "vite",
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "public": true
 }

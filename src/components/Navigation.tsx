@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Moon, Sun, FileText, User, Sparkles, LogOut, Settings } from 'lucide-react';
 import SettingsModal from './SettingsModal';
 import { useTheme } from '../contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface UserData {
+  id?: string;
+  name?: string;
+  email?: string;
+  avatar?: string;
+  [key: string]: any;
+}
+
 interface NavigationProps {
-  user?: any;
+  user?: UserData | null;
   onLogin: () => void;
   onLogout: () => void;
 }
@@ -14,31 +22,70 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const settingsModalRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
-  const mobileMenuRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const isMounted = useRef(true);
 
-  // Detect mobile view
+  // Detect mobile view and handle cleanup
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint
+      if (!isMounted.current) return;
+      const mobile = window.innerWidth < 768; // md breakpoint
+      setIsMobile(mobile);
+      
+      // Close mobile menu when switching to desktop
+      if (!mobile && isOpen) {
+        setIsOpen(false);
+      }
     };
     
     // Initial check
     checkIfMobile();
     
-    // Add event listener for window resize
-    window.addEventListener('resize', checkIfMobile);
+    // Add event listener for window resize with debounce
+    let timeoutId: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkIfMobile, 100);
+    };
+    
+    window.addEventListener('resize', handleResize);
     
     // Cleanup
-    return () => window.removeEventListener('resize', checkIfMobile);
-  }, []);
+    return () => {
+      isMounted.current = false;
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [isOpen]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (!isMounted.current) return;
+      
+      const target = event.target as HTMLElement;
+      
+      // Close settings modal if click is outside
+      if (showSettings && settingsModalRef.current && !settingsModalRef.current.contains(target) && 
+          !target.closest('button[aria-label*="settings"]')) {
+        setShowSettings(false);
+        return;
+      }
+      
+      // Close user menu if click is outside and not on mobile menu button
+      if (showUserMenu && dropdownRef.current && !dropdownRef.current.contains(target) && 
+          !target.closest('button[aria-label*="menu"]')) {
         setShowUserMenu(false);
+      }
+      
+      // Close mobile menu if click is outside and not on user menu
+      if (isMobile && isOpen && mobileMenuRef.current && 
+          !mobileMenuRef.current.contains(target) && 
+          !target.closest('button[aria-label*="menu"]') &&
+          !dropdownRef.current?.contains(target)) {
+        setIsOpen(false);
       }
     }
 
@@ -54,6 +101,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setShowUserMenu(false);
+        setIsOpen(false);
       }
     }
 
@@ -66,17 +114,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
       document.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
-  const { theme, toggleTheme } = useTheme();
+  }, [isMobile, isOpen, showUserMenu]);
 
-  // Commented out unused scroll effect to fix lint warning
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setScrolled(window.scrollY > 50);
-  //   };
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => window.removeEventListener('scroll', handleScroll);
-  // }, []);
+  const { theme, toggleTheme } = useTheme();
 
   const handleNavigation = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
@@ -84,9 +124,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-    if (isMobile) {
-      setIsOpen(false);
-    }
+    // Close menus on navigation
+    setIsOpen(false);
+    setShowUserMenu(false);
   };
 
   const navItems = [
@@ -144,8 +184,11 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                     onClick={(e) => {
                       e.stopPropagation();
                       if (isMobile) {
-                        setIsOpen(!isOpen);
+                        // On mobile, toggle mobile menu and close user menu if open
+                        setIsOpen(prev => !prev);
+                        setShowUserMenu(false);
                       } else {
+                        // On desktop, toggle user menu
                         setShowUserMenu(prev => !prev);
                       }
                     }}
@@ -156,16 +199,24 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                     aria-haspopup="true"
                     aria-label="User menu"
                   >
-                    <img 
-                      src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}`} 
-                      alt={user.name || 'User'}
-                      className="w-6 h-6 rounded-full"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}`;
-                      }}
-                    />
-                    <span>{user.name || user.email?.split('@')[0] || 'User'}</span>
+                    {user.avatar ? (
+                      <img 
+                        src={user.avatar}
+                        alt={user.name || 'User'}
+                        className="w-6 h-6 rounded-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'U')}&background=random`;
+                        }}
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-medium">
+                        {(user.name?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                      </div>
+                    )}
+                    <span className="truncate max-w-[120px]">
+                      {user.name || user.email?.split('@')[0] || 'User'}
+                    </span>
                   </motion.button>
 
                   <AnimatePresence>
@@ -174,21 +225,10 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50 overflow-hidden"
+                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2"
                       >
-                        <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name || user.email?.split('@')[0] || 'User'}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
-                        </div>
-                        
                         <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setShowSettings(true);
-                            setShowUserMenu(false);
-                          }}
+                          onClick={() => setShowSettings(true)}
                           className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
                         >
                           <Settings className="w-4 h-4" />
@@ -248,19 +288,42 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
                 whileTap={{ scale: 0.9 }}
+                aria-label="Toggle theme"
               >
                 {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
               </motion.button>
               
-              {!user && (
-                <motion.button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </motion.button>
-              )}
+              <motion.button
+                onClick={() => {
+                  if (user) {
+                    // For logged-in users, show user menu on mobile
+                    setShowUserMenu(prev => !prev);
+                    setIsOpen(false);
+                  } else {
+                    // For guests, show mobile menu
+                    setIsOpen(prev => !prev);
+                  }
+                }}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                whileTap={{ scale: 0.9 }}
+                aria-label={user ? "User menu" : "Navigation menu"}
+              >
+                {user ? (
+                  <img 
+                    src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'U')}`} 
+                    alt={user.name || 'User'}
+                    className="w-6 h-6 rounded-full"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'U')}`;
+                    }}
+                  />
+                ) : isOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </motion.button>
             </div>
           </div>
 
@@ -346,10 +409,15 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
       </nav>
       
       {/* Settings Modal */}
-      <SettingsModal 
-        isOpen={showSettings} 
-        onClose={() => setShowSettings(false)} 
-      />
+      <AnimatePresence>
+        {showSettings && (
+          <SettingsModal 
+            isOpen={showSettings} 
+            onClose={() => setShowSettings(false)} 
+            ref={settingsModalRef}
+          />
+        )}
+      </AnimatePresence>
     </header>
   );
 };
