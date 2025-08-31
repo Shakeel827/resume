@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig(({ command, mode }) => {
   const isDev = mode === 'development';
@@ -12,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
       react({
         // Use the automatic JSX runtime
         jsxRuntime: 'automatic',
-      }),
+      })
     ],
     
     // Optimize dependencies
@@ -66,7 +65,7 @@ export default defineConfig(({ command, mode }) => {
     server: {
       port: 3000,
       strictPort: true,
-      open: true,
+      open: '/index.html', // Open the index.html file on startup
       host: true, // Listen on all network interfaces
       hmr: {
         overlay: true,
@@ -81,6 +80,7 @@ export default defineConfig(({ command, mode }) => {
     preview: {
       port: 3000,
       strictPort: true,
+      open: '/index.html', // Open the index.html file on startup
       host: true,
     },
     

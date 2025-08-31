@@ -39,21 +39,22 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   const startTimeRef = React.useRef<number>(0);
   const animationFrameRef = React.useRef<number>();
   
-  // Custom easing function for smoother progress (starts slow, speeds up, then slows down at the end)
+  // Smoother easing function for more natural progress
   const customEase = useCallback((t: number): number => {
-    // Ease in-out cubic for smooth start and end
-    return t < 0.5 
-      ? 4 * t * t * t 
-      : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    // Ease in-out quad for smoother transitions
+    t *= 2;
+    if (t < 1) return 0.5 * t * t;
+    t--;
+    return -0.5 * (t * (t - 2) - 1);
   }, []);
 
   // Combined animation and message update effect for smooth progress
   useEffect(() => {
     if (!isLoading) return;
 
-    const DURATION = 8000; // Increased to 8 seconds for smoother progress
-    const MESSAGE_INTERVAL = 3000; // Slightly slower message rotation
-    const DOTS_INTERVAL = 500;
+    const DURATION = 5000; // 5 seconds total duration
+    const MESSAGE_INTERVAL = 2000; // Change message every 2 seconds
+    const DOTS_INTERVAL = 300; // Smoother dots animation
     
     // Initialize state
     setCount(0);

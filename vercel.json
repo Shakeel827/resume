@@ -2,24 +2,21 @@
   "version": 2,
   "builds": [
     {
+      "src": "server.cjs",
+      "use": "@vercel/node"
+    },
+    {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { 
-        "distDir": "dist",
-        "maxLambdaSize": "15mb"
+      "config": {
+        "distDir": "dist"
       }
     }
   ],
   "routes": [
     {
-      "src": "/api/parse-pdf",
-      "dest": "/api/parse-pdf",
-      "methods": ["POST", "OPTIONS"]
-    },
-    {
-      "src": "/health",
-      "dest": "/server.cjs",
-      "methods": ["GET"]
+      "src": "/api/(.*)",
+      "dest": "/server.cjs"
     },
     {
       "src": "/(.*)",
