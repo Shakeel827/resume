@@ -231,22 +231,29 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         {(user.name?.[0] || user.email?.[0] || 'U').toUpperCase()}
                       </div>
                     )}
-                    <span className="truncate max-w-[120px]">
-                      {user.name || user.email?.split('@')[0] || 'User'}
+                    <span className="truncate max-w-[120px] font-semibold">
+                      {user.name || (user.email ? user.email.split('@')[0].toLowerCase() : 'user')}
                     </span>
                   </motion.button>
 
                   <AnimatePresence>
                     {showUserMenu && !isMobile && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
+                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md py-1 z-[9999] border border-gray-200 dark:border-gray-700 shadow-2xl"
+                        style={{
+                          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                        }}
                       >
                         <button 
-                          onClick={() => setShowSettings(true)}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                          onClick={() => {
+                            setShowSettings(true);
+                            setShowUserMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 transition-colors duration-150"
                         >
                           <Settings className="w-4 h-4" />
                           <span>Settings</span>
@@ -254,11 +261,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                         
                         <button 
                           onClick={async (e) => {
-                            console.group('=== Desktop Logout Click ===');
                             try {
                               e.preventDefault();
                               e.stopPropagation();
-                              console.log('1. Calling onLogout handler');
                               
                               // Close the menu first to avoid UI glitches
                               setShowUserMenu(false);
@@ -268,17 +273,12 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                               
                               // Call the logout handler
                               onLogout();
-                              
-                              console.log('2. Logout handler completed');
                             } catch (error) {
-                              console.error('Logout error in Navigation:', error);
-                              // Force a hard refresh if something goes wrong
+                              console.error('Logout error:', error);
                               window.location.reload();
-                            } finally {
-                              console.groupEnd();
                             }
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                          className="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-2 transition-colors duration-150"
                         >
                           <LogOut className="w-4 h-4" />
                           <span>Logout</span>
