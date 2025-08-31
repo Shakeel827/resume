@@ -48,6 +48,10 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
       'text/plain'
     ];
     const allowedExtensions = ['.pdf', '.txt'];
+    
+    // For Vercel deployment, use the API route
+    const isVercel = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' || 
+                    process.env.NODE_ENV === 'production';
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
     if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
       toast.error('Please upload a PDF or TXT file');
@@ -61,17 +65,38 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
     setProcessingStep('Reading file...');
     try {
       let text = '';
-      if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-        // Send PDF to backend for parsing
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await fetch('http://localhost:5001/api/parse-pdf', {
-          method: 'POST',
-          body: formData
-        });
-        if (!response.ok) throw new Error('Failed to parse PDF');
-        const data = await response.json();
-        text = data.text;
+      if (file.type === 'application/pdf') {
+        try {
+          setUploading(true);
+          setProcessingStep('Extracting text from PDF...');
+          
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          // Use the correct API endpoint based on the environment
+          const apiUrl = isVercel 
+            ? '/api/parse-pdf' 
+            : 'http://localhost:3000/api/parse-pdf';
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            body: formData,
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to parse PDF');
+          }
+          
+          const result = await response.json();
+          processExtractedText(result.text);
+        } catch (error) {
+          console.error('Error processing file:', error);
+          toast.error('Failed to extract data from resume. Please try the "Paste Text" option.');
+        } finally {
+          setUploading(false);
+          setProcessingStep('');
+        }
       } else if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) {
         text = await new Promise((resolve, reject) => {
           const reader = new FileReader();

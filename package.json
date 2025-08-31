@@ -12,11 +12,13 @@
     "server": "node server.cjs"
   },
   "dependencies": {
+    "@vercel/node": "^4.2.5",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-fileupload": "^1.5.1",
     "file-saver": "^2.0.5",
+    "formidable": "^3.5.2",
     "framer-motion": "^11.0.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
