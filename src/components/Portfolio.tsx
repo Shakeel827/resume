@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { downloadPortfolio, generateGitHubPages, PortfolioData } from '../utils/portfolioGenerator';
 import toast, { Toaster } from 'react-hot-toast';
-import { fetchAllJobs as searchJobs, Job } from '../services/jobService';
+import { searchJobs, Job } from '../services/jobService';
 import jsPDF from 'jspdf';
 
 const GEMINI_API_KEY = 'AIzaSyBS9GMNth3NocYCEABb3maGb0xWD1aemjQ';
