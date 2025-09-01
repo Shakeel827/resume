@@ -33,8 +33,7 @@ export const fetchJobsFromRapidAPIJobPostings = async (
 
     const data = await response.json();
 
-    // API might return nested structures – normalize here
-    return data.map((job: any) => ({
+    return (data || []).map((job: any) => ({
       id: job.id || crypto.randomUUID(),
       title: job.title || "Untitled",
       company: job.company || "Unknown",
@@ -61,30 +60,26 @@ export const fetchJobsFromRapidAPIJSearch = async (
 ): Promise<Job[]> => {
   try {
     const response = await fetch(
-      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(
-        query
-      )}&page=${page}&num_pages=${num_pages}`,
+      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=${num_pages}`,
       {
         method: "GET",
         headers: {
           "x-rapidapi-host": "jsearch.p.rapidapi.com",
-          "x-rapidapi-key": "YOUR_RAPIDAPI_KEY", // 🔑 replace with your key
+          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // 🔑 replace with your key
         },
       }
     );
 
-    const { data } = await response.json();
+    const data = await response.json();
 
-    return data.map((job: any) => ({
+    return (data.data || []).map((job: any) => ({
       id: job.job_id || crypto.randomUUID(),
       title: job.job_title || "Untitled",
       company: job.employer_name || "Unknown",
       description: job.job_description || "No description available",
-      location: job.job_city
-        ? `${job.job_city}, ${job.job_country}`
-        : "Not specified",
+      location: job.job_location || "Not specified",
       type: job.job_employment_type || "N/A",
-      remote: job.job_is_remote || false,
+      remote: job.remote || false,
       skills: job.job_required_skills || [],
       source: "rapidapi-jsearch",
     }));
@@ -93,3 +88,17 @@ export const fetchJobsFromRapidAPIJSearch = async (
     return [];
   }
 };
+
+// ------------------------------
+// Combine both APIs as searchJobs
+// ------------------------------
+export const searchJobs = async (): Promise<Job[]> => {
+  const [jobsFromPostings, jobsFromJSearch] = await Promise.all([
+    fetchJobsFromRapidAPIJobPostings(),
+    fetchJobsFromRapidAPIJSearch(),
+  ]);
+  return [...jobsFromPostings, ...jobsFromJSearch];
+};
+
+// Export helpers if needed separately
+export { fetchJobsFromRapidAPIJobPostings, fetchJobsFromRapidAPIJSearch };
