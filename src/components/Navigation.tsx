@@ -249,7 +249,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                   height: { duration: 0.3 },
                   opacity: { duration: 0.25 }
                 }}
-                className="md:hidden w-full overflow-hidden bg-white dark:bg-gray-900 shadow-xl rounded-b-lg border-t border-gray-200 dark:border-gray-800"
+                className="md:hidden w-full overflow-hidden bg-white dark:bg-gray-900 shadow-xl rounded-b-lg border-t border-gray-200 dark:border-gray-800 absolute top-full left-0 right-0 z-50"
                 id="mobile-menu"
               >
                 <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
@@ -264,7 +264,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                       <a
                         href={item.href}
                         onClick={(e) => scrollToSection(e, item.href)}
-                        className="flex items-center space-x-3 px-6 py-4 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors rounded-lg mx-2"
                         aria-current={window.location.hash === item.href ? 'page' : undefined}
                       >
                         <span className="text-blue-500">{item.icon}</span>
@@ -275,17 +275,23 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                   
                   {user ? (
                     <motion.div 
-                      className="px-2 py-3 border-t border-gray-100 dark:border-gray-800"
+                      className="px-2 py-3 border-t border-gray-100 dark:border-gray-800 mt-2"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 * navItems.length + 0.1 }}
                     >
+                      <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg mx-2 mb-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                          {getUserDisplayName().charAt(0).toUpperCase()}
+                        </div>
+                        <span className="font-medium text-gray-900 dark:text-white">{getUserDisplayName()}</span>
+                      </div>
                       <button
                         onClick={() => {
                           onLogout();
                           setIsOpen(false);
                         }}
-                        className="w-full flex items-center justify-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-lg border border-red-200 dark:border-red-900/50"
+                        className="w-full flex items-center justify-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-lg border border-red-200 dark:border-red-900/50 mx-2"
                       >
                         <LogOut className="w-5 h-5 flex-shrink-0" />
                         <span>Sign out</span>
@@ -293,7 +299,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                     </motion.div>
                   ) : (
                     <motion.div 
-                      className="px-2 py-3"
+                      className="px-2 py-3 mt-2"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 * navItems.length + 0.1 }}
@@ -303,10 +309,9 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
                           onLogin();
                           setIsOpen(false);
                         }}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg mx-2"
                       >
                         <span>Get Started</span>
-                        <ArrowRight className="w-4 h-4" />
                       </button>
                     </motion.div>
                   )}

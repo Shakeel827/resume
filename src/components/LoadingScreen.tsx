@@ -173,7 +173,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             transition={{ delay: 1.2 }}
             className="w-80 max-w-full mx-auto"
           >
-            <div className="bg-white/20 rounded-full h-3 overflow-hidden backdrop-blur-sm">
+            <div className="bg-white/20 rounded-full h-2 sm:h-3 overflow-hidden backdrop-blur-sm">
               <motion.div
                 className="h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
                 initial={{ width: 0 }}
@@ -181,7 +181,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                 transition={{ duration: 0.5, ease: "easeOut" }}
               />
             </div>
-            <p className="text-white/70 text-sm mt-2">{Math.round(progress)}% Complete</p>
+            <p className="text-white/70 text-xs sm:text-sm mt-2">{Math.round(progress)}% Complete</p>
           </motion.div>
 
           {/* Loading Dots */}
@@ -194,7 +194,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-3 h-3 bg-white/60 rounded-full"
+                className="w-2 h-2 sm:w-3 sm:h-3 bg-white/60 rounded-full"
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.6, 1, 0.6]
@@ -213,7 +213,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2 }}
-            className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto"
+            className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto px-4"
           >
             {[
               { icon: "🤖", text: "AI Resume Analysis" },
@@ -225,10 +225,10 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 2.2 + index * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
+                className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20"
               >
-                <div className="text-2xl mb-2">{feature.icon}</div>
-                <p className="text-white/80 text-sm">{feature.text}</p>
+                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{feature.icon}</div>
+                <p className="text-white/80 text-xs sm:text-sm">{feature.text}</p>
               </motion.div>
             ))}
           </motion.div>

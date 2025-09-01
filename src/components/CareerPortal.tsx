@@ -329,7 +329,15 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2 cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            if (job.url && job.url !== '#') {
+              window.open(job.url, '_blank', 'noopener,noreferrer');
+            } else {
+              toast.error('Application link not available');
+            }
+          }}
         >
           <span>Apply Now</span>
           <ExternalLink className="w-4 h-4" />
