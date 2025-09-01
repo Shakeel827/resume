@@ -10,10 +10,41 @@ export interface Job {
   source: 'rapidapi';
 }
 
+// Fetch jobs from RapidAPI
+export const fetchJobsFromRapidAPI = async (pageNumber = 1, pageSize = 12): Promise<Job[]> => {
+  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4';
+  const RAPIDAPI_HOST = 'job-postings1.p.rapidapi.com';
+
+  const response = await fetch(`https://job-postings1.p.rapidapi.com/?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+    method: 'GET',
+    headers: {
+      'x-rapidapi-host': RAPIDAPI_HOST,
+      'x-rapidapi-key': RAPIDAPI_KEY
+    }
+  });
+
+  const data = await response.json();
+
+  // Map API response to your Job interface
+  const jobs: Job[] = data.map((job: any) => ({
+    id: job.id || job.JobID || Math.random().toString(36).substring(2),
+    title: job.title || job.JobTitle || 'Unknown Title',
+    company: job.company || job.CompanyName || 'Unknown Company',
+    description: job.description || job.JobDescription || '',
+    location: job.location || job.Location || 'Unknown Location',
+    type: job.type?.toLowerCase() as 'full-time' | 'part-time' | 'internship' || 'full-time',
+    remote: job.remote ?? false,
+    skills: job.skills || [],
+    source: 'rapidapi'
+  }));
+
+  return jobs;
+};
+
 // Search jobs with filters
 export const searchJobs = async (query: string, filters: any = {}): Promise<Job[]> => {
-  const convertedJobs: Job[] = []; // Replace with local jobs if needed
-  let filteredJobs = convertedJobs;
+  const allJobs = await fetchJobsFromRapidAPI();
+  let filteredJobs = allJobs;
 
   if (query) {
     const searchTerms = query.toLowerCase().split(' ');
@@ -48,7 +79,7 @@ export const searchJobs = async (query: string, filters: any = {}): Promise<Job[
   return filteredJobs;
 };
 
-// Recommended jobs
+// Recommended jobs based on skills
 export const getRecommendedJobs = async (userSkills: string[], experience: string): Promise<Job[]> => {
   const allJobs = await searchJobs('', {});
   return allJobs
@@ -98,27 +129,7 @@ export const getJobMarketAnalytics = () => ({
   topLocations: Array.from(searchAnalytics.popularLocations.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10)
 });
 
-// Smart job fetching
-export const fetchSmartJobsFromInternet = async (): Promise<Job[]> => {
-  console.log('Fetching smart jobs from internet...');
-  return []; // Add scraping or AI logic here
-};
-
-// RapidAPI job fetching
-export const fetchJobsFromRapidAPI = async (): Promise<Job[]> => {
-  const response = await fetch('https://example-rapidapi.com/jobs', {
-    method: 'GET',
-    headers: {
-      'X-RapidAPI-Key': process.env.RAPIDAPI_KEY || '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4',
-      'X-RapidAPI-Host': 'example-rapidapi.com'
-    }
-  });
-
-  const data = await response.json();
-  return data.jobs || []; // Adjust based on API response structure
-};
-
-// Helper: time ago
+// Helper: calculate time ago
 export const calculateTimeAgo = (dateString: string): string => {
   const now = new Date();
   const posted = new Date(dateString);
