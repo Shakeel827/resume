@@ -1,4 +1,5 @@
 // src/services/jobService.ts
+import fetch from "node-fetch";
 
 export interface Job {
   id: string;
@@ -9,94 +10,74 @@ export interface Job {
   type: string;
   remote: boolean;
   skills: string[];
-  source: 'rapidapi';
+  source: "deepseek";
 }
 
-// ------------------------------
-// Fetch jobs from RapidAPI
-// ------------------------------
-export const fetchJobsFromRapidAPI = async (page: number = 1, pageSize: number = 12): Promise<Job[]> => {
+// ----------------------
+// DeepSeek API key
+// ----------------------
+const OPENROUTER_API_KEY = "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";
+
+// ----------------------
+// Fetch jobs from DeepSeek
+// ----------------------
+export const fetchJobsFromDeepSeek = async (
+  query: string = "",
+  page: number = 1,
+  pageSize: number = 12
+): Promise<Job[]> => {
   try {
-    const response = await fetch(`https://job-postings1.p.rapidapi.com/?PageNumber=${page}&PageSize=${pageSize}`, {
-      method: 'GET',
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'x-rapidapi-host': 'job-postings1.p.rapidapi.com',
-        'x-rapidapi-key': '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4'
-      }
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENROUTER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-chat-v3.1:free",
+        messages: [
+          {
+            role: "user",
+            content: `Fetch ${pageSize} job postings for query: "${query}" on page ${page}. 
+                      Return as JSON array with keys: id, title, company, description, location, type, remote, skills.`
+          }
+        ],
+        extra_headers: {
+          "HTTP-Referer": "https://your-site.com",
+          "X-Title": "Smart Resume Builder"
+        },
+        extra_body: {}
+      })
     });
+
     const data = await response.json();
 
-    // Convert API response to Job[]
-    const jobs: Job[] = data.map((job: any) => ({
-      id: job.id,
-      title: job.title,
-      company: job.company,
-      description: job.description,
-      location: job.location || '',
-      type: job.type || '',
-      remote: job.remote || false,
-      skills: job.skills || [],
-      source: 'rapidapi'
-    }));
+    if (!data.choices || !Array.isArray(data.choices)) {
+      console.error("Unexpected DeepSeek API response:", data);
+      return [];
+    }
 
-    return jobs;
-  } catch (error) {
-    console.error('Error fetching jobs from RapidAPI:', error);
+    const content = data.choices[0].message.content;
+    let jobs: Job[] = [];
+    try {
+      jobs = JSON.parse(content);
+    } catch (err) {
+      console.error("Failed to parse DeepSeek JSON:", content, err);
+    }
+
+    return jobs.map(job => ({ ...job, source: "deepseek" }));
+  } catch (err) {
+    console.error("Error fetching jobs from DeepSeek:", err);
     return [];
   }
 };
 
-// ------------------------------
-// Smart job fetching (uses RapidAPI internally)
-// ------------------------------
-export const fetchSmartJobsFromInternet = async (): Promise<Job[]> => {
-  console.log('Fetching smart jobs from internet...');
-  return fetchJobsFromRapidAPI(); // can enhance later with AI filtering
-};
-
-// ------------------------------
-// Search & filter jobs
-// ------------------------------
-export const searchJobs = async (query: string, filters: any = {}): Promise<Job[]> => {
-  const convertedJobs = await fetchJobsFromRapidAPI();
-  let filteredJobs = convertedJobs;
-
-  if (query) {
-    const searchTerms = query.toLowerCase().split(' ');
-    filteredJobs = filteredJobs.filter(job => {
-      const searchText = `${job.title} ${job.company} ${job.description} ${job.skills.join(' ')}`.toLowerCase();
-      return searchTerms.some(term => searchText.includes(term));
-    });
-  }
-
-  if (filters.location) {
-    filteredJobs = filteredJobs.filter(job => job.location.toLowerCase().includes(filters.location.toLowerCase()));
-  }
-
-  if (filters.type) {
-    filteredJobs = filteredJobs.filter(job => job.type === filters.type);
-  }
-
-  if (filters.remote !== undefined) {
-    filteredJobs = filteredJobs.filter(job => job.remote === filters.remote);
-  }
-
-  if (filters.skills && filters.skills.length > 0) {
-    filteredJobs = filteredJobs.filter(job =>
-      filters.skills.some(skill =>
-        job.skills.some(jobSkill => jobSkill.toLowerCase().includes(skill.toLowerCase()))
-      )
-    );
-  }
-
-  return filteredJobs;
-};
-
-// ------------------------------
-// Get recommended jobs by skills
-// ------------------------------
+// ----------------------
+// Get recommended jobs
+// ----------------------
 export const getRecommendedJobs = async (userSkills: string[], experience: string): Promise<Job[]> => {
-  const allJobs = await searchJobs('', {});
+  const allJobs = await fetchJobsFromDeepSeek();
+
   return allJobs
     .filter(job =>
       job.skills.some(skill =>
@@ -118,49 +99,38 @@ export const getRecommendedJobs = async (userSkills: string[], experience: strin
     .slice(0, 20);
 };
 
-// ------------------------------
+// ----------------------
 // Get job by ID
-// ------------------------------
+// ----------------------
 export const getJobById = async (id: string): Promise<Job | null> => {
-  const allJobs = await searchJobs('', {});
+  const allJobs = await fetchJobsFromDeepSeek();
   return allJobs.find(job => job.id === id) || null;
 };
 
-// ------------------------------
-// Analytics & tracking
-// ------------------------------
+// ----------------------
+// Analytics and tracking
+// ----------------------
 let searchAnalytics = {
   totalSearches: 0,
   popularSkills: new Map<string, number>(),
   popularLocations: new Map<string, number>()
 };
 
-export const recordUserJobSearch = (title: string, location: string) => {
+export function recordUserJobSearch(title: string, location: string) {
   searchAnalytics.totalSearches++;
   searchAnalytics.popularSkills.set(title, (searchAnalytics.popularSkills.get(title) || 0) + 1);
   searchAnalytics.popularLocations.set(location, (searchAnalytics.popularLocations.get(location) || 0) + 1);
-};
+}
 
 export const getJobMarketAnalytics = () => {
   return {
     totalJobs: 1000,
     totalSearches: searchAnalytics.totalSearches,
-    topSkills: Array.from(searchAnalytics.popularSkills.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10),
-    topLocations: Array.from(searchAnalytics.popularLocations.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10)
+    topSkills: Array.from(searchAnalytics.popularSkills.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10),
+    topLocations: Array.from(searchAnalytics.popularLocations.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
   };
-};
-
-// ------------------------------
-// Utility: calculate time ago
-// ------------------------------
-export const calculateTimeAgo = (dateString: string): string => {
-  const now = new Date();
-  const posted = new Date(dateString);
-  const diffInHours = Math.floor((now.getTime() - posted.getTime()) / (1000 * 60 * 60));
-  if (diffInHours < 24) {
-    return `${diffInHours} hours ago`;
-  } else {
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-  }
 };
