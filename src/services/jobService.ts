@@ -26,7 +26,7 @@ export const fetchJobsFromRapidAPIJobPostings = async (
         method: "GET",
         headers: {
           "x-rapidapi-host": "job-postings1.p.rapidapi.com",
-          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // 🔑 replace with your key
+          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // replace with your key
         },
       }
     );
@@ -60,12 +60,14 @@ export const fetchJobsFromRapidAPIJSearch = async (
 ): Promise<Job[]> => {
   try {
     const response = await fetch(
-      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=${num_pages}`,
+      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(
+        query
+      )}&page=${page}&num_pages=${num_pages}`,
       {
         method: "GET",
         headers: {
           "x-rapidapi-host": "jsearch.p.rapidapi.com",
-          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // 🔑 replace with your key
+          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // replace with your key
         },
       }
     );
@@ -90,15 +92,13 @@ export const fetchJobsFromRapidAPIJSearch = async (
 };
 
 // ------------------------------
-// Combine both APIs as searchJobs
+// Fetch jobs from both APIs
 // ------------------------------
-export const searchJobs = async (): Promise<Job[]> => {
+export const fetchAllJobs = async (): Promise<Job[]> => {
   const [jobsFromPostings, jobsFromJSearch] = await Promise.all([
     fetchJobsFromRapidAPIJobPostings(),
     fetchJobsFromRapidAPIJSearch(),
   ]);
+
   return [...jobsFromPostings, ...jobsFromJSearch];
 };
-
-// Export helpers if needed separately
-export { fetchJobsFromRapidAPIJobPostings, fetchJobsFromRapidAPIJSearch };
