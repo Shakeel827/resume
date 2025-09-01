@@ -102,3 +102,8 @@ export const fetchAllJobs = async (): Promise<Job[]> => {
 
   return [...jobsFromPostings, ...jobsFromJSearch];
 };
+
+// ------------------------------
+// Alias for Portfolio.tsx
+// ------------------------------
+export const searchJobs = fetchAllJobs; // ✅ Portfolio.tsx can import this directly
