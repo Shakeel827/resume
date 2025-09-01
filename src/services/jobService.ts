@@ -26,30 +26,31 @@ export const fetchJobsFromRapidAPIJobPostings = async (
         method: 'GET',
         headers: {
           'x-rapidapi-host': 'job-postings1.p.rapidapi.com',
-          'x-rapidapi-key': 'YOUR_RAPIDAPI_KEY_HERE',
+          'x-rapidapi-key': '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4',
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      throw new Error(`API Error: ${response.status}`);
     }
 
     const data = await response.json();
 
-    return (data || []).map((job: any) => ({
-      id: job.id || `${job.title}-${Math.random()}`,
-      title: job.title || 'Untitled Job',
-      company: job.company || 'Unknown Company',
-      description: job.description || 'No description available',
+    // Map API response to Job[]
+    return data.map((job: any) => ({
+      id: job.id?.toString() || crypto.randomUUID(),
+      title: job.title || 'No Title',
+      company: job.company || 'Unknown',
+      description: job.description || '',
       location: job.location || 'Not specified',
       type: job.type || 'N/A',
-      remote: job.remote || false,
+      remote: job.remote ?? false,
       skills: job.skills || [],
       source: 'rapidapi-jobpostings',
     }));
   } catch (error) {
-    console.error('Error fetching jobs from RapidAPI Job Postings:', error);
+    console.error('Error fetching jobs from RapidAPI job-postings:', error);
     return [];
   }
 };
@@ -64,47 +65,58 @@ export const fetchJobsFromRapidAPIJSearch = async (
 ): Promise<Job[]> => {
   try {
     const response = await fetch(
-      `https://jsearch.p.rapidapi.com/search?query=${query}&page=${page}&num_pages=${numPages}`,
+      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=${numPages}`,
       {
         method: 'GET',
         headers: {
           'x-rapidapi-host': 'jsearch.p.rapidapi.com',
-          'x-rapidapi-key': 'YOUR_RAPIDAPI_KEY_HERE',
+          'x-rapidapi-key': '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4',
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      throw new Error(`API Error: ${response.status}`);
     }
 
     const data = await response.json();
 
-    return (data.data || []).map((job: any) => ({
-      id: job.job_id || `${job.job_title}-${Math.random()}`,
-      title: job.job_title || 'Untitled Job',
-      company: job.employer_name || 'Unknown Company',
-      description: job.job_description || 'No description available',
+    if (!data.data) return [];
+
+    // Map API response to Job[]
+    return data.data.map((job: any) => ({
+      id: job.job_id?.toString() || crypto.randomUUID(),
+      title: job.job_title || 'No Title',
+      company: job.employer_name || 'Unknown',
+      description: job.job_description || '',
       location: job.job_location || 'Not specified',
       type: job.job_employment_type || 'N/A',
-      remote: job.remote || false,
+      remote: job.job_is_remote ?? false,
       skills: job.job_required_skills || [],
       source: 'rapidapi-jsearch',
     }));
   } catch (error) {
-    console.error('Error fetching jobs from RapidAPI JSearch:', error);
+    console.error('Error fetching jobs from RapidAPI jsearch:', error);
     return [];
   }
 };
 
 // ------------------------------
-// Fetch jobs from both APIs
+// Combined function to fetch jobs from both sources
 // ------------------------------
-export const fetchAllJobs = async (): Promise<Job[]> => {
-  const [jobsFromPostings, jobsFromJSearch] = await Promise.all([
-    fetchJobsFromRapidAPIJobPostings(),
-    fetchJobsFromRapidAPIJSearch(),
-  ]);
+export const fetchAllJobs = async (
+  query: string = 'developer',
+  page: number = 1
+): Promise<Job[]> => {
+  try {
+    const [jobsFromPostings, jobsFromJSearch] = await Promise.all([
+      fetchJobsFromRapidAPIJobPostings(page, 12),
+      fetchJobsFromRapidAPIJSearch(query, page, 1),
+    ]);
 
-  return [...jobsFromPostings, ...jobsFromJSearch];
+    return [...jobsFromPostings, ...jobsFromJSearch];
+  } catch (error) {
+    console.error('Error fetching jobs from both sources:', error);
+    return [];
+  }
 };
