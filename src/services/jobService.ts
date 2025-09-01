@@ -1,5 +1,8 @@
 // src/services/jobService.ts
 
+// ------------------------------
+// Job interface
+// ------------------------------
 export interface Job {
   id: string;
   title: string;
@@ -26,7 +29,7 @@ export const fetchJobsFromRapidAPIJobPostings = async (
         method: "GET",
         headers: {
           "x-rapidapi-host": "job-postings1.p.rapidapi.com",
-          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // replace with your key
+          "x-rapidapi-key": "YOUR_RAPIDAPI_KEY_HERE",
         },
       }
     );
@@ -60,12 +63,14 @@ export const fetchJobsFromRapidAPIJSearch = async (
 ): Promise<Job[]> => {
   try {
     const response = await fetch(
-      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=${num_pages}`,
+      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(
+        query
+      )}&page=${page}&num_pages=${num_pages}`,
       {
         method: "GET",
         headers: {
           "x-rapidapi-host": "jsearch.p.rapidapi.com",
-          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // replace with your key
+          "x-rapidapi-key": "YOUR_RAPIDAPI_KEY_HERE",
         },
       }
     );
@@ -102,16 +107,38 @@ export const fetchAllJobs = async (): Promise<Job[]> => {
 };
 
 // ------------------------------
-// Aliases to match CareerPortal imports
+// Placeholder / stub functions for imports
 // ------------------------------
-export const searchJobs = fetchAllJobs;
-export const getRecommendedJobs = fetchAllJobs;
-export const fetchJobsFromRapidAPI = fetchAllJobs;
-export const fetchSmartJobsFromInternet = fetchAllJobs;
+export const searchJobs = async (query: string) => {
+  // Stub function – implement your search logic
+  return await fetchAllJobs();
+};
 
-// ------------------------------
-// Stub for recording user search
-// ------------------------------
+export const getRecommendedJobs = async () => {
+  // Stub function – implement recommendation logic
+  return await fetchAllJobs();
+};
+
+export const fetchJobsFromRapidAPI = async () => {
+  // Stub for CareerPortal.tsx import
+  return await fetchAllJobs();
+};
+
+export const fetchSmartJobsFromInternet = async () => {
+  // Stub for CareerPortal.tsx import
+  return await fetchAllJobs();
+};
+
 export const recordUserJobSearch = async (jobId: string) => {
-  console.log(`User searched job: ${jobId}`);
+  // Stub for recording user searches
+  console.log("Recorded search for job ID:", jobId);
+};
+
+export const getJobMarketAnalytics = async () => {
+  // Stub for CareerPortal.tsx import
+  return {
+    totalJobs: 0,
+    trendingSkills: [],
+    topCompanies: [],
+  };
 };
