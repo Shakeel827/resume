@@ -524,15 +524,6 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
               </select>
 
               {/* Smart Internet Jobs Toggle Button */}
-              <button
-                type="button"
-                onClick={() => { setShowSmartInternetJobs(v => !v); setTimeout(handleSearch, 0); }}
-                className={`px-4 py-3 rounded-lg font-medium border transition-all ${showSmartInternetJobs ? 'bg-green-100 text-green-700 border-green-300' : 'bg-gray-100 text-gray-500 border-gray-300'} hover:shadow-md`}
-                aria-pressed={showSmartInternetJobs}
-                aria-label="Toggle Smart Internet Jobs"
-              >
-                {showSmartInternetJobs ? 'Smart Internet Jobs ON' : 'Smart Internet Jobs OFF'}
-              </button>
 
               {/* RapidAPI Toggle Button (disabled if Smart is ON) */}
               <button

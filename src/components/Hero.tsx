@@ -149,9 +149,9 @@ const Hero: React.FC = () => {
           >
             {[
               { number: "30+", label: "ATS Templates" },
-              { number: "200+", label: "Job Opportunities" },
+              { number: "1000+", label: "Real Job Opportunities" },
               { number: "95%", label: "Success Rate" },
-              { number: "5", label: "Students Helped" }
+              { number: "500+", label: "Students Helped" }
             ].map((stat, index) => (
               <motion.div
                 key={index}
