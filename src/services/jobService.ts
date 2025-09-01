@@ -7,15 +7,14 @@ export interface Job {
   type: 'full-time' | 'part-time' | 'internship';
   remote: boolean;
   skills: string[];
-  source: 'rapidapi' | 'manual';
+  source: 'rapidapi';
 }
 
-// Mock function: replace with real API call if needed
-export const searchJobs = async (query: string, filters: any): Promise<Job[]> => {
-  let convertedJobs: Job[] = []; // Fetch or load jobs here
+// Search jobs with filters
+export const searchJobs = async (query: string, filters: any = {}): Promise<Job[]> => {
+  const convertedJobs: Job[] = []; // Replace with local jobs if needed
   let filteredJobs = convertedJobs;
 
-  // Search by query
   if (query) {
     const searchTerms = query.toLowerCase().split(' ');
     filteredJobs = filteredJobs.filter(job => {
@@ -24,30 +23,24 @@ export const searchJobs = async (query: string, filters: any): Promise<Job[]> =>
     });
   }
 
-  // Filter by location
   if (filters.location) {
     filteredJobs = filteredJobs.filter(job =>
       job.location.toLowerCase().includes(filters.location.toLowerCase())
     );
   }
 
-  // Filter by type
   if (filters.type) {
     filteredJobs = filteredJobs.filter(job => job.type === filters.type);
   }
 
-  // Filter by remote
   if (filters.remote !== undefined) {
     filteredJobs = filteredJobs.filter(job => job.remote === filters.remote);
   }
 
-  // Filter by skills
   if (filters.skills && filters.skills.length > 0) {
     filteredJobs = filteredJobs.filter(job =>
       filters.skills.some(skill =>
-        job.skills.some(jobSkill =>
-          jobSkill.toLowerCase().includes(skill.toLowerCase())
-        )
+        job.skills.some(jobSkill => jobSkill.toLowerCase().includes(skill.toLowerCase()))
       )
     );
   }
@@ -55,21 +48,7 @@ export const searchJobs = async (query: string, filters: any): Promise<Job[]> =>
   return filteredJobs;
 };
 
-// Calculate how long ago job was posted
-export const calculateTimeAgo = (dateString: string): string => {
-  const now = new Date();
-  const posted = new Date(dateString);
-  const diffInHours = Math.floor((now.getTime() - posted.getTime()) / (1000 * 60 * 60));
-
-  if (diffInHours < 24) {
-    return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
-  } else {
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
-  }
-};
-
-// Get recommended jobs based on skills
+// Recommended jobs
 export const getRecommendedJobs = async (userSkills: string[], experience: string): Promise<Job[]> => {
   const allJobs = await searchJobs('', {});
   return allJobs
@@ -93,7 +72,7 @@ export const getRecommendedJobs = async (userSkills: string[], experience: strin
     .slice(0, 20);
 };
 
-// Get a job by ID
+// Get job by ID
 export const getJobById = async (id: string): Promise<Job | null> => {
   const allJobs = await searchJobs('', {});
   return allJobs.find(job => job.id === id) || null;
@@ -112,18 +91,39 @@ export const recordUserJobSearch = (title: string, location: string) => {
   searchAnalytics.popularLocations.set(location, (searchAnalytics.popularLocations.get(location) || 0) + 1);
 };
 
-export const getJobMarketAnalytics = () => {
-  return {
-    totalJobs: 1000,
-    totalSearches: searchAnalytics.totalSearches,
-    topSkills: Array.from(searchAnalytics.popularSkills.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10),
-    topLocations: Array.from(searchAnalytics.popularLocations.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10)
-  };
-};
+export const getJobMarketAnalytics = () => ({
+  totalJobs: 1000,
+  totalSearches: searchAnalytics.totalSearches,
+  topSkills: Array.from(searchAnalytics.popularSkills.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10),
+  topLocations: Array.from(searchAnalytics.popularLocations.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10)
+});
 
-// Smart job fetching (single export, no duplicates)
+// Smart job fetching
 export const fetchSmartJobsFromInternet = async (): Promise<Job[]> => {
   console.log('Fetching smart jobs from internet...');
-  // Add real fetching logic here (API call, scraping, etc.)
-  return [];
+  return []; // Add scraping or AI logic here
+};
+
+// RapidAPI job fetching
+export const fetchJobsFromRapidAPI = async (): Promise<Job[]> => {
+  const response = await fetch('https://example-rapidapi.com/jobs', {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': process.env.RAPIDAPI_KEY || '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4',
+      'X-RapidAPI-Host': 'example-rapidapi.com'
+    }
+  });
+
+  const data = await response.json();
+  return data.jobs || []; // Adjust based on API response structure
+};
+
+// Helper: time ago
+export const calculateTimeAgo = (dateString: string): string => {
+  const now = new Date();
+  const posted = new Date(dateString);
+  const diffInHours = Math.floor((now.getTime() - posted.getTime()) / (1000 * 60 * 60));
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
 };
