@@ -20,9 +20,11 @@ async function extractTextFromPDF(buffer) {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Create uploads folder
 const uploadDir = path.join(__dirname, 'uploads');
 await fs.mkdir(uploadDir, { recursive: true }).catch(console.error);
 
+// Multer setup for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
@@ -41,12 +43,13 @@ const upload = multer({
 });
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = 3002;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// PDF parsing endpoint
 app.post('/api/parse-pdf', upload.single('file'), async (req, res) => {
   let filePath = '';
   try {
@@ -71,15 +74,9 @@ app.post('/api/parse-pdf', upload.single('file'), async (req, res) => {
 
   } catch (error) {
     console.error('Error in /api/parse-pdf:', error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Error processing PDF',
-      ...(process.env.NODE_ENV === 'development' && {
-        error: error.toString(),
-        stack: error.stack
-      })
-    });
+    res.status(500).json({ success: false, message: error.message });
   } finally {
+    // Cleanup uploaded file
     if (filePath) {
       try {
         await fs.unlink(filePath);
@@ -91,15 +88,6 @@ app.post('/api/parse-pdf', upload.single('file'), async (req, res) => {
   }
 });
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({
-    success: false,
-    message: err?.message || 'Something went wrong!'
-  });
-});
-
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`PDF parser backend running at http://localhost:${port}`);
 });
