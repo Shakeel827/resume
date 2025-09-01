@@ -23,34 +23,30 @@ export const fetchJobsFromRapidAPIJobPostings = async (
     const response = await fetch(
       `https://job-postings1.p.rapidapi.com/?PageNumber=${page}&PageSize=${pageSize}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'x-rapidapi-host': 'job-postings1.p.rapidapi.com',
-          'x-rapidapi-key': '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4',
+          "x-rapidapi-host": "job-postings1.p.rapidapi.com",
+          "x-rapidapi-key": "03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4", // 🔑 replace with your key
         },
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
     const data = await response.json();
 
-    // Map API response to Job[]
+    // API might return nested structures – normalize here
     return data.map((job: any) => ({
-      id: job.id?.toString() || crypto.randomUUID(),
-      title: job.title || 'No Title',
-      company: job.company || 'Unknown',
-      description: job.description || '',
-      location: job.location || 'Not specified',
-      type: job.type || 'N/A',
-      remote: job.remote ?? false,
+      id: job.id || crypto.randomUUID(),
+      title: job.title || "Untitled",
+      company: job.company || "Unknown",
+      description: job.description || "No description available",
+      location: job.location || "Not specified",
+      type: job.type || "N/A",
+      remote: job.remote || false,
       skills: job.skills || [],
-      source: 'rapidapi-jobpostings',
+      source: "rapidapi-jobpostings",
     }));
   } catch (error) {
-    console.error('Error fetching jobs from RapidAPI job-postings:', error);
+    console.error("Error fetching jobs from RapidAPI JobPostings:", error);
     return [];
   }
 };
@@ -59,64 +55,41 @@ export const fetchJobsFromRapidAPIJobPostings = async (
 // Fetch jobs from jsearch.p.rapidapi.com
 // ------------------------------
 export const fetchJobsFromRapidAPIJSearch = async (
-  query: string = 'developer',
+  query: string = "software engineer",
   page: number = 1,
-  numPages: number = 1
+  num_pages: number = 1
 ): Promise<Job[]> => {
   try {
     const response = await fetch(
-      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=${numPages}`,
+      `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(
+        query
+      )}&page=${page}&num_pages=${num_pages}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'x-rapidapi-host': 'jsearch.p.rapidapi.com',
-          'x-rapidapi-key': '03b3cf7493msh0a84fa633dc8487p10ae9djsn745e069e1ee4',
+          "x-rapidapi-host": "jsearch.p.rapidapi.com",
+          "x-rapidapi-key": "YOUR_RAPIDAPI_KEY", // 🔑 replace with your key
         },
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
+    const { data } = await response.json();
 
-    const data = await response.json();
-
-    if (!data.data) return [];
-
-    // Map API response to Job[]
-    return data.data.map((job: any) => ({
-      id: job.job_id?.toString() || crypto.randomUUID(),
-      title: job.job_title || 'No Title',
-      company: job.employer_name || 'Unknown',
-      description: job.job_description || '',
-      location: job.job_location || 'Not specified',
-      type: job.job_employment_type || 'N/A',
-      remote: job.job_is_remote ?? false,
+    return data.map((job: any) => ({
+      id: job.job_id || crypto.randomUUID(),
+      title: job.job_title || "Untitled",
+      company: job.employer_name || "Unknown",
+      description: job.job_description || "No description available",
+      location: job.job_city
+        ? `${job.job_city}, ${job.job_country}`
+        : "Not specified",
+      type: job.job_employment_type || "N/A",
+      remote: job.job_is_remote || false,
       skills: job.job_required_skills || [],
-      source: 'rapidapi-jsearch',
+      source: "rapidapi-jsearch",
     }));
   } catch (error) {
-    console.error('Error fetching jobs from RapidAPI jsearch:', error);
-    return [];
-  }
-};
-
-// ------------------------------
-// Combined function to fetch jobs from both sources
-// ------------------------------
-export const fetchAllJobs = async (
-  query: string = 'developer',
-  page: number = 1
-): Promise<Job[]> => {
-  try {
-    const [jobsFromPostings, jobsFromJSearch] = await Promise.all([
-      fetchJobsFromRapidAPIJobPostings(page, 12),
-      fetchJobsFromRapidAPIJSearch(query, page, 1),
-    ]);
-
-    return [...jobsFromPostings, ...jobsFromJSearch];
-  } catch (error) {
-    console.error('Error fetching jobs from both sources:', error);
+    console.error("Error fetching jobs from RapidAPI JSearch:", error);
     return [];
   }
 };
