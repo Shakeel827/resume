@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Sparkles, FileText, Briefcase, TrendingUp } from 'lucide-react';
-import { analyzeResumeWithGemini, getJobRecommendationsWithAI } from '../services/geminiService';
+import { analyzeResumeWithGemini, getJobRecommendationsWithAI, getChatResponse, checkAPIHealth } from '../services/geminiService';
 import toast from 'react-hot-toast';
 
 interface Message {
@@ -29,6 +29,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiConnected, setApiConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -39,6 +40,11 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // Check API connection on component mount
+    checkAPIHealth().then(setApiConnected);
+  }, []);
 
   const quickActions = [
     {
@@ -112,11 +118,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
         } else {
           response = "I need your resume data to provide job recommendations. Please create a resume first!";
         }
-      } else if (text.toLowerCase().includes('tip') || text.toLowerCase().includes('advice')) {
-        response = `💡 **Career Success Tips:**\n\n• **Optimize your LinkedIn profile** - Use keywords from job descriptions\n• **Build a portfolio** - Showcase your best work and projects\n• **Network actively** - Connect with professionals in your field\n• **Keep learning** - Stay updated with industry trends\n• **Quantify achievements** - Use numbers to show your impact\n• **Practice interviewing** - Prepare for common questions\n• **Follow up** - Send thank-you notes after interviews`;
       } else {
-        // General AI response
-        response = await getAIResponse(text);
+        // Use API for general AI response
+        response = await getChatResponse(text, { resumeData, isLoggedIn });
       }
 
       setTimeout(() => {
@@ -135,7 +139,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: "I'm having trouble processing your request right now. Please try again or contact support if the issue persists.",
+        content: apiConnected 
+          ? "I'm having trouble processing your request right now. Please try again in a moment."
+          : "I'm currently running in offline mode. Some features may be limited. Please check your connection to localhost:8000.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -279,7 +285,13 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
                   <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                     <Bot className="w-5 h-5" />
                   </div>
-                  <h3 id="chat-title" className="font-bold">Panda AI Assistant</h3>
+                  <div>
+                    <h3 id="chat-title" className="font-bold">Panda AI Assistant</h3>
+                    <div className="flex items-center space-x-1 text-xs">
+                      <div className={`w-2 h-2 rounded-full ${apiConnected ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                      <span className="opacity-90">{apiConnected ? 'Connected' : 'Offline Mode'}</span>
+                    </div>
+                  </div>
                 </div>
                 <button 
                   onClick={(e) => {
