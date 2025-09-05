@@ -39,20 +39,20 @@ export default defineConfig(({ mode }) => {
       proxy: {
         // Proxy API requests to the Express server
         '/api': {
-          target: 'http://localhost:3002',
+          target: 'http://127.0.0.1:8000',
           changeOrigin: true,
           secure: false,
           ws: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path,
           configure: (proxy, _options) => {
             proxy.on('error', (err, _req, _res) => {
-              console.error('Proxy error:', err);
+              console.error('API Proxy error:', err);
             });
             proxy.on('proxyReq', (proxyReq, req, _res) => {
-              console.log('API Request:', req.method, req.url);
+              console.log('Proxying API Request:', req.method, req.url);
             });
             proxy.on('proxyRes', (proxyRes, req, _res) => {
-              console.log('API Response:', proxyRes.statusCode, req.url);
+              console.log('API Response Status:', proxyRes.statusCode, req.url);
             });
           }
         }

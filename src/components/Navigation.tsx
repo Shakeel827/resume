@@ -91,20 +91,20 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
 
 
   return (
-    <header className="w-full">
+    <header className="w-full fixed top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
       <nav aria-label="Main navigation" className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center h-auto sm:h-16 py-3 sm:py-0">
+          <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <motion.div
-              className="flex items-center justify-center w-full sm:w-auto space-x-0 sm:space-x-2 mb-2 sm:mb-0"
+              className="flex items-center space-x-2"
               whileHover={{ scale: 1.05 }}
             >
-              <div className="w-14 h-14 sm:w-10 sm:h-10 bg-gradient-to-r from-indigo-600 to-fuchsia-500 rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-fuchsia-500 rounded-full flex items-center justify-center shadow-lg">
                 {/* Panda Logo */}
-                <span className="text-2xl sm:text-lg">🐼</span>
+                <span className="text-lg">🐼</span>
               </div>
-              <span className="hidden xs:inline text-xl sm:text-xl font-extrabold bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent tracking-wide drop-shadow pl-3 sm:pl-0">CareerPanda</span>
+              <span className="hidden sm:inline text-xl font-extrabold bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent tracking-wide">CareerPanda</span>
             </motion.div>
 
             {/* Desktop Navigation */}
@@ -237,90 +237,92 @@ const Navigation: React.FC<NavigationProps> = ({ user, onLogin, onLogout }) => {
           </div>
 
           {/* Mobile menu */}
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, y: -10 }}
-                animate={{ opacity: 1, height: 'auto', y: 0 }}
-                exit={{ opacity: 0, height: 0, y: -10 }}
-                transition={{ 
-                  duration: 0.3,
-                  ease: [0.4, 0, 0.2, 1],
-                  height: { duration: 0.3 },
-                  opacity: { duration: 0.25 }
-                }}
-                className="md:hidden w-full overflow-hidden bg-white dark:bg-gray-900 shadow-xl rounded-b-lg border-t border-gray-200 dark:border-gray-800 absolute top-full left-0 right-0 z-50"
-                id="mobile-menu"
-              >
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  {navItems.map((item, index) => (
-                    <motion.div 
-                      key={item.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 * index + 0.1 }}
-                      className="border-b border-gray-100 dark:border-gray-800 last:border-b-0"
-                    >
-                      <a
-                        href={item.href}
-                        onClick={(e) => scrollToSection(e, item.href)}
-                        className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors rounded-lg mx-2"
-                        aria-current={window.location.hash === item.href ? 'page' : undefined}
-                      >
-                        <span className="text-blue-500">{item.icon}</span>
-                        <span className="font-medium">{item.name}</span>
-                      </a>
-                    </motion.div>
-                  ))}
-                  
-                  {user ? (
-                    <motion.div 
-                      className="px-2 py-3 border-t border-gray-100 dark:border-gray-800 mt-2"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 * navItems.length + 0.1 }}
-                    >
-                      <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg mx-2 mb-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
-                          {getUserDisplayName().charAt(0).toUpperCase()}
-                        </div>
-                        <span className="font-medium text-gray-900 dark:text-white">{getUserDisplayName()}</span>
-                      </div>
-                      <button
-                        onClick={() => {
-                          onLogout();
-                          setIsOpen(false);
-                        }}
-                        className="w-full flex items-center justify-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-lg border border-red-200 dark:border-red-900/50 mx-2"
-                      >
-                        <LogOut className="w-5 h-5 flex-shrink-0" />
-                        <span>Sign out</span>
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <motion.div 
-                      className="px-2 py-3 mt-2"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 * navItems.length + 0.1 }}
-                    >
-                      <button
-                        onClick={() => {
-                          onLogin();
-                          setIsOpen(false);
-                        }}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg mx-2"
-                      >
-                        <span>Get Started</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </nav>
+      
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, y: -10 }}
+            animate={{ opacity: 1, height: 'auto', y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -10 }}
+            transition={{ 
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1],
+              height: { duration: 0.3 },
+              opacity: { duration: 0.25 }
+            }}
+            className="md:hidden w-full overflow-hidden bg-white dark:bg-gray-900 shadow-xl border-t border-gray-200 dark:border-gray-800"
+            id="mobile-menu"
+          >
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              {navItems.map((item, index) => (
+                <motion.div 
+                  key={item.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index + 0.1 }}
+                  className="border-b border-gray-100 dark:border-gray-800 last:border-b-0"
+                >
+                  <a
+                    href={item.href}
+                    onClick={(e) => scrollToSection(e, item.href)}
+                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors rounded-lg mx-2"
+                    aria-current={window.location.hash === item.href ? 'page' : undefined}
+                  >
+                    <span className="text-blue-500">{item.icon}</span>
+                    <span className="font-medium">{item.name}</span>
+                  </a>
+                </motion.div>
+              ))}
+              
+              {user ? (
+                <motion.div 
+                  className="px-2 py-3 border-t border-gray-100 dark:border-gray-800 mt-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * navItems.length + 0.1 }}
+                >
+                  <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg mx-2 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                      {getUserDisplayName().charAt(0).toUpperCase()}
+                    </div>
+                    <span className="font-medium text-gray-900 dark:text-white">{getUserDisplayName()}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setIsOpen(false);
+                    }}
+                    className="w-full flex items-center justify-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-lg border border-red-200 dark:border-red-900/50 mx-2"
+                  >
+                    <LogOut className="w-5 h-5 flex-shrink-0" />
+                    <span>Sign out</span>
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  className="px-2 py-3 mt-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * navItems.length + 0.1 }}
+                >
+                  <button
+                    onClick={() => {
+                      onLogin();
+                      setIsOpen(false);
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg mx-2"
+                  >
+                    <span>Get Started</span>
+                  </button>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
