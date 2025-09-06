@@ -1,4 +1,4 @@
-// Job Service - Updated for localhost:8009 API Integration
+// Job Service
 export interface Job {
   id: string;
   title: string;
