@@ -92,7 +92,7 @@ export const getJobById = async (jobId: string): Promise<Job | null> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+    const response = await fetch(`${API_BASE_URL}/jobs`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
