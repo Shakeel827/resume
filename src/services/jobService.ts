@@ -29,21 +29,6 @@ export interface JobFilters {
 
 const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app';
 
-fetch('https://4dfa70f4f534.ngrok-free.app/jobs', {
-  headers: {
-     Authorization': 'ep_32L2E9rEIhkC1b8YNeH3Ms3kbNT',
-    'ngrok-skip-browser-warning': 'true' // Any value works to skip the warning
-  }
-})
-.then(response => {
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  return response.json();
-})
-.then(data => console.log('Success!', data))
-.catch(error => console.error('Error:', error));
-
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
