@@ -235,26 +235,38 @@ export const recordUserJobSearch = async (query: string, location?: string) => {
   }
 };
 
+// Fetch jobs from your FastAPI backend
+export const fetchJobs = async (): Promise<Job[]> => {
+  try {
+    const response = await fetch("https://4dfa70f4f534.ngrok-free.app/jobs"); // replace with your ngrok/public API URL
+    const data = await response.json();
+    return normalizeJobData(data.jobs || []);
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    return [];
+  }
+};
+
 // Normalize job data from API response
 const normalizeJobData = (jobs: any[]): Job[] => {
   return jobs.map((job: any, index: number) => ({
     id: job.id || `job-${index}-${Date.now()}`,
-    title: job.title || 'Job Position',
-    company: job.company || 'Company',
-    location: job.location || 'Location',
-    type: job.job_type || job.type || 'full-time',
-    experience: job.experience || job.experience_level || 'Not specified',
-    salary: job.salary || job.salary_range || 'Competitive',
-    description: job.description || 'No description available',
-    requirements: job.requirements || job.skills || [],
-    posted: job.created_at ? formatDate(job.created_at) : 'Recently',
-    url: job.application_link || job.url || '#',
-    logo: job.logo || job.company_logo || '',
-    remote: job.remote || job.is_remote || false,
-    skills: job.skills || job.requirements || [],
-    application_link: job.application_link,
-    created_at: job.created_at,
-    job_type: job.job_type
+    title: job.title || "Job Position",
+    company: job.company || "Company",
+    location: job.location || "Location",
+    job_type: job.job_type || "Full-time",
+    description: job.description || "No description available",
+    posted: job.created_at ? formatDate(job.created_at) : "Recently",
+    url: job.application_link || "#",
+    application_link: job.application_link || "#",
+    created_at: job.created_at || new Date().toISOString(),
+    // Optional fields (not in API, but good to have defaults)
+    experience: job.experience || "Not specified",
+    salary: job.salary || "Competitive",
+    requirements: job.requirements || [],
+    logo: job.logo || "",
+    remote: job.remote || false,
+    skills: job.skills || [],
   }));
 };
 
@@ -265,13 +277,23 @@ const formatDate = (dateString: string): string => {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 1) return '1 day ago';
+
+    if (diffDays === 1) return "1 day ago";
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
     return `${Math.ceil(diffDays / 30)} months ago`;
   } catch (error) {
-    return 'Recently';
+    return "Recently";
+  }
+};
+
+// Record user job search (optional for analytics)
+export const recordUserJobSearch = async (query: string, location?: string) => {
+  try {
+    console.log("Search recorded:", { query, location });
+    // In future, send query to API endpoint for logging
+  } catch (error) {
+    console.error("Error recording search:", error);
   }
 };
 
@@ -279,28 +301,32 @@ const formatDate = (dateString: string): string => {
 export const shareJob = (job: Job): void => {
   const shareUrl = `${window.location.origin}/job/${job.id}`;
   const shareText = `Check out this job: ${job.title} at ${job.company}`;
-  
+
   if (navigator.share) {
-    navigator.share({
-      title: shareText,
-      url: shareUrl,
-    }).catch(console.error);
+    navigator
+      .share({
+        title: shareText,
+        url: shareUrl,
+      })
+      .catch(console.error);
   } else {
     // Fallback: copy to clipboard
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      console.log('Job link copied to clipboard');
-    }).catch(() => {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = shareUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-    });
+    navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => {
+        console.log("Job link copied to clipboard");
+      })
+      .catch(() => {
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      });
   }
 };
 
-// Legacy function names for backward compatibility
-export const fetchJobsFromRapidAPI = searchJobs;
-export const fetchSmartJobsFromInternet = () => searchJobs('', {});
+// Legacy function names for compatibility
+export const fetchJobsFromRapidAPI = fetchJobs;
+export const fetchSmartJobsFromInternet = () => fetchJobs();
