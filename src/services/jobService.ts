@@ -27,17 +27,7 @@ export interface JobFilters {
   skills?: string[];
 }
 
-const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app';
-
-// For fetch API
-fetch('https://4dfa70f4f534.ngrok-free.app', {
-  headers: {
-    'ngrok-skip-browser-warning': 'ep_32L2E9rEIhkC1b8YNeH3Ms3kbNT' // This is the key!
-  }
-})
-.then(response => response.json())
-.then(data => console.log('Success!', data))
-.catch(error => console.error('Error:', error));
+const API_BASE_URL = 'http://localhost:8009';
 
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
