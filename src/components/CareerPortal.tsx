@@ -56,7 +56,7 @@ const CareerPortal: React.FC = () => {
 
   const checkAPIConnection = async () => {
     try {
-      const response = await fetch('http://localhost:8009/jobs');
+      const response = await fetch('https://4dfa70f4f534.ngrok-free.app/jobs');
       setApiConnected(response.ok);
       if (!response.ok) {
         toast.error('API connection failed. Please ensure localhost:8009 is running.');
