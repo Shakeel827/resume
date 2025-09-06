@@ -27,7 +27,7 @@ export interface JobFilters {
   skills?: string[];
 }
 
-const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app';
+const API_BASE_URL = "https://4dfa70f4f534.ngrok-free.app";
 
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
