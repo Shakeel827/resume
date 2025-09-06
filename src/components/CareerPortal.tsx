@@ -23,22 +23,15 @@ import {
   ChevronDown,
   ChevronUp,
   Wifi,
-  WifiOff
+  WifiOff,
+  Share2,
+  Copy
 } from 'lucide-react';
-import { searchJobs, getRecommendedJobs, Job, recordUserJobSearch, getJobMarketAnalytics } from '../services/jobService';
-import { ResumeData } from '../utils/pdfGenerator';
+import { searchJobs, getJobMarketAnalytics, Job, shareJob } from '../services/jobService';
 import toast from 'react-hot-toast';
-import { getJobRecommendationsWithAI, checkAPIHealth } from '../services/geminiService';
 
-interface CareerPortalProps {
-  isLoggedIn: boolean;
-  resumeData?: ResumeData;
-  onLogin: () => void;
-}
-
-const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onLogin }) => {
+const CareerPortal: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
@@ -49,27 +42,28 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
     skills: [] as string[]
   });
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<'search' | 'recommended' | 'saved'>('search');
+  const [activeTab, setActiveTab] = useState<'search' | 'saved'>('search');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [marketAnalytics, setMarketAnalytics] = useState<any>(null);
   const [apiConnected, setApiConnected] = useState(false);
-  const [isLoadingRecommended, setIsLoadingRecommended] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      checkAPIConnection();
-      loadJobs();
-      loadRecommendedJobs();
-      loadSavedJobs();
-      loadMarketAnalytics();
-    }
-  }, [isLoggedIn]);
+    checkAPIConnection();
+    loadJobs();
+    loadSavedJobs();
+    loadMarketAnalytics();
+  }, []);
 
   const checkAPIConnection = async () => {
-    const connected = await checkAPIHealth();
-    setApiConnected(connected);
-    if (!connected) {
-      toast.error('API connection failed. Using offline mode.');
+    try {
+      const response = await fetch('http://localhost:8009/jobs');
+      setApiConnected(response.ok);
+      if (!response.ok) {
+        toast.error('API connection failed. Please ensure localhost:8009 is running.');
+      }
+    } catch (error) {
+      setApiConnected(false);
+      toast.error('API connection failed. Please ensure localhost:8009 is running.');
     }
   };
 
@@ -80,52 +74,10 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
       setJobs(results);
     } catch (error) {
       console.error('Error loading jobs:', error);
-      toast.error('Failed to load jobs');
+      toast.error('Failed to load jobs. Please check API connection.');
       setJobs([]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadRecommendedJobs = async () => {
-    if (!resumeData?.skills || resumeData.skills.length === 0) {
-      setRecommendedJobs([]);
-      return;
-    }
-
-    setIsLoadingRecommended(true);
-    try {
-      // Use AI-powered job recommendations from localhost API
-      const aiRecommendations = await getJobRecommendationsWithAI(resumeData.skills);
-      const convertedJobs = aiRecommendations.map((job, index) => ({
-        id: `ai-${index}`,
-        title: job.title,
-        company: job.company,
-        location: job.location,
-        type: 'full-time' as const,
-        experience: 'Based on your skills',
-        salary: job.salary,
-        description: job.description,
-        requirements: job.requirements,
-        posted: 'AI Recommended',
-        url: job.url,
-        logo: '',
-        remote: false,
-        skills: job.requirements
-      }));
-      setRecommendedJobs(convertedJobs);
-    } catch (error) {
-      console.error('Failed to load recommended jobs:', error);
-      // Fallback to regular search with skills
-      try {
-        const fallbackJobs = await searchJobs('', { skills: resumeData.skills });
-        setRecommendedJobs(fallbackJobs.slice(0, 10));
-      } catch (fallbackError) {
-        console.error('Fallback job search failed:', fallbackError);
-        setRecommendedJobs([]);
-      }
-    } finally {
-      setIsLoadingRecommended(false);
     }
   };
 
@@ -135,9 +87,8 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
       setMarketAnalytics(analytics);
     } catch (error) {
       console.error('Failed to load market analytics:', error);
-      // Set fallback analytics
       setMarketAnalytics({
-        totalJobs: 150,
+        totalJobs: 0,
         trendingSkills: ['JavaScript', 'React', 'Python', 'Node.js'],
         topCompanies: ['Google', 'Microsoft', 'Amazon', 'Flipkart'],
         averageSalary: '₹12-25 LPA',
@@ -159,9 +110,6 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
   };
 
   const handleSearch = async () => {
-    if (searchQuery.trim()) {
-      recordUserJobSearch(searchQuery, filters.location);
-    }
     await loadJobs();
   };
 
@@ -178,6 +126,46 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
     );
   };
 
+  const handleApplyNow = (job: Job) => {
+    if (job.application_link || job.url) {
+      const applyUrl = job.application_link || job.url;
+      if (applyUrl && applyUrl !== '#') {
+        window.open(applyUrl, '_blank', 'noopener,noreferrer');
+        toast.success('Redirecting to application page...');
+      } else {
+        toast.error('Application link not available');
+      }
+    } else {
+      toast.error('Application link not available');
+    }
+  };
+
+  const handleShareJob = (job: Job) => {
+    const shareUrl = `${window.location.origin}/job/${job.id}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: `${job.title} at ${job.company}`,
+        text: `Check out this job opportunity: ${job.title} at ${job.company}`,
+        url: shareUrl,
+      }).catch(console.error);
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        toast.success('Job link copied to clipboard!');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        toast.success('Job link copied to clipboard!');
+      });
+    }
+  };
+
   const getJobTypeColor = (type: string) => {
     switch (type) {
       case 'full-time': return 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200';
@@ -188,7 +176,7 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
     }
   };
 
-  const JobCard: React.FC<{ job: Job; isRecommended?: boolean }> = ({ job, isRecommended }) => (
+  const JobCard: React.FC<{ job: Job }> = ({ job }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -215,12 +203,13 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
         </div>
         
         <div className="flex items-center space-x-2 flex-shrink-0">
-          {isRecommended && (
-            <div className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200 px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
-              <Star className="w-3 h-3" />
-              <span className="hidden sm:inline">Recommended</span>
-            </div>
-          )}
+          <button
+            onClick={() => handleShareJob(job)}
+            className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 transition-colors"
+            aria-label="Share job"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
           <button
             onClick={() => toggleSaveJob(job.id)}
             className={`p-2 rounded-lg transition-colors ${
@@ -248,7 +237,7 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
           <Clock className="w-4 h-4 flex-shrink-0" />
           <span className="truncate">{job.posted}</span>
         </div>
-        {job.salary && (
+        {job.salary && job.salary !== 'Competitive' && (
           <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300">
             <DollarSign className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">{job.salary}</span>
@@ -303,13 +292,7 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            if (job.url && job.url !== '#') {
-              window.open(job.url, '_blank', 'noopener,noreferrer');
-            } else {
-              toast.error('Application link not available');
-            }
-          }}
+          onClick={() => handleApplyNow(job)}
           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2"
         >
           <span>Apply Now</span>
@@ -318,85 +301,6 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
       </div>
     </motion.div>
   );
-
-  if (!isLoggedIn) {
-    return (
-      <section id="careers" className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
-          >
-            <div className="w-24 h-24 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-              <Briefcase className="w-12 h-12 text-white" />
-            </div>
-            
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-              Unlock Your Career Potential
-            </h2>
-            
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Access hundreds of job opportunities tailored to your skills and experience. 
-              Get personalized recommendations and apply directly to top companies.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12">
-              {[
-                {
-                  icon: Target,
-                  title: 'Personalized Matches',
-                  description: 'AI-powered job recommendations based on your resume'
-                },
-                {
-                  icon: TrendingUp,
-                  title: 'Live Opportunities',
-                  description: 'Real-time job listings from our API'
-                },
-                {
-                  icon: Award,
-                  title: 'Career Growth',
-                  description: 'Track applications and get interview tips'
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-lg"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4">
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onLogin}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center space-x-2 mx-auto"
-            >
-              <Users className="w-6 h-6" />
-              <span>Login to Access Career Portal</span>
-            </motion.button>
-
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Free registration • No spam • Secure & private
-            </p>
-          </motion.div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="careers" className="py-20 bg-gray-50 dark:bg-gray-800">
@@ -417,12 +321,12 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
                 : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200'
             }`}>
               {apiConnected ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-              <span>{apiConnected ? 'Live Data' : 'Offline Mode'}</span>
+              <span>{apiConnected ? 'Live API' : 'API Offline'}</span>
             </div>
           </div>
           <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Discover opportunities that match your skills and aspirations. 
-            {apiConnected ? 'Live job data from our API.' : 'Using cached job data.'}
+            {apiConnected ? 'Live job data from localhost:8009 API.' : 'Please start your API server.'}
           </p>
         </motion.div>
 
@@ -434,9 +338,9 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
           className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12"
         >
           {[
-            { icon: Briefcase, label: 'Active Jobs', value: marketAnalytics?.totalJobs || jobs.length || '150+', color: 'from-blue-500 to-blue-600' },
-            { icon: Building, label: 'Companies', value: '50+', color: 'from-green-500 to-green-600' },
-            { icon: Users, label: 'Hired', value: '1000+', color: 'from-purple-500 to-purple-600' },
+            { icon: Briefcase, label: 'Active Jobs', value: marketAnalytics?.totalJobs || jobs.length || '0', color: 'from-blue-500 to-blue-600' },
+            { icon: Building, label: 'Companies', value: marketAnalytics?.topCompanies?.length || '10+', color: 'from-green-500 to-green-600' },
+            { icon: Users, label: 'Applications', value: '500+', color: 'from-purple-500 to-purple-600' },
             { icon: Heart, label: 'Success Rate', value: '85%', color: 'from-red-500 to-red-600' }
           ].map((stat, index) => (
             <motion.div
@@ -522,6 +426,16 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
                 )}
                 <span className="hidden sm:inline">Search</span>
               </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={checkAPIConnection}
+                className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center space-x-2"
+              >
+                <Wifi className="w-5 h-5" />
+                <span className="hidden sm:inline">Test API</span>
+              </motion.button>
             </div>
           </div>
         </motion.div>
@@ -535,7 +449,6 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
         >
           {[
             { id: 'search', label: 'All Jobs', count: jobs.length },
-            { id: 'recommended', label: 'Recommended', count: recommendedJobs.length },
             { id: 'saved', label: 'Saved', count: savedJobs.length }
           ].map((tab) => (
             <button
@@ -556,7 +469,7 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
 
         {/* Jobs Grid */}
         <AnimatePresence mode="wait">
-          {loading || isLoadingRecommended ? (
+          {loading ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -566,7 +479,7 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {apiConnected ? 'Loading fresh job data...' : 'Loading cached job data...'}
+                  {apiConnected ? 'Loading jobs from API...' : 'Checking API connection...'}
                 </p>
               </div>
             </motion.div>
@@ -581,10 +494,6 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
                 <JobCard key={job.id} job={job} />
               ))}
               
-              {activeTab === 'recommended' && recommendedJobs.map((job) => (
-                <JobCard key={job.id} job={job} isRecommended />
-              ))}
-              
               {activeTab === 'saved' && jobs
                 .filter(job => savedJobs.includes(job.id))
                 .map((job) => (
@@ -595,9 +504,8 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
         </AnimatePresence>
 
         {/* No Results */}
-        {!loading && !isLoadingRecommended && (
+        {!loading && (
           (activeTab === 'search' && jobs.length === 0) ||
-          (activeTab === 'recommended' && recommendedJobs.length === 0) ||
           (activeTab === 'saved' && savedJobs.length === 0)
         ) && (
           <motion.div
@@ -609,11 +517,13 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
               <Search className="w-12 h-12 text-gray-400" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              No jobs found
+              {activeTab === 'saved' ? 'No saved jobs' : 'No jobs found'}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               {!apiConnected 
-                ? 'API connection unavailable. Please check if localhost:8000 is running.'
+                ? 'API connection unavailable. Please ensure localhost:8009 is running.'
+                : activeTab === 'saved'
+                ? 'Save jobs to view them here later.'
                 : 'Try adjusting your search criteria or check back later for new opportunities.'
               }
             </p>
@@ -647,6 +557,27 @@ const CareerPortal: React.FC<CareerPortalProps> = ({ isLoggedIn, resumeData, onL
                   <span>Retry Connection</span>
                 </motion.button>
               )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* API Status Info */}
+        {!apiConnected && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-8"
+          >
+            <div className="flex items-center space-x-2">
+              <WifiOff className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              <div>
+                <h4 className="font-medium text-yellow-800 dark:text-yellow-200">
+                  API Connection Required
+                </h4>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  Please ensure your backend API is running at localhost:8009 to see live job data.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

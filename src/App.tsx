@@ -103,11 +103,7 @@ function App() {
         <Features />
         <ResumeBuilder />
         <Portfolio />
-        <CareerPortal 
-          isLoggedIn={!!user}
-          resumeData={resumeData}
-          onLogin={() => setShowAuthModal(true)}
-        />
+        <CareerPortal />
         <Footer />
         
         <AIAssistant 
