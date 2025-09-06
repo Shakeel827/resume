@@ -27,7 +27,7 @@ export interface JobFilters {
   skills?: string[];
 }
 
-const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app/';
+const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app';
 
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
@@ -55,7 +55,7 @@ export const searchJobs = async (query: string = '', filters: JobFilters = {}): 
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}jobs`, {
+    const response = await fetch(`${API_BASE_URL}/jobs`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export const getJobById = async (jobId: string): Promise<Job | null> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}jobs`, {
+    const response = await fetch(`${API_BASE_URL}/jobs`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
