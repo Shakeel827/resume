@@ -30,7 +30,7 @@ export interface JobFilters {
 const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app';
 
 // For fetch API
-fetch('https://your-domain.ngrok-free.app/your-api', {
+fetch('https://4dfa70f4f534.ngrok-free.app', {
   headers: {
     'ngrok-skip-browser-warning': 'ep_32L2E9rEIhkC1b8YNeH3Ms3kbNT' // This is the key!
   }
