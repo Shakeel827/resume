@@ -29,6 +29,16 @@ export interface JobFilters {
 
 const API_BASE_URL = 'https://4dfa70f4f534.ngrok-free.app';
 
+// For fetch API
+fetch('https://your-domain.ngrok-free.app/your-api', {
+  headers: {
+    'ngrok-skip-browser-warning': 'ep_32L2E9rEIhkC1b8YNeH3Ms3kbNT' // This is the key!
+  }
+})
+.then(response => response.json())
+.then(data => console.log('Success!', data))
+.catch(error => console.error('Error:', error));
+
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
