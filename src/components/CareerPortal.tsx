@@ -56,7 +56,7 @@ const CareerPortal: React.FC = () => {
 
   const checkAPIConnection = async () => {
     try {
-      const response = await fetch('https://api-lzkz.onrender.com/jobs');
+      const response = await fetch('https://curves-whats-radical-hebrew.trycloudflare.com/jobs');
       setApiConnected(response.ok);
       if (!response.ok) {
         toast.error('API connection failed. Please ensure localhost:8009 is running.');
