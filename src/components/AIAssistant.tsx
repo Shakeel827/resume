@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Sparkles, FileText, Briefcase, TrendingUp } from 'lucide-react';
-import { analyzeResumeWithGemini, getJobRecommendationsWithAI, getChatResponse, checkAPIHealth } from '../services/geminiService';
+import { analyzeResumeWithGemini, getJobRecommendationsWithAI, getChatResponse } from '../services/geminiService';
 import toast from 'react-hot-toast';
 
 interface Message {
@@ -29,7 +29,6 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [apiConnected, setApiConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -40,11 +39,6 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    // Check API connection on component mount
-    checkAPIHealth().then(setApiConnected);
-  }, []);
 
   const quickActions = [
     {
@@ -139,9 +133,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: apiConnected 
-          ? "I'm having trouble processing your request right now. Please try again in a moment."
-          : "I'm currently running in offline mode. Some features may be limited. Please check your connection to localhost:8000.",
+        content: "I'm having trouble processing your request right now. Please try again in a moment.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -287,10 +279,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ resumeData, isLoggedIn }) => 
                   </div>
                   <div>
                     <h3 id="chat-title" className="font-bold">Panda AI Assistant</h3>
-                    <div className="flex items-center space-x-1 text-xs">
-                      <div className={`w-2 h-2 rounded-full ${apiConnected ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                      <span className="opacity-90">{apiConnected ? 'Connected' : 'Offline Mode'}</span>
-                    </div>
+                    <div className="text-xs opacity-90">Your AI Career Assistant</div>
                   </div>
                 </div>
                 <button 

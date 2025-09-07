@@ -334,6 +334,23 @@
   .mobile-flex {
     @apply flex-col space-y-4 space-x-0;
   }
+  
+  /* Enhanced mobile loading screen */
+  .loading-screen-mobile {
+    @apply px-4 py-8;
+  }
+  
+  .loading-screen-mobile .hero-content {
+    @apply space-y-6;
+  }
+  
+  .loading-screen-mobile h1 {
+    @apply text-3xl;
+  }
+  
+  .loading-screen-mobile .subtitle {
+    @apply text-base;
+  }
 }
 
 /* Touch device optimizations */
@@ -348,6 +365,15 @@
   
   .hover\:shadow-xl:hover {
     box-shadow: none;
+  }
+  
+  /* Better touch targets for mobile */
+  .touch-target {
+    @apply min-h-[48px] min-w-[48px];
+  }
+  
+  .touch-button {
+    @apply py-4 px-6 text-base;
   }
 }
 
@@ -391,4 +417,61 @@
 
 .info-state {
   @apply text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4;
+}
+
+/* Enhanced responsive utilities */
+.responsive-text-xs {
+  @apply text-xs sm:text-sm md:text-base;
+}
+
+.responsive-text-sm {
+  @apply text-sm sm:text-base md:text-lg;
+}
+
+.responsive-text-base {
+  @apply text-base sm:text-lg md:text-xl;
+}
+
+.responsive-padding {
+  @apply p-4 sm:p-6 md:p-8;
+}
+
+.responsive-margin {
+  @apply m-4 sm:m-6 md:m-8;
+}
+
+.responsive-gap {
+  @apply gap-2 sm:gap-4 md:gap-6;
+}
+
+/* Enhanced card animations */
+.card-hover-enhanced {
+  @apply hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1;
+}
+
+/* Better focus states */
+.focus-enhanced {
+  @apply focus:outline-none focus:ring-4 focus:ring-blue-500/50 focus:border-blue-500;
+}
+
+/* Smooth transitions */
+.transition-enhanced {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Gradient backgrounds */
+.gradient-bg-enhanced {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-bg-success {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}
+
+.gradient-bg-warning {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.gradient-bg-error {
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
 }

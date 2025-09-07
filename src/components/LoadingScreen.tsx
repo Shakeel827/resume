@@ -26,7 +26,6 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   useEffect(() => {
     if (!isLoading) return;
 
-    // Even slower message rotation (every 7-8 seconds)
     const messageInterval = setInterval(() => {
       setCurrentMessage(prev => {
         const otherMessages = loadingMessages.filter(m => m !== prev);
@@ -34,12 +33,10 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       });
     }, 7500);
 
-    // Slower dots animation (every 1000ms)
     const dotsInterval = setInterval(() => {
       setDots(prev => prev.length >= 3 ? '' : prev + '.');
     }, 1000);
 
-    // Initial delay before showing first message change
     const initialDelay = setTimeout(() => {
       setCurrentMessage(loadingMessages[1]);
     }, 2000);
@@ -59,17 +56,17 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 flex items-center justify-center"
+        className="fixed inset-0 z-[9999] bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 flex items-center justify-center overflow-hidden"
       >
-        {/* Animated Background */}
+        {/* Responsive Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-2 h-2 bg-white/20 rounded-full"
+              className="absolute w-1 h-1 sm:w-2 sm:h-2 bg-white/20 rounded-full"
               initial={{ 
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
+                x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+                y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
                 scale: 0
               }}
               animate={{
@@ -88,9 +85,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           ))}
         </div>
 
-        {/* Main Loading Content */}
-        <div className="relative z-10 text-center">
-          {/* CareerPanda Logo Animation */}
+        {/* Main Loading Content - Responsive */}
+        <div className="relative z-10 text-center px-4 w-full max-w-lg">
+          {/* CareerPanda Logo Animation - Responsive */}
           <motion.div
             initial={{ scale: 0, rotate: -180, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
@@ -104,10 +101,10 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                 mass: 1.5
               }
             }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
             <div className="relative">
-              {/* Panda Logo */}
+              {/* Responsive Panda Logo */}
               <motion.div
                 animate={{ 
                   rotate: [0, 8, -8, 0],
@@ -120,58 +117,58 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                   repeatType: 'reverse',
                   ease: [0.4, 0, 0.2, 1]
                 }}
-                className="w-32 h-32 mx-auto mb-4 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center shadow-2xl"
+                className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center shadow-2xl"
               >
-                <div className="text-6xl">🐼</div>
+                <div className="text-4xl sm:text-6xl">🐼</div>
               </motion.div>
               
-              {/* Glowing Ring */}
+              {/* Responsive Glowing Ring */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 w-32 h-32 mx-auto border-4 border-transparent border-t-white/50 border-r-blue-400/50 rounded-full"
+                className="absolute inset-0 w-24 h-24 sm:w-32 sm:h-32 mx-auto border-2 sm:border-4 border-transparent border-t-white/50 border-r-blue-400/50 rounded-full"
               />
             </div>
           </motion.div>
 
-          {/* Brand Name */}
+          {/* Responsive Brand Name */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="text-5xl font-bold text-white mb-4"
+            className="text-3xl sm:text-5xl font-bold text-white mb-3 sm:mb-4"
           >
             Career<span className="text-blue-400">Panda</span>
           </motion.h1>
 
-          {/* Tagline */}
+          {/* Responsive Tagline */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="text-xl text-white/80 mb-8"
+            className="text-lg sm:text-xl text-white/80 mb-6 sm:mb-8"
           >
             AI-Powered Career Success Platform
           </motion.p>
 
-          {/* Loading Message */}
+          {/* Responsive Loading Message */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
-            <p className="text-lg text-white/90 mb-2">
+            <p className="text-base sm:text-lg text-white/90 mb-2">
               {currentMessage}{dots}
             </p>
           </motion.div>
 
-          {/* Progress Bar */}
+          {/* Responsive Progress Bar */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.2 }}
-            className="w-80 max-w-full mx-auto"
+            className="w-full max-w-sm mx-auto"
           >
             <div className="bg-white/20 rounded-full h-2 sm:h-3 overflow-hidden backdrop-blur-sm">
               <motion.div
@@ -184,12 +181,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <p className="text-white/70 text-xs sm:text-sm mt-2">{Math.round(progress)}% Complete</p>
           </motion.div>
 
-          {/* Loading Dots */}
+          {/* Responsive Loading Dots */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5 }}
-            className="flex justify-center space-x-2 mt-8"
+            className="flex justify-center space-x-2 mt-6 sm:mt-8"
           >
             {[0, 1, 2].map((i) => (
               <motion.div
@@ -208,12 +205,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             ))}
           </motion.div>
 
-          {/* Features Preview */}
+          {/* Responsive Features Preview */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2 }}
-            className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto px-4"
+            className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 max-w-2xl mx-auto"
           >
             {[
               { icon: "🤖", text: "AI Resume Analysis" },
@@ -227,36 +224,36 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                 transition={{ delay: 2.2 + index * 0.1 }}
                 className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20"
               >
-                <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{feature.icon}</div>
-                <p className="text-white/80 text-xs sm:text-sm">{feature.text}</p>
+                <div className="text-lg sm:text-2xl mb-1 sm:mb-2">{feature.icon}</div>
+                <p className="text-white/80 text-xs sm:text-sm font-medium">{feature.text}</p>
               </motion.div>
             ))}
           </motion.div>
-        </div>
 
-        {/* Floating Elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(8)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute text-4xl opacity-10"
-              initial={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-              }}
-              animate={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-              }}
-              transition={{
-                duration: 10 + Math.random() * 10,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            >
-              {['📄', '💼', '🎯', '⭐', '🚀', '💡', '🏆', '📊'][i]}
-            </motion.div>
-          ))}
+          {/* Responsive Floating Elements */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute text-2xl sm:text-4xl opacity-10"
+                initial={{
+                  x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+                  y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+                }}
+                animate={{
+                  x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+                  y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+                }}
+                transition={{
+                  duration: 10 + Math.random() * 10,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                {['📄', '💼', '🎯', '⭐', '🚀', '💡'][i]}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>
