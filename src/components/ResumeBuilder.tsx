@@ -279,14 +279,17 @@ const ResumeBuilder: React.FC = () => {
             <input
               {...register(`experience.${index}.title` as const)}
               className="input-base"
+              placeholder="Job Title"
             />
             <input
               {...register(`experience.${index}.company` as const)}
               className="input-base"
+              placeholder="Company Name"
             />
             <input
               {...register(`experience.${index}.duration` as const)}
               className="input-base"
+              placeholder="Duration (e.g., Jan 2020 - Present)"
             />
           </div>
           
@@ -294,6 +297,7 @@ const ResumeBuilder: React.FC = () => {
             {...register(`experience.${index}.description` as const)}
             rows={3}
             className="input-base mt-4"
+            placeholder="Describe your responsibilities and achievements"
           />
         </motion.div>
       ))}
@@ -338,18 +342,22 @@ const ResumeBuilder: React.FC = () => {
             <input
               {...register(`education.${index}.degree` as const)}
               className="input-base"
+              placeholder="Degree (e.g., Bachelor of Technology)"
             />
             <input
               {...register(`education.${index}.institution` as const)}
               className="input-base"
+              placeholder="Institution Name"
             />
             <input
               {...register(`education.${index}.year` as const)}
               className="input-base"
+              placeholder="Year (e.g., 2020-2024)"
             />
             <input
               {...register(`education.${index}.gpa` as const)}
               className="input-base"
+              placeholder="GPA (optional)"
             />
           </div>
         </motion.div>
