@@ -27,7 +27,7 @@ export interface JobFilters {
   skills?: string[];
 }
 
-const API_BASE_URL = 'https://curves-whats-radical-hebrew.trycloudflare.com';
+const API_BASE_URL = 'https://dts-providers-few-ala.trycloudflare.com';
 
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
