@@ -7,8 +7,8 @@ export default defineConfig(({ mode }) => {
   // Load environment variables
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Use environment variable for port or default to 3000
-  const port = parseInt(env.PORT || '3000');
+  // Use environment variable for port or default to 4004
+  const port = parseInt(env.PORT || '4004');
   const host = env.HOST || 'localhost';
   
   // Check if port is available, if not, use a fallback
@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
     }
   };
   
-  const availablePort = isPortAvailable(port) ? port : 3001;
+  const availablePort = isPortAvailable(port) ? port : 4004;
   
   return {
     base: '/',
@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
       proxy: {
         // Proxy API requests to the Express server
         '/api': {
-          target: 'http://127.0.0.1:8009',
+          target: 'http://localhost:4004',
           changeOrigin: true,
           secure: false,
           ws: true,
