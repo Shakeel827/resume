@@ -137,6 +137,11 @@ const Portfolio: React.FC = () => {
 
   const handleGeneratePortfolio = () => {
     try {
+      // Load resume data if portfolio data is empty
+      if (!portfolioData.personalInfo.name) {
+        loadResumeData();
+      }
+      
       const templateNames = ['modern', 'creative', 'developer'];
       downloadPortfolio(portfolioData, templateNames[selectedTemplate]);
       toast.success('Portfolio HTML downloaded successfully! Upload to GitHub Pages to make it live.');
@@ -170,7 +175,15 @@ const Portfolio: React.FC = () => {
       if (savedData) {
         const resumeData = JSON.parse(savedData);
         setPortfolioData({
-          personalInfo: resumeData.personalInfo,
+          personalInfo: {
+            name: resumeData.personalInfo?.name || '',
+            email: resumeData.personalInfo?.email || '',
+            phone: resumeData.personalInfo?.phone || '',
+            location: resumeData.personalInfo?.location || '',
+            summary: resumeData.personalInfo?.summary || '',
+            linkedin: resumeData.personalInfo?.linkedin || '',
+            github: resumeData.personalInfo?.github || ''
+          },
           skills: resumeData.skills || [],
           projects: resumeData.projects || [],
           experience: resumeData.experience || [],

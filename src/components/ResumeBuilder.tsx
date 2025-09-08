@@ -96,6 +96,12 @@ const ResumeBuilder: React.FC = () => {
 
   const onSubmit = (data: ResumeData) => {
     try {
+      // Validate required fields
+      if (!data.personalInfo.name || !data.personalInfo.email) {
+        toast.error('Please fill in your name and email before generating resume.');
+        return;
+      }
+      
       generateResumePDF(data, selectedTemplate);
       localStorage.setItem('resumeData', JSON.stringify(data));
       toast.success('Resume generated successfully!');
