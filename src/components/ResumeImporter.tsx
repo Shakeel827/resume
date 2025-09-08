@@ -71,7 +71,7 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
         const formData = new FormData();
         formData.append('file', file);
         
-        const response = await fetch('/api/parse-pdf', {
+        const response = await fetch('http://localhost:4004/api/parse-pdf', {
           method: 'POST',
           body: formData,
         });
