@@ -64,14 +64,14 @@ export const resumeTemplates: ResumeTemplate[] = [
     salaryInsights: 'Average salary range: $120K - $180K for senior positions',
     keywords: ['Leadership', 'Strategy', 'Innovation', 'Team Management', 'Technical Excellence']
   },
-  {
+ {
     id: 'pixelport-1',
     name: 'PixelPort Creative',
     category: 'creative',
     atsScore: 92,
     preview: 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Pixel-perfect design with modern aesthetics for digital creators',
-    features: ['Pixel Grid Layout', 'Digital Portfolio', 'Interactive Elements', 'Modern Typography'],
+    description: 'Pixel-perfect grid layout with interactive elements for digital creators.',
+    features: ['Grid layout', 'Interactive portfolio cards', 'Digital showcase', 'Modern typography'],
     colors: {
       primary: '#FF6B6B',
       secondary: '#4ECDC4',
@@ -86,14 +86,14 @@ export const resumeTemplates: ResumeTemplate[] = [
       fontSize: 'medium'
     },
     overallRating: 8.8,
-    strengths: ['Visually striking design', 'Perfect for creative portfolios', 'Modern aesthetic appeal', 'Excellent for digital roles'],
-    weaknesses: ['Lower ATS score due to creative layout', 'May not work for traditional industries'],
-    suggestions: ['Balance creativity with readability', 'Ensure all text is easily scannable', 'Add more structured content sections'],
-    jobMatches: ['UI/UX Designer', 'Creative Director', 'Digital Artist', 'Frontend Developer'],
+    strengths: ['Visually striking', 'Perfect for creative portfolios', 'Modern aesthetic'],
+    weaknesses: ['Lower ATS score', 'May not fit traditional industries'],
+    suggestions: ['Balance creativity with readability', 'Add structured content sections'],
+    jobMatches: ['UI/UX Designer', 'Digital Artist', 'Creative Director', 'Frontend Developer'],
     skillGaps: ['User Research', 'Design Systems', 'Prototyping Tools'],
     industryTrends: ['Design thinking', 'User-centered design', 'Digital transformation'],
-    salaryInsights: 'Average salary range: $80K - $130K for creative roles',
-    keywords: ['Design', 'Creativity', 'User Experience', 'Visual Design', 'Digital Media']
+    salaryInsights: 'Average salary range: $80K - $130K',
+    keywords: ['Design', 'Creativity', 'User Experience', 'Visual Design']
   },
   {
     id: 'neowave-1',
