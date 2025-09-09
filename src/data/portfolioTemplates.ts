@@ -19,65 +19,71 @@ export interface PortfolioTemplate {
 }
 
 export const portfolioTemplates: PortfolioTemplate[] = [
+  // ------------------------- Template 1 -------------------------
   {
-    id: 'quantum-pulse',
-    name: 'Quantum Pulse',
+    id: 'neon-chronos',
+    name: 'Neon Chronos',
     category: 'futuristic',
-    preview: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop',
-    description: 'Holographic interface with quantum-inspired animations and neural network visuals',
-    features: ['Neural Network Visualization', 'Quantum Particle Effects', 'Holographic UI', 'Voice Interaction', 'AI Integration'],
-    technologies: ['Next.js', 'WebGL', 'TensorFlow.js', 'Three.js', 'WebRTC'],
+    preview: 'https://images.unsplash.com/photo-1603470182120-6b4c6f97a7d4?w=400&h=300&fit=crop',
+    description: 'Futuristic neon-themed timeline with dynamic 3D holograms and kinetic typography.',
+    features: ['3D Holographic Cards', 'Interactive Timeline', 'Kinetic Text Animations', 'Neon Glow Effects', 'AI-generated Backgrounds'],
+    technologies: ['Three.js', 'GSAP', 'React', 'WebGL', 'TensorFlow.js'],
     colors: {
-      primary: '#7B61FF',
-      secondary: '#00D1FF',
-      accent: '#FF2A6D',
-      background: '#0A0A18',
-      text: '#E0E0FF'
+      primary: '#0FF1CE',
+      secondary: '#FF00F7',
+      accent: '#FFD300',
+      background: '#1A1A2E',
+      text: '#E0E0E0'
     },
-    layout: 'split-screen',
-    animations: ['Quantum Entanglement', 'Neural Pulse', 'Hologram Flicker', 'Particle Orbit'],
+    layout: 'timeline',
+    animations: ['Hologram Rotate', 'Neon Pulse', 'Card Flip', 'Glow Fade'],
     seoOptimized: true
   },
+
+  // ------------------------- Template 2 -------------------------
   {
-    id: 'organic-studio',
-    name: 'Organic Studio',
+    id: 'eco-atelier',
+    name: 'Eco Atelier',
     category: 'artistic',
-    preview: 'https://images.unsplash.com/photo-1536148935331-408321065b18?w=400&h=300&fit=crop',
-    description: 'Biomorphic design with fluid animations and natural textures inspired by organic forms',
-    features: ['Fluid Morphing', 'Organic Textures', 'Natural Color Transitions', 'Hand-drawn Elements', 'Eco-inspired Design'],
+    preview: 'https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?w=400&h=300&fit=crop',
+    description: 'Organic design inspired by nature with fluid layouts, watercolor textures, and soft motion graphics.',
+    features: ['Fluid Grid Layout', 'Hand-drawn Icons', 'Watercolor Backgrounds', 'Interactive Illustrations', 'Eco-friendly Palette'],
     technologies: ['Vue.js', 'Paper.js', 'CSS Houdini', 'SVG Animations', 'GreenSock'],
     colors: {
-      primary: '#42B883',
-      secondary: '#347474',
-      accent: '#FF7A45',
-      background: '#FAF6F0',
-      text: '#2D334A'
+      primary: '#8BC34A',
+      secondary: '#CDDC39',
+      accent: '#FF5722',
+      background: '#FFF9F0',
+      text: '#3E2723'
     },
     layout: 'masonry',
-    animations: ['Watercolor Bleed', 'Leaf Growth', 'Fluid Movement', 'Ink Spread'],
+    animations: ['Water Ripple', 'Leaf Grow', 'Ink Spread', 'Color Fade'],
     seoOptimized: true
   },
+
+  // ------------------------- Template 3 -------------------------
   {
-    id: 'cyber-matrix',
-    name: 'Cyber Matrix',
-    category: 'developer',
-    preview: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=400&h=300&fit=crop',
-    description: 'Cyberpunk-inspired terminal interface with digital rain and glitch effects',
-    features: ['Terminal Interface', 'Matrix Digital Rain', 'Glitch Effects', 'Code Visualization', 'Retro-Futuristic Design'],
-    technologies: ['React', 'TypeScript', 'Canvas API', 'Glsl', 'Web Audio API'],
+    id: 'corporate-grid',
+    name: 'Corporate Grid',
+    category: 'business',
+    preview: 'https://images.unsplash.com/photo-1564866657312-6c1997b9c2a8?w=400&h=300&fit=crop',
+    description: 'Professional corporate portfolio with a strict grid, clean typography, and modular sections for analytics and services.',
+    features: ['Modular Grid Layout', 'Data-driven Sections', 'Infographic Panels', 'Animated Charts', 'Service Highlights'],
+    technologies: ['Angular', 'D3.js', 'TailwindCSS', 'Chart.js', 'RxJS'],
     colors: {
-      primary: '#00FF41',
-      secondary: '#008F11',
-      accent: '#FF003C',
-      background: '#011502',
-      text: '#CCFFD6'
+      primary: '#1E3A8A',
+      secondary: '#3B82F6',
+      accent: '#F59E0B',
+      background: '#F3F4F6',
+      text: '#111827'
     },
-    layout: 'card-based',
-    animations: ['Digital Rain', 'Glitch Distortion', 'Terminal Typing', 'Hex Grid Pulse'],
+    layout: 'grid',
+    animations: ['Chart Reveal', 'Section Slide', 'Panel Fade', 'Hover Elevation'],
     seoOptimized: true
   }
 ];
 
+// ------------------------- Utility Functions -------------------------
 export const getPortfolioTemplateById = (id: string) => {
   return portfolioTemplates.find(template => template.id === id);
 };
