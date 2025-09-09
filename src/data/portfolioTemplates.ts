@@ -37,90 +37,90 @@ export interface PortfolioTemplate {
 }
 
 export const portfolioTemplates: PortfolioTemplate[] = [
-  // ------------------------- Template 1 -------------------------
+  // ------------------------- Template 1: Minimal Developer -------------------------
   {
-    id: 'neon-chronos',
-    name: 'Neon Chronos',
-    category: 'futuristic',
+    id: 'minimal-dev',
+    name: 'Minimal Developer',
+    category: 'minimal',
     preview:
-      'https://images.unsplash.com/photo-1603470182120-6b4c6f97a7d4?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop',
     description:
-      'Futuristic neon-themed portfolio that feels like a sci-fi movie intro. Animated holograms, 3D cards, and glowing typography give it a cyberpunk vibe.',
+      'A clean, minimal portfolio focused on code and projects. Uses a monospace typography and subtle animations to highlight technical skills.',
     features: [
-      '3D Holographic Timeline',
-      'Glowing Card Navigation',
-      'AI-generated Backgrounds',
-      'Matrix-style Animations',
-      'Voice-controlled Interactions',
+      'Code-inspired Design',
+      'Syntax Highlighting Effects',
+      'Minimal Navigation',
+      'Project Showcase Grid',
+      'Dark/Light Mode Toggle',
     ],
-    technologies: ['Three.js', 'React', 'WebGL', 'GSAP', 'TensorFlow.js'],
+    technologies: ['React', 'TypeScript', 'CSS3', 'Framer Motion'],
     colors: {
-      primary: '#0FF1CE',
-      secondary: '#FF00F7',
-      accent: '#FFD300',
-      background: '#0D0D1A',
-      text: '#E0E0E0',
+      primary: '#2D5BFF',
+      secondary: '#6C757D',
+      accent: '#FF6B6B',
+      background: '#FFFFFF',
+      text: '#212529',
     },
-    layout: 'timeline', // vertical glowing timeline
-    animations: ['Neon Pulse', 'Card Flip', 'Glitch Fade', 'Hologram Rotate'],
+    layout: 'grid',
+    animations: ['Typewriter Effect', 'Code Fade-in', 'Subtle Hover'],
     seoOptimized: true,
   },
 
-  // ------------------------- Template 2 -------------------------
+  // ------------------------- Template 2: Creative Showcase -------------------------
   {
-    id: 'eco-atelier',
-    name: 'Eco Atelier',
-    category: 'artistic',
+    id: 'creative-showcase',
+    name: 'Creative Showcase',
+    category: 'creative',
     preview:
-      'https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
     description:
-      'An artistic portfolio with watercolor strokes, fluid grids, and playful parallax illustrations. Feels like browsing through a creative sketchbook.',
+      'A visually striking portfolio with asymmetrical layouts and bold color transitions. Perfect for designers and artists.',
     features: [
-      'Hand-painted Backgrounds',
-      'Fluid Masonry Grid',
-      'Organic Shapes',
-      'Interactive Watercolor Animations',
-      'Nature-inspired Palette',
+      'Asymmetrical Layout',
+      'Color Transition Effects',
+      'Interactive Project Previews',
+      'Custom Cursor Interactions',
+      'Micro-interactions Throughout',
     ],
-    technologies: ['Vue.js', 'Paper.js', 'CSS Houdini', 'GreenSock', 'SVG'],
+    technologies: ['GSAP', 'WebGL', 'Sass', 'React Spring'],
     colors: {
-      primary: '#6FB98F',
-      secondary: '#A7D489',
-      accent: '#FF7043',
-      background: '#FFF9F0',
+      primary: '#FF5E5B',
+      secondary: '#00CECB',
+      accent: '#FFED66',
+      background: '#F7F7F7',
       text: '#2E2E2E',
     },
-    layout: 'masonry', // flowing uneven card layout
-    animations: ['Water Ripple', 'Leaf Grow', 'Ink Spread', 'Scroll Fade'],
+    layout: 'masonry',
+    animations: ['Color Morph', 'Shape Transformation', 'Staggered Reveal'],
     seoOptimized: true,
   },
 
-  // ------------------------- Template 3 -------------------------
+  // ------------------------- Template 3: Corporate Professional -------------------------
   {
-    id: 'corporate-split',
-    name: 'Corporate Split',
-    category: 'business',
+    id: 'corporate-pro',
+    name: 'Corporate Professional',
+    category: 'corporate',
     preview:
-      'https://images.unsplash.com/photo-1564866657312-6c1997b9c2a8?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
     description:
-      'Professional corporate portfolio with a split-screen design: analytics and charts on one side, company story and services on the other.',
+      'A sophisticated portfolio with a focus on professionalism and clean data presentation. Ideal for consultants and executives.',
     features: [
-      'Split-screen Layout',
-      'Animated Charts',
-      'Modular Business Sections',
-      'Data-driven Infographics',
-      'Professional Typography',
+      'Professional Layout',
+      'Data Visualization Integration',
+      'Testimonial Sections',
+      'Case Study Format',
+      'Printable Resume Option',
     ],
-    technologies: ['Angular', 'D3.js', 'TailwindCSS', 'Chart.js', 'RxJS'],
+    technologies: ['Vue.js', 'D3.js', 'Tailwind CSS', 'Chart.js'],
     colors: {
-      primary: '#1E3A8A',
-      secondary: '#2563EB',
-      accent: '#F59E0B',
-      background: '#F3F4F6',
-      text: '#111827',
+      primary: '#1A1A40',
+      secondary: '#7B0D1E',
+      accent: '#270082',
+      background: '#FAFAFA',
+      text: '#333333',
     },
-    layout: 'split-screen', // left/right divide
-    animations: ['Chart Reveal', 'Panel Slide', 'Counter Up', 'Hover Elevation'],
+    layout: 'card-based',
+    animations: ['Smooth Scroll', 'Fade-up Elements', 'Progress Bars'],
     seoOptimized: true,
   },
 ];
