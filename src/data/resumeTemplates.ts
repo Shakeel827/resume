@@ -98,17 +98,17 @@ export const resumeTemplates: ResumeTemplate[] = [
   {
     id: 'neowave-1',
     name: 'NeoWave Futuristic',
-    category: 'modern',
+    category: 'futuristic',
     atsScore: 95,
     preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Futuristic wave-inspired design for forward-thinking professionals',
-    features: ['Wave Patterns', 'Gradient Backgrounds', 'Modern Icons', 'Fluid Layout'],
+    description: 'Futuristic sidebar layout for tech innovators and startup professionals.',
+    features: ['Sidebar layout', 'Gradient backgrounds', 'Wave animations', 'Modern icons'],
     colors: {
       primary: '#667EEA',
       secondary: '#764BA2',
       accent: '#F093FB',
-      text: '#2D3748',
-      background: '#FFFFFF'
+      text: '#FFFFFF',
+      background: '#0F0F23'
     },
     layout: 'sidebar',
     typography: {
@@ -117,14 +117,14 @@ export const resumeTemplates: ResumeTemplate[] = [
       fontSize: 'medium'
     },
     overallRating: 9.0,
-    strengths: ['Modern and innovative design', 'Excellent for tech-forward companies', 'Strong visual impact', 'Professional yet creative'],
-    weaknesses: ['May be too bold for conservative industries', 'Requires careful content organization'],
-    suggestions: ['Focus on technical achievements', 'Include innovation metrics', 'Highlight future-thinking projects'],
+    strengths: ['Modern and innovative', 'Excellent for tech-forward companies', 'Strong visual impact'],
+    weaknesses: ['Too bold for conservative industries', 'Requires careful content organization'],
+    suggestions: ['Highlight technical achievements', 'Include innovation metrics', 'Focus on future-oriented projects'],
     jobMatches: ['Innovation Manager', 'Technology Consultant', 'Startup Founder', 'R&D Engineer'],
     skillGaps: ['Emerging Technologies', 'Innovation Management', 'Strategic Planning'],
     industryTrends: ['Digital transformation', 'Innovation culture', 'Future of work'],
-    salaryInsights: 'Average salary range: $100K - $160K for innovation roles',
-    keywords: ['Innovation', 'Technology', 'Future', 'Strategy', 'Digital Transformation']
+    salaryInsights: 'Average salary range: $100K - $160K',
+    keywords: ['Innovation', 'Technology', 'Strategy', 'Future', 'Digital Transformation']
   },
   {
     id: 'aurastack-1',
