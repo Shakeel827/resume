@@ -13,7 +13,7 @@ export interface ResumeTemplate {
     text: string;
     background: string;
   };
-  layout: 'single-column' | 'two-column' | 'three-column' | 'sidebar' | 'header-focus' | 'timeline' | 'grid' | 'asymmetric';
+  layout: 'single-column' | 'two-column' | 'three-column' | 'sidebar' | 'header-focus' | 'timeline' | 'grid' | 'asymmetric' | 'modular' | 'circular' | 'zigzag' | 'overlap';
   typography: {
     headingFont: string;
     bodyFont: string;
@@ -32,112 +32,111 @@ export interface ResumeTemplate {
 }
 
 export const resumeTemplates: ResumeTemplate[] = [
-  // Modern Templates with Unique Designs
   {
-    id: 'quantum-edge',
-    name: 'Quantum Edge',
-    category: 'modern',
-    atsScore: 97,
-    preview: 'https://images.pexels.com/photos/669996/pexels-photo-669996.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Geometric precision with sharp angles and modern data visualization elements',
-    features: ['Dynamic Geometry', 'Data Visualization', 'Tech-Focused Layout', 'Modern Typography'],
+    id: 'quantum-matrix',
+    name: 'Quantum Matrix',
+    category: 'technical',
+    atsScore: 96,
+    preview: 'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Grid-based technical resume with circuit-inspired design elements',
+    features: ['Modular Grid System', 'Tech-inspired Visuals', 'Data-Focused Layout', 'Dynamic Sections'],
     colors: {
-      primary: '#2563EB',
-      secondary: '#1E293B',
-      accent: '#FF6B6B',
-      text: '#334155',
-      background: '#FFFFFF'
+      primary: '#3B82F6',
+      secondary: '#1E40AF',
+      accent: '#10B981',
+      text: '#1F2937',
+      background: '#F3F4F6'
     },
-    layout: 'asymmetric',
+    layout: 'modular',
     typography: {
-      headingFont: 'Montserrat',
-      bodyFont: 'Source Sans Pro',
-      fontSize: 'medium'
+      headingFont: 'Rajdhani',
+      bodyFont: 'Exo 2',
+      fontSize: 'small'
     },
-    overallRating: 9.3,
-    strengths: ['Excellent tech industry appeal', 'Modern visual hierarchy', 'Strong ATS performance', 'Innovative layout'],
-    weaknesses: ['Too modern for conservative industries', 'Complex layout may confuse some ATS'],
-    suggestions: ['Highlight technical achievements prominently', 'Use quantifiable metrics in geometric elements'],
-    jobMatches: ['Data Scientist', 'UX Designer', 'Tech Lead', 'Software Architect'],
-    skillGaps: ['Traditional business applications', 'Legacy system experience'],
-    industryTrends: ['Data visualization', 'Geometric design trends', 'Tech-forward resumes'],
-    salaryInsights: 'Tech roles: $110K - $190K depending on specialization',
-    keywords: ['Innovation', 'Technology', 'Design', 'Data', 'Architecture']
+    overallRating: 9.1,
+    strengths: ['Excellent for technical roles', 'Modern data presentation', 'High ATS compatibility', 'Structured information flow'],
+    weaknesses: ['Too technical for creative roles', 'May overwhelm non-technical recruiters'],
+    suggestions: ['Focus on technical achievements', 'Include specific technologies and frameworks'],
+    jobMatches: ['Software Developer', 'Data Scientist', 'Systems Engineer', 'DevOps Specialist'],
+    skillGaps: ['Soft skills presentation', 'Creative storytelling'],
+    industryTrends: ['Technical specialization', 'Data-driven hiring', 'Skill-based assessment'],
+    salaryInsights: 'Tech roles: $95K - $180K depending on specialization and experience',
+    keywords: ['Technology', 'Development', 'Engineering', 'Data', 'Systems']
   },
   {
-    id: 'neo-classic',
-    name: 'Neo Classic',
+    id: 'vintage-parchment',
+    name: 'Vintage Parchment',
     category: 'classic',
     atsScore: 99,
-    preview: 'https://images.pexels.com/photos/733856/pexels-photo-733856.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Traditional structure reimagined with subtle modern accents and improved readability',
-    features: ['Timeless Layout', 'Enhanced Readability', 'Professional Elegance', 'ATS Optimized'],
+    preview: 'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Elegant traditional design with paper texture and classic typography',
+    features: ['Paper Texture Background', 'Classic Serif Fonts', 'Traditional Layout', 'Timeless Design'],
     colors: {
-      primary: '#1F2937',
-      secondary: '#4B5563',
-      accent: '#9CA3AF',
-      text: '#111827',
-      background: '#F9FAFB'
+      primary: '#8B5A2B',
+      secondary: '#654321',
+      accent: '#D2B48C',
+      text: '#2F4F4F',
+      background: '#FDF5E6'
     },
     layout: 'single-column',
     typography: {
-      headingFont: 'Georgia',
-      bodyFont: 'Merriweather',
+      headingFont: 'Garamond',
+      bodyFont: 'Book Antiqua',
       fontSize: 'medium'
     },
     overallRating: 9.6,
-    strengths: ['Highest ATS compatibility', 'Universal professional appeal', 'Clean traditional structure', 'Excellent readability'],
-    weaknesses: ['May appear too conservative for creative roles', 'Limited visual creativity'],
-    suggestions: ['Focus on content quality and achievements', 'Use traditional section organization'],
-    jobMatches: ['Finance Professional', 'Legal Counsel', 'Healthcare Administrator', 'Corporate Executive'],
-    skillGaps: ['Digital transformation experience', 'Modern tech stack knowledge'],
-    industryTrends: ['Traditional professionalism', 'Content-focused resumes', 'Industry-standard formatting'],
-    salaryInsights: 'Traditional industries: $85K - $160K for senior roles',
-    keywords: ['Professional', 'Traditional', 'Executive', 'Management', 'Leadership']
+    strengths: ['Universal acceptance', 'Excellent ATS performance', 'Professional appearance', 'Timeless design'],
+    weaknesses: ['May appear outdated for tech roles', 'Limited visual creativity'],
+    suggestions: ['Focus on content quality', 'Use traditional section organization'],
+    jobMatches: ['Lawyer', 'Academic', 'Government Official', 'Finance Professional'],
+    skillGaps: ['Modern tech skills', 'Digital presentation'],
+    industryTrends: ['Traditional professionalism', 'Content-focused evaluation'],
+    salaryInsights: 'Traditional professions: $85K - $160K for experienced roles',
+    keywords: ['Professional', 'Traditional', 'Experienced', 'Established', 'Reliable']
   },
   {
-    id: 'chroma-wave',
-    name: 'Chroma Wave',
+    id: 'neo-abstract',
+    name: 'Neo Abstract',
     category: 'creative',
-    atsScore: 89,
-    preview: 'https://images.pexels.com/photos/2115217/pexels-photo-2115217.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Fluid color transitions and organic shapes for creative professionals',
-    features: ['Gradient Effects', 'Organic Shapes', 'Creative Layout', 'Visual Impact'],
+    atsScore: 87,
+    preview: 'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Artistic design with abstract shapes and unconventional layout',
+    features: ['Abstract Design Elements', 'Non-linear Layout', 'Creative Typography', 'Visual Impact'],
     colors: {
-      primary: '#8B5CF6',
-      secondary: '#EC4899',
-      accent: '#3B82F6',
-      text: '#1F2937',
-      background: '#FDF2F8'
+      primary: '#FF6B6B',
+      secondary: '#4ECDC4',
+      accent: '#FFE66D',
+      text: '#2D3748',
+      background: '#F7F9FC'
     },
-    layout: 'grid',
+    layout: 'asymmetric',
     typography: {
-      headingFont: 'Poppins',
+      headingFont: 'Comfortaa',
       bodyFont: 'Nunito',
       fontSize: 'medium'
     },
-    overallRating: 8.7,
-    strengths: ['Exceptional visual appeal', 'Perfect for creative industries', 'Memorable design', 'Modern aesthetic'],
-    weaknesses: ['Lower ATS performance', 'Not suitable for traditional roles'],
-    suggestions: ['Balance creativity with content clarity', 'Ensure key information remains readable'],
-    jobMatches: ['Creative Director', 'Brand Designer', 'Art Director', 'Marketing Innovator'],
-    skillGaps: ['Traditional business skills', 'Corporate experience'],
-    industryTrends: ['Gradient designs', 'Organic shapes', 'Visual storytelling'],
-    salaryInsights: 'Creative roles: $75K - $140K depending on experience',
-    keywords: ['Creative', 'Design', 'Innovation', 'Visual', 'Branding']
+    overallRating: 8.4,
+    strengths: ['High visual impact', 'Memorable design', 'Perfect for creative fields', 'Stands out from traditional resumes'],
+    weaknesses: ['Poor ATS performance', 'Not suitable for conservative industries'],
+    suggestions: ['Use for portfolio applications', 'Supplement with traditional resume for ATS systems'],
+    jobMatches: ['Graphic Designer', 'Art Director', 'Creative Director', 'UX Designer'],
+    skillGaps: ['Traditional business presentation', 'Corporate communication'],
+    industryTrends: ['Visual storytelling', 'Creative personal branding', 'Design-forward applications'],
+    salaryInsights: 'Creative roles: $70K - $130K depending on experience and industry',
+    keywords: ['Creative', 'Design', 'Art', 'Visual', 'Innovation']
   },
   {
-    id: 'executive-pinnacle',
-    name: 'Executive Pinnacle',
+    id: 'executive-summit',
+    name: 'Executive Summit',
     category: 'executive',
     atsScore: 98,
     preview: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Premium executive template with gold accents and sophisticated typography',
-    features: ['Premium Finishes', 'Executive Summary', 'Leadership Focus', 'Strategic Layout'],
+    description: 'Prestigious design with gold accents and hierarchical information structure',
+    features: ['Premium Finishes', 'Executive Summary Focus', 'Leadership Emphasis', 'Strategic Layout'],
     colors: {
       primary: '#0F172A',
       secondary: '#1E293B',
-      accent: '#D4AF37',
+      accent: '#B8860B',
       text: '#1F2937',
       background: '#FFFFFF'
     },
@@ -148,59 +147,59 @@ export const resumeTemplates: ResumeTemplate[] = [
       fontSize: 'large'
     },
     overallRating: 9.5,
-    strengths: ['Executive presence', 'Premium appearance', 'Excellent ATS performance', 'Strategic emphasis'],
+    strengths: ['Executive presence', 'High-impact leadership presentation', 'Excellent ATS performance', 'Strategic emphasis'],
     weaknesses: ['Overqualified appearance for junior roles', 'Too formal for some industries'],
-    suggestions: ['Focus on strategic achievements and leadership impact', 'Highlight board-level experience'],
+    suggestions: ['Focus on strategic achievements', 'Highlight board-level experience and leadership impact'],
     jobMatches: ['CEO', 'CFO', 'CTO', 'VP Positions', 'Board Members'],
     skillGaps: ['Operational hands-on skills', 'Technical implementation experience'],
-    industryTrends: ['Executive branding', 'Strategic leadership emphasis', 'Premium personal presentation'],
-    salaryInsights: 'Executive roles: $180K - $500K+ depending on company size',
+    industryTrends: ['Executive branding', 'Strategic leadership emphasis', 'C-level personal presentation'],
+    salaryInsights: 'Executive roles: $180K - $500K+ depending on company size and industry',
     keywords: ['Executive', 'Leadership', 'Strategy', 'Board', 'Governance']
   },
   {
-    id: 'tech-circuit',
-    name: 'Tech Circuit',
+    id: 'cyber-circuit',
+    name: 'Cyber Circuit',
     category: 'technical',
-    atsScore: 96,
-    preview: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Circuit board inspired layout with technical precision and data-driven design',
-    features: ['Technical Architecture', 'Code Integration', 'Data Visualization', 'Precision Layout'],
+    atsScore: 95,
+    preview: 'https://images.pexels.com/photos/177598/pexels-photo-177598.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Futuristic cyber-inspired design with circuit patterns and tech aesthetics',
+    features: ['Circuit Pattern Elements', 'Tech Visuals', 'Modern Data Presentation', 'Innovative Layout'],
     colors: {
-      primary: '#059669',
-      secondary: '#0F172A',
-      accent: '#10B981',
-      text: '#1F2937',
-      background: '#F0FDF4'
+      primary: '#00FF87',
+      secondary: '#007BFF',
+      accent: '#FF073A',
+      text: '#E0E0E0',
+      background: '#0A0A0A'
     },
-    layout: 'two-column',
+    layout: 'grid',
     typography: {
-      headingFont: 'Fira Code',
-      bodyFont: 'IBM Plex Mono',
+      headingFont: 'Orbitron',
+      bodyFont: 'Share Tech Mono',
       fontSize: 'medium'
     },
-    overallRating: 9.2,
-    strengths: ['Technical industry appeal', 'Excellent skill visualization', 'Modern tech aesthetic', 'Strong ATS performance'],
-    weaknesses: ['Too technical for non-tech roles', 'May intimidate non-technical recruiters'],
-    suggestions: ['Highlight technical achievements and specific technologies', 'Include code samples where appropriate'],
-    jobMatches: ['Software Engineer', 'DevOps Specialist', 'Systems Architect', 'Technical Lead'],
-    skillGaps: ['Business communication', 'Non-technical stakeholder management'],
-    industryTrends: ['Technical specialization', 'Code integration in resumes', 'Precision design'],
-    salaryInsights: 'Technical roles: $100K - $200K depending on specialization',
-    keywords: ['Technical', 'Code', 'Architecture', 'Engineering', 'Development']
+    overallRating: 9.0,
+    strengths: ['Perfect for tech and engineering roles', 'Modern innovative appearance', 'High visual impact for technical recruiters'],
+    weaknesses: ['Too futuristic for traditional roles', 'May not appeal to non-technical hiring managers'],
+    suggestions: ['Highlight technical projects and achievements', 'Include specific technologies and platforms'],
+    jobMatches: ['Cybersecurity Specialist', 'AI Engineer', 'Software Developer', 'Systems Architect'],
+    skillGaps: ['Traditional business communication', 'Non-technical stakeholder presentation'],
+    industryTrends: ['Cybersecurity focus', 'Tech specialization', 'Future-ready skills'],
+    salaryInsights: 'Tech security roles: $110K - $200K depending on specialization and experience',
+    keywords: ['Technology', 'Security', 'Innovation', 'Engineering', 'Future']
   },
   {
-    id: 'essence-minimal',
-    name: 'Essence Minimal',
+    id: 'pure-essence',
+    name: 'Pure Essence',
     category: 'minimalist',
     atsScore: 99,
-    preview: 'https://images.pexels.com/photos/316681/pexels-photo-316681.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Ultra-clean design with maximum whitespace and essential information focus',
-    features: ['Maximum Whitespace', 'Essential Information', 'Clean Typography', 'Content Focus'],
+    preview: 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Ultra-minimalist design with extreme whitespace and essential information only',
+    features: ['Maximum Whitespace', 'Essential Information Only', 'Clean Typography', 'Content Focus'],
     colors: {
-      primary: '#374151',
-      secondary: '#6B7280',
-      accent: '#9CA3AF',
-      text: '#1F2937',
+      primary: '#2D3748',
+      secondary: '#4A5568',
+      accent: '#718096',
+      text: '#1A202C',
       background: '#FFFFFF'
     },
     layout: 'single-column',
@@ -216,17 +215,17 @@ export const resumeTemplates: ResumeTemplate[] = [
     jobMatches: ['UX Researcher', 'Content Strategist', 'Analyst', 'Project Coordinator'],
     skillGaps: ['Visual presentation skills', 'Creative design ability'],
     industryTrends: ['Minimalist design', 'Content-focused resumes', 'Clean aesthetic'],
-    salaryInsights: 'Analytical roles: $80K - $140K depending on experience',
+    salaryInsights: 'Analytical roles: $80K - $140K depending on experience and industry',
     keywords: ['Minimal', 'Clean', 'Content', 'Analysis', 'Precision']
   },
   {
-    id: 'artisan-craft',
-    name: 'Artisan Craft',
+    id: 'artisan-handcrafted',
+    name: 'Artisan Handcrafted',
     category: 'artistic',
-    atsScore: 87,
+    atsScore: 85,
     preview: 'https://images.pexels.com/photos/102127/pexels-photo-102127.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Handcrafted aesthetic with artisanal details and organic textures',
-    features: ['Handcrafted Elements', 'Textured Backgrounds', 'Artistic Layout', 'Creative Expression'],
+    features: ['Handcrafted Visual Elements', 'Textured Backgrounds', 'Artistic Layout', 'Creative Expression'],
     colors: {
       primary: '#B45309',
       secondary: '#78350F',
@@ -240,7 +239,7 @@ export const resumeTemplates: ResumeTemplate[] = [
       bodyFont: 'Crimson Text',
       fontSize: 'medium'
     },
-    overallRating: 8.5,
+    overallRating: 8.3,
     strengths: ['Unique artistic expression', 'Memorable design', 'Perfect for creative fields', 'Handcrafted appeal'],
     weaknesses: ['Poor ATS performance', 'Not suitable for traditional industries'],
     suggestions: ['Use primarily for portfolio applications', 'Supplement with traditional resume for ATS systems'],
@@ -251,13 +250,13 @@ export const resumeTemplates: ResumeTemplate[] = [
     keywords: ['Artisan', 'Craft', 'Creative', 'Handmade', 'Unique']
   },
   {
-    id: 'corporate-nexus',
-    name: 'Corporate Nexus',
+    id: 'corporate-tower',
+    name: 'Corporate Tower',
     category: 'corporate',
     atsScore: 97,
-    preview: 'https://images.pexels.com/photos/3184296/pexels-photo-3184296.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Professional corporate design with network-inspired elements and business focus',
-    features: ['Professional Network Elements', 'Business Focus', 'Corporate Branding', 'Strategic Layout'],
+    preview: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Professional corporate design with architectural elements and business focus',
+    features: ['Architectural Visual Elements', 'Business Focus', 'Corporate Branding', 'Strategic Layout'],
     colors: {
       primary: '#1E40AF',
       secondary: '#3730A3',
@@ -282,13 +281,13 @@ export const resumeTemplates: ResumeTemplate[] = [
     keywords: ['Corporate', 'Business', 'Management', 'Strategy', 'Leadership']
   },
   {
-    id: 'venture-spark',
-    name: 'Venture Spark',
+    id: 'startup-velocity',
+    name: 'Startup Velocity',
     category: 'startup',
-    atsScore: 94,
+    atsScore: 93,
     preview: 'https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Energetic startup template with dynamic elements and growth-focused design',
-    features: ['Dynamic Elements', 'Growth Metrics', 'Innovation Focus', 'Modern Startup Aesthetic'],
+    description: 'Dynamic startup template with motion elements and growth-focused design',
+    features: ['Motion Design Elements', 'Growth Metrics Focus', 'Innovation Emphasis', 'Modern Startup Aesthetic'],
     colors: {
       primary: '#DC2626',
       secondary: '#7C2D12',
@@ -296,13 +295,13 @@ export const resumeTemplates: ResumeTemplate[] = [
       text: '#1F2937',
       background: '#FFF7ED'
     },
-    layout: 'grid',
+    layout: 'zigzag',
     typography: {
       headingFont: 'SF Pro Display',
       bodyFont: 'SF Pro Text',
       fontSize: 'medium'
     },
-    overallRating: 9.0,
+    overallRating: 8.9,
     strengths: ['Perfect for startup culture', 'Modern innovative appearance', 'Growth-focused design', 'Good ATS performance'],
     weaknesses: ['Too casual for corporate roles', 'May not appeal to traditional industries'],
     suggestions: ['Highlight growth achievements and innovation', 'Focus on metrics and impact'],
@@ -313,13 +312,13 @@ export const resumeTemplates: ResumeTemplate[] = [
     keywords: ['Startup', 'Growth', 'Innovation', 'Venture', 'Disruption']
   },
   {
-    id: 'academic-precision',
-    name: 'Academic Precision',
+    id: 'academic-thesis',
+    name: 'Academic Thesis',
     category: 'academic',
     atsScore: 98,
     preview: 'https://images.pexels.com/photos/1370296/pexels-photo-1370296.jpeg?auto=compress&cs=tinysrgb&w=400',
     description: 'Research-focused template with academic rigor and publication emphasis',
-    features: ['Publication Highlight', 'Research Focus', 'Academic Credentials', 'Precision Layout'],
+    features: ['Publication Highlight System', 'Research Focus', 'Academic Credentials', 'Precision Layout'],
     colors: {
       primary: '#334155',
       secondary: '#1E293B',
@@ -344,27 +343,27 @@ export const resumeTemplates: ResumeTemplate[] = [
     keywords: ['Research', 'Academic', 'Publication', 'Analysis', 'Science']
   },
   {
-    id: 'future-horizon',
-    name: 'Future Horizon',
+    id: 'future-dimension',
+    name: 'Future Dimension',
     category: 'modern',
-    atsScore: 95,
+    atsScore: 94,
     preview: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Forward-looking design with futuristic elements and innovative layout',
-    features: ['Futuristic Design', 'Innovative Layout', 'Modern Aesthetic', 'Progressive Elements'],
+    description: 'Holographic futuristic design with 3D elements and innovative layout',
+    features: ['3D Design Elements', 'Holographic Effects', 'Future Tech Focus', 'Innovative Layout'],
     colors: {
-      primary: '#7C3AED',
+      primary: '#8B5CF6',
       secondary: '#6D28D9',
       accent: '#A78BFA',
       text: '#1F2937',
       background: '#F5F3FF'
     },
-    layout: 'timeline',
+    layout: 'overlap',
     typography: {
       headingFont: 'Exo 2',
       bodyFont: 'Ubuntu',
       fontSize: 'medium'
     },
-    overallRating: 9.1,
+    overallRating: 8.8,
     strengths: ['Modern innovative appearance', 'Excellent for tech and future-focused roles', 'Good ATS performance', 'Progressive design'],
     weaknesses: ['Too futuristic for traditional roles', 'May not appeal to conservative industries'],
     suggestions: ['Highlight innovation and future-focused skills', 'Emphasize adaptability and learning ability'],
@@ -375,35 +374,35 @@ export const resumeTemplates: ResumeTemplate[] = [
     keywords: ['Future', 'Innovation', 'Technology', 'Strategy', 'Transformation']
   },
   {
-    id: 'heritage-classic',
-    name: 'Heritage Classic',
+    id: 'heritage-manuscript',
+    name: 'Heritage Manuscript',
     category: 'classic',
     atsScore: 99,
-    preview: 'https://images.pexels.com/photos/733854/pexels-photo-733854.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Timeless traditional design with heritage elements and professional elegance',
-    features: ['Timeless Design', 'Professional Heritage', 'Classic Layout', 'Elegant Typography'],
+    preview: 'https://images.pexels.com/photos/4596881/pexels-photo-4596881.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Antique-inspired design with manuscript elements and traditional elegance',
+    features: ['Manuscript Styling', 'Heritage Design Elements', 'Classic Layout', 'Elegant Typography'],
     colors: {
-      primary: '#1F2937',
-      secondary: '#374151',
-      accent: '#6B7280',
-      text: '#111827',
-      background: '#FFFFFF'
+      primary: '#5C4033',
+      secondary: '#800020',
+      accent: '#C19A6B',
+      text: '#321414',
+      background: '#F8F0E3'
     },
     layout: 'single-column',
     typography: {
-      headingFont: 'Garamond',
-      bodyFont: 'Palatino',
+      headingFont: 'Cinzel',
+      bodyFont: 'Cormorant',
       fontSize: 'medium'
     },
     overallRating: 9.6,
     strengths: ['Universal professional appeal', 'Highest ATS compatibility', 'Timeless elegance', 'Industry standard'],
     weaknesses: ['Too traditional for creative roles', 'Limited modern appeal'],
     suggestions: ['Focus on proven experience and stable career progression', 'Emphasize reliability and expertise'],
-    jobMatches: ['Lawyer', 'Accountant', 'Banker', 'Government Official'],
+    jobMatches: ['Historian', 'Archivist', 'Museum Curator', 'Traditional Craftsman'],
     skillGaps: ['Modern digital skills', 'Innovation experience'],
     industryTrends: ['Traditional values', 'Proven experience', 'Stability and reliability'],
-    salaryInsights: 'Traditional professions: $90K - $170K depending on field and experience',
-    keywords: ['Traditional', 'Professional', 'Expertise', 'Reliability', 'Heritage']
+    salaryInsights: 'Traditional professions: $60K - $120K depending on field and experience',
+    keywords: ['Traditional', 'Heritage', 'Expertise', 'Reliability', 'History']
   }
 ];
 
