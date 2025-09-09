@@ -96,35 +96,66 @@ export const resumeTemplates: ResumeTemplate[] = [
     keywords: ['Design', 'Creativity', 'User Experience', 'Visual Design']
   },
   {
-    id: 'neowave-1',
-    name: 'NeoWave Futuristic',
-    category: 'futuristic',
-    atsScore: 95,
-    preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Futuristic sidebar layout for tech innovators and startup professionals.',
-    features: ['Sidebar layout', 'Gradient backgrounds', 'Wave animations', 'Modern icons'],
-    colors: {
-      primary: '#667EEA',
-      secondary: '#764BA2',
-      accent: '#F093FB',
-      text: '#FFFFFF',
-      background: '#0F0F23'
-    },
-    layout: 'sidebar',
-    typography: {
-      headingFont: 'Montserrat',
-      bodyFont: 'Source Sans Pro',
-      fontSize: 'medium'
-    },
-    overallRating: 9.0,
-    strengths: ['Modern and innovative', 'Excellent for tech-forward companies', 'Strong visual impact'],
-    weaknesses: ['Too bold for conservative industries', 'Requires careful content organization'],
-    suggestions: ['Highlight technical achievements', 'Include innovation metrics', 'Focus on future-oriented projects'],
-    jobMatches: ['Innovation Manager', 'Technology Consultant', 'Startup Founder', 'R&D Engineer'],
-    skillGaps: ['Emerging Technologies', 'Innovation Management', 'Strategic Planning'],
-    industryTrends: ['Digital transformation', 'Innovation culture', 'Future of work'],
-    salaryInsights: 'Average salary range: $100K - $160K',
-    keywords: ['Innovation', 'Technology', 'Strategy', 'Future', 'Digital Transformation']
+  id: 'neowave-1',
+  name: 'NeoWave Futuristic',
+  category: 'futuristic',
+  atsScore: 90,
+  preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+  description: 'Futuristic zig-zag timeline design for creative tech innovators and AR/VR specialists.',
+  features: ['Zig-zag timeline layout', 'Neon gradients', 'Animated skill bars', 'Floating project previews'],
+  colors: {
+    primary: '#0FF1CE',
+    secondary: '#FF00F7',
+    accent: '#FFD300',
+    text: '#E0E0E0',
+    background: '#1A1A2E'
+  },
+  layout: 'zigzag-timeline',
+  typography: {
+    headingFont: 'Orbitron',
+    bodyFont: 'Roboto Mono',
+    fontSize: 'large'
+  },
+  overallRating: 9.3,
+  strengths: ['Highly creative and visually engaging', 'Perfect for AR/VR and digital portfolios', 'Strong futuristic vibe'],
+  weaknesses: ['Low ATS score', 'Not suitable for traditional industries', 'Requires careful color contrast'],
+  suggestions: ['Highlight projects visually', 'Keep animations smooth', 'Minimize text blocks for clarity'],
+  jobMatches: ['AR/VR Developer', 'Creative Technologist', 'Futuristic UI Designer', 'Innovation Specialist'],
+  skillGaps: ['Motion Graphics', 'WebGL', 'Immersive Web Design'],
+  industryTrends: ['Immersive web experiences', 'Interactive digital storytelling', 'Neon-futuristic UI'],
+  salaryInsights: 'Average salary range: $90K - $150K',
+  keywords: ['Creative Tech', 'Futuristic Design', 'Interactive Portfolio', 'Digital Innovation']
+},
+{
+  id: 'aurastack-1',
+  name: 'AuraStack Dynamic',
+  category: 'modern',
+  atsScore: 85,
+  preview: 'https://images.pexels.com/photos/590045/pexels-photo-590045.jpeg?auto=compress&cs=tinysrgb&w=400',
+  description: 'Layered multi-panel layout with glowing aura effects for tech innovators and data specialists.',
+  features: ['Multi-panel layout', 'Glow and shadow effects', 'Interactive skill graphs', 'Tech stack highlights'],
+  colors: {
+    primary: '#FF6F61',
+    secondary: '#4A90E2',
+    accent: '#50E3C2',
+    text: '#1C1C1C',
+    background: '#FAFAFA'
+  },
+  layout: 'multi-panel',
+  typography: {
+    headingFont: 'Roboto Slab',
+    bodyFont: 'Nunito',
+    fontSize: 'medium'
+  },
+  overallRating: 8.7,
+  strengths: ['Modern and professional', 'Excellent skill visualization', 'Perfect for tech portfolios'],
+  weaknesses: ['Can be visually heavy', 'Needs careful organization of panels'],
+  suggestions: ['Showcase tech stack visually', 'Include project metrics', 'Highlight major achievements'],
+  jobMatches: ['Full Stack Developer', 'Data Analyst', 'DevOps Engineer', 'Software Engineer'],
+  skillGaps: ['Cloud Platforms', 'Containerization', 'Data Pipelines'],
+  industryTrends: ['Cloud-native solutions', 'Data-driven development', 'Microservices'],
+  salaryInsights: 'Average salary range: $100K - $160K for tech roles',
+  keywords: ['Full Stack', 'Data Analytics', 'Cloud', 'Development', 'DevOps']
   },
   {
     id: 'aurastack-1',
