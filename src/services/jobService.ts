@@ -27,7 +27,9 @@ export interface JobFilters {
   skills?: string[];
 }
 
-const API_BASE_URL = 'https://induced-jewellery-postings-postcards.trycloudflare.com';
+import { JobStorageService } from '../services/jobStorageService';
+
+const API_BASE_URL = 'https://trinidad-turner-install-zus.trycloudflare.com';
 
 // Cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
@@ -77,8 +79,9 @@ export const searchJobs = async (query: string = '', filters: JobFilters = {}): 
     return jobs;
   } catch (error) {
     console.error('Error fetching jobs:', error);
-    // Return empty array if API fails
-    return [];
+    // Return stored jobs if API fails
+    const storedJobs = JobStorageService.getStoredJobs();
+    return applyFilters(storedJobs, query, filters);
   }
 };
 
