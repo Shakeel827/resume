@@ -174,6 +174,8 @@ const Portfolio: React.FC = () => {
       const savedData = localStorage.getItem('resumeData');
       if (savedData) {
         const resumeData = JSON.parse(savedData);
+        
+        // Enhanced data mapping with better field extraction
         setPortfolioData({
           personalInfo: {
             name: resumeData.personalInfo?.name || '',
@@ -184,10 +186,25 @@ const Portfolio: React.FC = () => {
             linkedin: resumeData.personalInfo?.linkedin || '',
             github: resumeData.personalInfo?.github || ''
           },
-          skills: resumeData.skills || [],
-          projects: resumeData.projects || [],
-          experience: resumeData.experience || [],
-          education: resumeData.education || []
+          skills: Array.isArray(resumeData.skills) ? resumeData.skills : [],
+          projects: Array.isArray(resumeData.projects) ? resumeData.projects.map((project: any) => ({
+            name: project.name || project.title || '',
+            description: project.description || '',
+            technologies: project.technologies || project.tech || project.stack || '',
+            link: project.link || project.url || project.github || ''
+          })) : [],
+          experience: Array.isArray(resumeData.experience) ? resumeData.experience.map((exp: any) => ({
+            title: exp.title || exp.position || '',
+            company: exp.company || exp.organization || '',
+            duration: exp.duration || exp.period || exp.dates || '',
+            description: exp.description || exp.responsibilities || ''
+          })) : [],
+          education: Array.isArray(resumeData.education) ? resumeData.education.map((edu: any) => ({
+            degree: edu.degree || edu.qualification || '',
+            institution: edu.institution || edu.school || edu.university || '',
+            year: edu.year || edu.period || edu.duration || '',
+            gpa: edu.gpa || edu.grade || edu.marks || ''
+          })) : []
         });
         toast.success('Resume data loaded for portfolio generation!');
       } else {
