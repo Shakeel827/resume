@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, FileText, CheckCircle, AlertCircle, X, Brain } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -48,6 +48,9 @@ interface ResumeImporterProps {
   onClose: () => void;
 }
 
+// Declare pdfjsLib with type any since we're loading it from a CDN
+declare const pdfjsLib: any;
+
 const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose }) => {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -56,7 +59,25 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
   const [processingStep, setProcessingStep] = useState<string>('');
   const [showManualInput, setShowManualInput] = useState<boolean>(false);
   const [manualText, setManualText] = useState<string>('');
+  const [pdfjsLoaded, setPdfjsLoaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load pdf.js library on component mount
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+    script.async = true;
+    script.onload = () => {
+      // Set the worker path
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+      setPdfjsLoaded(true);
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -79,6 +100,49 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
     if (e.target.files && e.target.files[0]) {
       handleFile(e.target.files[0]);
     }
+  };
+
+  // Extract text from PDF using pdf.js
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      
+      fileReader.onload = async (event) => {
+        try {
+          const arrayBuffer = event.target?.result as ArrayBuffer;
+          if (!arrayBuffer) {
+            reject(new Error('Failed to read file'));
+            return;
+          }
+          
+          // Load the PDF document
+          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+          const pdf = await loadingTask.promise;
+          
+          let extractedText = '';
+          
+          // Extract text from each page
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items
+              .map((item: any) => item.str)
+              .join(' ');
+            extractedText += pageText + '\n';
+          }
+          
+          resolve(extractedText);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      fileReader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      
+      fileReader.readAsArrayBuffer(file);
+    });
   };
 
   const handleFile = async (file: File) => {
@@ -106,29 +170,14 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
       const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
       
       if (isPDF) {
-        setProcessingStep('Extracting text from PDF...');
-        
-        // Use serverless function for PDF extraction
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        try {
-          // Use relative path for Vercel deployment
-          const response = await fetch('/api/extract-pdf', {
-            method: 'POST',
-            body: formData,
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            text = data.text || '';
-          } else {
-            throw new Error('Server extraction failed');
-          }
-        } catch (serverError) {
-          console.error('PDF extraction error:', serverError);
-          throw new Error('Failed to extract text from PDF. Please try a different file or paste the text manually.');
+        if (!pdfjsLoaded) {
+          toast.error('PDF library is still loading. Please try again in a moment.');
+          setUploading(false);
+          return;
         }
+        
+        setProcessingStep('Extracting text from PDF...');
+        text = await extractTextFromPDF(file);
       } else {
         // Handle text files directly
         setProcessingStep('Reading text file...');
