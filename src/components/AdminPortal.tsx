@@ -38,10 +38,10 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
   const [filterType, setFilterType] = useState('all');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isOpen) {
       loadJobs();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isOpen]);
 
   const loadJobs = () => {
     const storedJobs = JobStorageService.getStoredJobs();
@@ -124,12 +124,12 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-6xl h-[95vh] flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {!isAuthenticated ? (
             // Login Form
-            <div className="p-8 text-center">
+            <div className="p-8 text-center flex flex-col justify-center h-full">
               <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-8 h-8 text-white" />
               </div>
@@ -367,7 +367,8 @@ const JobFormModal: React.FC<{
     requirements: job?.requirements?.join('\n') || '',
     skills: job?.skills?.join(', ') || '',
     url: job?.url || '',
-    remote: job?.remote || false
+    remote: job?.remote || false,
+    isLocal: true // Ensure this is set for local jobs
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -377,7 +378,7 @@ const JobFormModal: React.FC<{
       ...formData,
       requirements: formData.requirements.split('\n').filter(r => r.trim()),
       skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
-      logo: '',
+      logo: job?.logo || '',
       application_link: formData.url,
       isLocal: true // Ensure this is set for local jobs
     };
@@ -400,7 +401,7 @@ const JobFormModal: React.FC<{
         className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
               {job ? 'Edit Job' : 'Add New Job'}
@@ -564,7 +565,7 @@ const JobFormModal: React.FC<{
             </label>
           </div>
           
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex justify-end space-x-3 pt-4 sticky bottom-0 bg-white dark:bg-gray-900 py-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
