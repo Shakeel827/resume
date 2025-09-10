@@ -124,7 +124,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {!isAuthenticated ? (
@@ -163,7 +163,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
             </div>
           ) : (
             // Admin Dashboard
-            <>
+            <div className="flex flex-col h-full">
               {/* Header */}
               <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
                 <div className="flex items-center justify-between">
@@ -231,7 +231,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* Jobs List */}
+              {/* Jobs List - Now scrollable */}
               <div className="flex-1 overflow-y-auto p-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {filteredJobs.map((job) => (
@@ -259,24 +259,26 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
                   </div>
                 )}
               </div>
-            </>
+            </div>
           )}
-        </motion.div>
 
-        {/* Add/Edit Job Modal */}
-        {(showAddForm || editingJob) && (
-          <JobFormModal
-            job={editingJob}
-            onSave={editingJob ? 
-              (updates) => handleUpdateJob(editingJob.id, updates) :
-              handleAddJob
-            }
-            onClose={() => {
-              setShowAddForm(false);
-              setEditingJob(null);
-            }}
-          />
-        )}
+          {/* Add/Edit Job Modal */}
+          <AnimatePresence>
+            {(showAddForm || editingJob) && (
+              <JobFormModal
+                job={editingJob}
+                onSave={editingJob ? 
+                  (updates) => handleUpdateJob(editingJob.id, updates) :
+                  handleAddJob
+                }
+                onClose={() => {
+                  setShowAddForm(false);
+                  setEditingJob(null);
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );
@@ -376,7 +378,8 @@ const JobFormModal: React.FC<{
       requirements: formData.requirements.split('\n').filter(r => r.trim()),
       skills: formData.skills.split(',').map(s => s.trim()).filter(s => s),
       logo: '',
-      application_link: formData.url
+      application_link: formData.url,
+      isLocal: true // Ensure this is set for local jobs
     };
     
     onSave(jobData);
@@ -386,19 +389,29 @@ const JobFormModal: React.FC<{
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="fixed inset-0 bg-black/50 z-60 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
         className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-            {job ? 'Edit Job' : 'Add New Job'}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              {job ? 'Edit Job' : 'Add New Job'}
+            </h3>
+            <button
+              onClick={onClose}
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
         
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
