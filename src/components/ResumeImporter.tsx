@@ -110,6 +110,7 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
     }
   };
 
+  // Improved resume parsing function
   const parseResumeTextAdvanced = async (text: string): Promise<ResumeData> => {
     const resumeData: ResumeData = {
       personalInfo: {
@@ -131,79 +132,124 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
     const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
     if (emailMatch) resumeData.personalInfo.email = emailMatch[0];
 
-    // Extract phone
+    // Extract phone (more comprehensive pattern)
     const phoneMatch = text.match(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
     if (phoneMatch) resumeData.personalInfo.phone = phoneMatch[0];
 
     // Extract LinkedIn
-    const linkedinMatch = text.match(/linkedin\.com\/in\/[\w-]+/i);
-    if (linkedinMatch) resumeData.personalInfo.linkedin = `https://${linkedinMatch[0]}`;
+    const linkedinMatch = text.match(/(linkedin\.com\/in\/[a-zA-Z0-9\-]+)|(linkedin\.com\/company\/[a-zA-Z0-9\-]+)/i);
+    if (linkedinMatch) {
+      resumeData.personalInfo.linkedin = linkedinMatch[0].startsWith('http') 
+        ? linkedinMatch[0] 
+        : `https://${linkedinMatch[0]}`;
+    }
 
     // Extract GitHub
-    const githubMatch = text.match(/github\.com\/[\w-]+/i);
-    if (githubMatch) resumeData.personalInfo.github = `https://${githubMatch[0]}`;
+    const githubMatch = text.match(/(github\.com\/[a-zA-Z0-9\-]+)|(GitHub:\s*[a-zA-Z0-9\-]+)/i);
+    if (githubMatch) {
+      const match = githubMatch[0].includes('github.com') 
+        ? githubMatch[0] 
+        : `github.com/${githubMatch[0].replace('GitHub:', '').trim()}`;
+      resumeData.personalInfo.github = match.startsWith('http') ? match : `https://${match}`;
+    }
 
-    // Extract name (first non-empty line that looks like a name)
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    for (const line of lines.slice(0, 10)) {
-      if (line.match(/^[A-Za-z\s\-]+$/) && 
-          line.split(' ').length >= 2 && 
-          line.split(' ').length <= 4 &&
-          !line.includes('@') && 
-          !line.match(/\d/)) {
-        resumeData.personalInfo.name = line;
+    // Extract name (improved pattern)
+    const namePatterns = [
+      /^[A-Z][a-z]+ [A-Z][a-z]+(?: [A-Z][a-z]+)?$/m, // First Last or First Middle Last
+      /(?:^|\n)[A-Z][a-z]+ [A-Z]\.? [A-Z][a-z]+/, // First M. Last
+      /(?:^|\n)[A-Z][a-z]+, [A-Z][a-z]+(?: [A-Z][a-z]+)?/ // Last, First
+    ];
+    
+    for (const pattern of namePatterns) {
+      const match = text.match(pattern);
+      if (match) {
+        resumeData.personalInfo.name = match[0].replace(/^\n/, '').trim();
         break;
       }
     }
 
+    // Extract location (city, state, or country)
+    const locationMatch = text.match(/(?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*,?\s*(?:[A-Z]{2}\b|\b(?:USA|United States|Canada|UK|United Kingdom)\b))/);
+    if (locationMatch) resumeData.personalInfo.location = locationMatch[0];
+
     // Extract summary
-    const summaryKeywords = ['summary', 'objective', 'profile', 'about'];
-    for (const keyword of summaryKeywords) {
-      const regex = new RegExp(`${keyword}[:\\s]*([^\\n]{30,300})`, 'i');
-      const match = text.match(regex);
-      if (match) {
+    const summaryPatterns = [
+      /(?:summary|objective|profile)[:\s]*([^]+?)(?=\n\s*\n|\n\s*[A-Z][^a-z]|\n\s*[a-z]+\s*:)/i,
+      /(?:^|\n)\s*([A-Z][^.!?]{50,300}[.!?])(?=\n\s*\n|\n\s*[A-Z][^a-z])/
+    ];
+    
+    for (const pattern of summaryPatterns) {
+      const match = text.match(pattern);
+      if (match && match[1] && match[1].length > 30) {
         resumeData.personalInfo.summary = match[1].trim();
         break;
       }
     }
 
-    // Extract skills
+    // Extract skills (expanded list)
     const commonSkills = [
-      'JavaScript', 'Python', 'Java', 'React', 'Node.js', 'Angular', 'Vue.js',
-      'HTML', 'CSS', 'TypeScript', 'PHP', 'C++', 'C#', 'Ruby', 'Go',
-      'MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Azure', 'Docker',
-      'Kubernetes', 'Git', 'Linux', 'Agile', 'Scrum', 'Project Management'
+      'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'PHP', 'Ruby', 'Go', 'Swift', 'Kotlin',
+      'React', 'Angular', 'Vue', 'Svelte', 'Next.js', 'Nuxt.js', 'Node.js', 'Express', 'Django', 'Flask',
+      'Spring', 'Laravel', 'Ruby on Rails', 'jQuery', 'Bootstrap', 'Tailwind CSS', 'SASS', 'LESS',
+      'HTML', 'CSS', 'REST', 'GraphQL', 'gRPC', 'MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'SQLite',
+      'Firebase', 'AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'Jenkins', 'Git', 'CI/CD',
+      'Agile', 'Scrum', 'TDD', 'DevOps', 'Machine Learning', 'Data Science', 'TensorFlow', 'PyTorch'
     ];
     
+    const foundSkills: string[] = [];
     for (const skill of commonSkills) {
-      if (text.toLowerCase().includes(skill.toLowerCase())) {
-        resumeData.skills.push(skill);
+      // Case-insensitive match with word boundaries
+      const regex = new RegExp(`\\b${skill}\\b`, 'i');
+      if (regex.test(text) && !foundSkills.some(s => s.toLowerCase() === skill.toLowerCase())) {
+        foundSkills.push(skill);
+      }
+    }
+    resumeData.skills = foundSkills;
+
+    // Extract experience (improved pattern)
+    const experiencePatterns = [
+      /([^•\n]+?)\s*[-–—]\s*([^•\n]+?)\s*[-–—]\s*([^•\n]+?)\s*[-–—]\s*([^•\n]*?(?:\n.*?)*?)(?=\n\s*(?:[A-Z][^a-z]|$))/g,
+      /([^•\n]+?)\s*at\s*([^•\n]+?)\s*[-–—]\s*([^•\n]+?)(?:\n.*?)*?(?=\n\s*(?:[A-Z][^a-z]|$))/g,
+      /(.*?)\n(.*?)\n(.*?)\n(.*?(?:\n.*?)*?)(?=\n\s*\n)/g
+    ];
+    
+    const experienceSection = text.match(/experience[\s\S]*?(?=education|skills|projects|$)/i)?.[0] || text;
+    
+    for (const pattern of experiencePatterns) {
+      let match;
+      while ((match = pattern.exec(experienceSection)) !== null) {
+        if (match[1] && match[2] && match[3]) {
+          resumeData.experience.push({
+            title: match[1].trim(),
+            company: match[2].trim(),
+            duration: match[3].trim(),
+            description: match[4] ? match[4].trim() : 'Experience details extracted from resume.'
+          });
+        }
       }
     }
 
-    // Extract experience
-    const experienceSection = text.match(/experience[\s\S]*?(?=education|skills|projects|$)/i)?.[0] || '';
-    const jobPattern = /([A-Za-z\s&,.-]+)\s*[-–—]\s*([A-Za-z\s&,.-]+)\s*[-–—]\s*([A-Za-z\s\d\-–—]+)/gi;
-    let match;
-    while ((match = jobPattern.exec(experienceSection)) !== null) {
-      resumeData.experience.push({
-        title: match[1].trim(),
-        company: match[2].trim(),
-        duration: match[3].trim(),
-        description: 'Experience details extracted from resume.'
-      });
-    }
-
-    // Extract education
-    const educationSection = text.match(/education[\s\S]*?(?=experience|skills|projects|$)/i)?.[0] || '';
-    const degreePattern = /(bachelor|master|phd|b\.?s\.?|m\.?s\.?|b\.?a\.?|m\.?a\.?)[^\\n]*([^\\n]*university|college|institute)[^\\n]*(\d{4})/gi;
-    while ((match = degreePattern.exec(educationSection)) !== null) {
-      resumeData.education.push({
-        degree: match[1].trim(),
-        institution: match[2].trim(),
-        year: match[3],
-        gpa: ''
-      });
+    // Extract education (improved pattern)
+    const educationPatterns = [
+      /([^•\n]+?)\s*[-–—]\s*([^•\n]+?)\s*[-–—]\s*([^•\n]+?)(?:\n.*?)*?(?=\n\s*(?:[A-Z][^a-z]|$))/g,
+      /(.*?)\n(.*?)\n(.*?)\n(?=\n\s*\n)/g,
+      /(Bachelor|Master|PhD|B\.S\.|B\.A\.|M\.S\.|M\.A\.|Ph\.D\.).*?(University|College|Institute|School).*?(\d{4})/gi
+    ];
+    
+    const educationSection = text.match(/education[\s\S]*?(?=experience|skills|projects|$)/i)?.[0] || text;
+    
+    for (const pattern of educationPatterns) {
+      let match;
+      while ((match = pattern.exec(educationSection)) !== null) {
+        if (match[1] && match[2]) {
+          resumeData.education.push({
+            degree: match[1].trim(),
+            institution: match[2].trim(),
+            year: match[3] ? match[3].trim() : '',
+            gpa: match[4] ? match[4].trim() : ''
+          });
+        }
+      }
     }
 
     return resumeData;
@@ -434,12 +480,20 @@ const ResumeImporter: React.FC<ResumeImporterProps> = ({ onDataImported, onClose
                     <span className="ml-2 text-gray-900 dark:text-white">{extractedData.personalInfo.email || 'Not found'}</span>
                   </div>
                   <div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Phone:</span>
+                    <span className="ml-2 text-gray-900 dark:text-white">{extractedData.personalInfo.phone || 'Not found'}</span>
+                  </div>
+                  <div>
                     <span className="font-medium text-gray-700 dark:text-gray-300">Skills:</span>
-                    <span className="ml-2 text-gray-900 dark:text-white">{extractedData.skills.length} skills</span>
+                    <span className="ml-2 text-gray-900 dark:text-white">{extractedData.skills.length} skills found</span>
                   </div>
                   <div>
                     <span className="font-medium text-gray-700 dark:text-gray-300">Experience:</span>
                     <span className="ml-2 text-gray-900 dark:text-white">{extractedData.experience.length} entries</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Education:</span>
+                    <span className="ml-2 text-gray-900 dark:text-white">{extractedData.education.length} entries</span>
                   </div>
                 </div>
               </div>
