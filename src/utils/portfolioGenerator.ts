@@ -65,16 +65,21 @@ const portfolioTemplates = {
   }
 };
 
-export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
-  const theme = portfolioTemplates.cyberpunk;
+// Helper function to generate the common HTML structure
+const generateCommonHTML = (data: PortfolioData, theme: any, templateName: string): string => {
+  const title = `${data.personalInfo.name || templateName} - Portfolio`;
+  const subtitle = data.personalInfo.summary || 
+    (templateName === 'Cyberpunk Matrix' ? 'Digital Architect | Code Warrior | Future Builder' :
+     templateName === 'Holographic Nexus' ? 'Holographic Designer | Light Weaver | Visual Architect' :
+     'Quantum Developer | Reality Bender | Dimension Explorer');
   
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${data.personalInfo.name || 'Cyberpunk'} - Digital Matrix Portfolio</title>
-    <meta name="description" content="${data.personalInfo.summary || 'Cyberpunk-inspired digital portfolio showcasing cutting-edge skills and projects'}">
+    <title>${title}</title>
+    <meta name="description" content="${data.personalInfo.summary || `${templateName} portfolio showcasing skills and projects`}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -100,7 +105,6 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
-            cursor: none;
         }
         
         /* Custom Cursor */
@@ -924,8 +928,8 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1 class="glitch" data-text="${data.personalInfo.name || 'CYBER_MATRIX'}">${data.personalInfo.name || 'CYBER_MATRIX'}</h1>
-            <p class="subtitle">${data.personalInfo.summary || 'Digital Architect | Code Warrior | Future Builder'}</p>
+            <h1 class="glitch" data-text="${data.personalInfo.name || templateName}">${data.personalInfo.name || templateName}</h1>
+            <p class="subtitle">${subtitle}</p>
             <div style="margin-top: 2rem;">
                 ${data.personalInfo.email ? `<a href="mailto:${data.personalInfo.email}" class="cyber-button">CONNECT</a>` : ''}
             </div>
@@ -1180,15 +1184,27 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
         createMatrixRain();
         createParticles();
         
-        console.log('%c🔥 CYBERPUNK PORTFOLIO LOADED 🔥', 'color: #00ff41; font-size: 20px; font-weight: bold;');
-        console.log('%c🚀 ENHANCED WITH ADVANCED ANIMATIONS & FOOTER 🚀', 'color: #00d4ff; font-size: 16px;');
+        console.log('%c🔥 ${templateName.toUpperCase()} PORTFOLIO LOADED 🔥', 'color: ${theme.primaryColor}; font-size: 20px; font-weight: bold;');
+        console.log('%c🚀 ENHANCED WITH ADVANCED ANIMATIONS & FOOTER 🚀', 'color: ${theme.accentColor}; font-size: 16px;');
     </script>
 </body>
 </html>`;
 };
 
-// The other template functions (generateHolographicPortfolio, generateQuantumPortfolio) 
-// would follow with similar enhancements but are omitted for brevity
+export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
+  const theme = portfolioTemplates.cyberpunk;
+  return generateCommonHTML(data, theme, theme.name);
+};
+
+export const generateHolographicPortfolio = (data: PortfolioData): string => {
+  const theme = portfolioTemplates.holographic;
+  return generateCommonHTML(data, theme, theme.name);
+};
+
+export const generateQuantumPortfolio = (data: PortfolioData): string => {
+  const theme = portfolioTemplates.quantum;
+  return generateCommonHTML(data, theme, theme.name);
+};
 
 export const generatePortfolioHTML = (data: PortfolioData, template: string = 'cyberpunk'): string => {
   switch (template) {
