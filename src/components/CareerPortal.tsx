@@ -29,9 +29,14 @@ import {
   Calendar,
   Award as AwardIcon,
   Code,
-  Layers
+  Layers,
+  Settings,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 import { searchJobs, getJobMarketAnalytics, Job } from '../services/jobService';
+import { JobStorageService } from '../services/jobStorageService';
+import AdminPortal from './AdminPortal';
 import toast from 'react-hot-toast';
 
 interface JobViewModalProps {
@@ -308,6 +313,7 @@ const JobViewModal: React.FC<JobViewModalProps> = ({
 const CareerPortal: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     location: '',
@@ -321,21 +327,62 @@ const CareerPortal: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showJobModal, setShowJobModal] = useState(false);
   const [marketAnalytics, setMarketAnalytics] = useState<any>(null);
+  const [showAdminPortal, setShowAdminPortal] = useState(false);
 
   useEffect(() => {
     loadJobs();
     loadSavedJobs();
     loadMarketAnalytics();
+    
+    // Listen for online/offline events
+    const handleOnline = () => {
+      setIsOnline(true);
+      loadJobs(); // Refresh jobs when back online
+    };
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const loadJobs = async () => {
     setLoading(true);
     try {
-      const results = await searchJobs(searchQuery, filters);
-      setJobs(results);
+      if (isOnline) {
+        // Try to fetch from API
+        const apiResults = await searchJobs(searchQuery, filters);
+        if (apiResults.length > 0) {
+          // Merge with stored jobs and save
+          const mergedJobs = JobStorageService.mergeWithApiJobs(apiResults);
+          setJobs(mergedJobs);
+        } else {
+          // If API returns empty, use stored jobs
+          const storedJobs = JobStorageService.getStoredJobs();
+          setJobs(storedJobs);
+        }
+      } else {
+        // Offline: use stored jobs only
+        const storedJobs = JobStorageService.getStoredJobs();
+        setJobs(storedJobs);
+        if (storedJobs.length === 0) {
+          toast.error('No cached jobs available. Please connect to internet.');
+        }
+      }
     } catch (error) {
       console.error('Error loading jobs:', error);
-      setJobs([]);
+      // On error, fallback to stored jobs
+      const storedJobs = JobStorageService.getStoredJobs();
+      setJobs(storedJobs);
+      if (storedJobs.length === 0) {
+        toast.error('Unable to load jobs. Please check your connection.');
+      } else {
+        toast.info('Showing cached jobs. Some listings may be outdated.');
+      }
     } finally {
       setLoading(false);
     }
@@ -519,40 +566,40 @@ const CareerPortal: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02, y: -5 }}
-      className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 dark:border-gray-700 group relative overflow-hidden"
+      className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 p-4 sm:p-6 border border-gray-100 dark:border-gray-700 group relative overflow-hidden"
     >
       {/* Gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl sm:rounded-3xl"></div>
       
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-4 flex-1 min-w-0">
-            <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+        <div className="flex items-start justify-between mb-3 sm:mb-4">
+          <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
               {job.logo ? (
-                <img src={job.logo} alt={job.company} className="w-10 h-10 rounded-xl object-cover" />
+                <img src={job.logo} alt={job.company} className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl object-cover" />
               ) : (
-                <Building className="w-7 h-7 text-white" />
+                <Building className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               )}
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {job.title}
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 font-semibold truncate">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-semibold truncate">
                 {job.company}
               </p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleShareJob(job)}
-              className="p-2 rounded-xl bg-green-100 text-green-600 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-400 dark:hover:bg-green-800/50 transition-all shadow-md hover:shadow-lg"
+              className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-green-100 text-green-600 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-400 dark:hover:bg-green-800/50 transition-all shadow-md hover:shadow-lg"
               aria-label="Share job"
             >
-              <Share2 className="w-5 h-5" />
+              <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -566,83 +613,83 @@ const CareerPortal: React.FC = () => {
               aria-label={savedJobs.includes(job.id) ? 'Remove from saved' : 'Save job'}
             >
               {savedJobs.includes(job.id) ? (
-                <Bookmark className="w-5 h-5" />
+                <Bookmark className="w-4 h-4 sm:w-5 sm:h-5" />
               ) : (
-                <BookmarkPlus className="w-5 h-5" />
+                <BookmarkPlus className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
             </motion.button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-4 text-sm">
-          <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-full">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4 text-xs sm:text-sm">
+          <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-2 sm:px-3 py-1 rounded-full">
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
             <span className="truncate">{job.location}</span>
           </div>
-          <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-full">
-            <Clock className="w-4 h-4 flex-shrink-0" />
+          <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-2 sm:px-3 py-1 rounded-full">
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
             <span className="truncate">{job.posted}</span>
           </div>
           {job.salary && job.salary !== 'Competitive' && (
-            <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-full">
-              <DollarSign className="w-4 h-4 flex-shrink-0" />
+            <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 px-2 sm:px-3 py-1 rounded-full">
+              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="truncate">{job.salary}</span>
             </div>
           )}
           {job.remote && (
-            <div className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200 px-3 py-1 rounded-full text-xs font-medium">
+            <div className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
               Remote
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between mb-4">
-          <span className={`px-4 py-2 rounded-full text-sm font-medium capitalize ${getJobTypeColor(job.type)}`}>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <span className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium capitalize ${getJobTypeColor(job.type)}`}>
             {job.type.replace('-', ' ')}
           </span>
-          <span className="text-sm text-gray-500 dark:text-gray-400 truncate bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-full">
+          <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate bg-gray-50 dark:bg-gray-700 px-2 sm:px-3 py-1 rounded-full">
             {job.experience}
           </span>
         </div>
 
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
           {job.description}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
           {job.skills.slice(0, 3).map((skill, idx) => (
             <span
               key={idx}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-sm"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium shadow-sm"
             >
               {skill}
             </span>
           ))}
           {job.skills.length > 3 && (
-            <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+            <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 sm:px-3 py-1 rounded-full">
               +{job.skills.length - 3} more
             </span>
           )}
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1 text-yellow-500">
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="flex items-center space-x-0.5 sm:space-x-1 text-yellow-500">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-current" />
+                <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
               ))}
             </div>
-            <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">4.8</span>
+            <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 font-medium">4.8</span>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleViewJob(job)}
-              className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-2 rounded-xl font-medium hover:from-gray-700 hover:to-gray-800 transition-all flex items-center space-x-2 shadow-md hover:shadow-lg"
+              className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-medium hover:from-gray-700 hover:to-gray-800 transition-all flex items-center space-x-1 sm:space-x-2 shadow-md hover:shadow-lg text-xs sm:text-sm"
             >
-              <Eye className="w-4 h-4" />
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>View</span>
             </motion.button>
             
@@ -650,10 +697,10 @@ const CareerPortal: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleApplyNow(job)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2 shadow-md hover:shadow-lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-1 sm:space-x-2 shadow-md hover:shadow-lg text-xs sm:text-sm"
             >
               <span>Apply</span>
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </motion.button>
           </div>
         </div>
@@ -680,10 +727,34 @@ const CareerPortal: React.FC = () => {
             <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
+            {/* Admin Access Button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setShowAdminPortal(true)}
+              className="w-10 h-10 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
+              title="Admin Portal"
+            >
+              <Settings className="w-5 h-5 text-white" />
+            </motion.button>
           </div>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Discover opportunities that match your skills and aspirations with our intelligent job matching system.
           </p>
+          
+          {/* Connection Status */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className={`inline-flex items-center space-x-2 mt-4 px-4 py-2 rounded-full text-sm font-medium ${
+              isOnline 
+                ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' 
+                : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200'
+            }`}
+          >
+            {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
+            <span>{isOnline ? 'Online - Live Jobs' : 'Offline - Cached Jobs'}</span>
+          </motion.div>
         </motion.div>
 
         {/* Enhanced Stats */}
@@ -725,9 +796,9 @@ const CareerPortal: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl p-6 mb-8 border border-white/50 dark:border-gray-700/50"
+          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl p-4 sm:p-6 mb-8 border border-white/50 dark:border-gray-700/50"
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 sm:gap-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -736,17 +807,17 @@ const CareerPortal: React.FC = () => {
                 placeholder="Search jobs, companies, or skills..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-lg"
+                className="w-full pl-12 pr-4 py-3 sm:py-4 border border-gray-200 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-base sm:text-lg"
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 items-stretch sm:items-center">
               <select
                 value={filters.location}
                 onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
-                className="border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base shadow-sm"
+                className="flex-1 sm:flex-none border border-gray-200 dark:border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base shadow-sm"
               >
                 <option value="">All Locations</option>
                 <option value="bangalore">Bangalore</option>
@@ -760,7 +831,7 @@ const CareerPortal: React.FC = () => {
               <select
                 value={filters.type}
                 onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-                className="border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base shadow-sm"
+                className="flex-1 sm:flex-none border border-gray-200 dark:border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base shadow-sm"
               >
                 <option value="">All Types</option>
                 <option value="full-time">Full Time</option>
@@ -774,14 +845,14 @@ const CareerPortal: React.FC = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSearch}
                 disabled={loading}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2 disabled:opacity-50 shadow-lg hover:shadow-xl"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 shadow-lg hover:shadow-xl"
               >
                 {loading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                 ) : (
                   <Search className="w-5 h-5" />
                 )}
-                <span className="hidden sm:inline">Search Jobs</span>
+                <span className="text-sm sm:text-base">Search Jobs</span>
               </motion.button>
             </div>
           </div>
@@ -792,7 +863,7 @@ const CareerPortal: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="flex space-x-1 bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg p-1 rounded-2xl mb-8 w-full sm:w-fit overflow-x-auto shadow-lg border border-white/50 dark:border-gray-700/50"
+          className="flex space-x-1 bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg p-1 rounded-2xl mb-8 w-full overflow-x-auto shadow-lg border border-white/50 dark:border-gray-700/50"
         >
           {[
             { id: 'search', label: 'All Jobs', count: jobs.length, icon: Search },
@@ -803,16 +874,15 @@ const CareerPortal: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`px-6 py-4 rounded-xl font-medium transition-all whitespace-nowrap flex items-center space-x-2 ${
+              className={`flex-1 sm:flex-none px-4 sm:px-6 py-3 sm:py-4 rounded-xl font-medium transition-all whitespace-nowrap flex items-center justify-center space-x-2 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                   : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
               }`}
             >
               <tab.icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
-              <span className="bg-white/20 px-2 py-1 rounded-full text-xs">({tab.count})</span>
+              <span className="text-sm sm:text-base">{tab.label}</span>
+              <span className="bg-white/20 px-2 py-1 rounded-full text-xs font-semibold">({tab.count})</span>
             </motion.button>
           ))}
         </motion.div>
@@ -846,7 +916,7 @@ const CareerPortal: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
             >
               {activeTab === 'search' && jobs.map((job, index) => (
                 <motion.div
@@ -937,6 +1007,12 @@ const CareerPortal: React.FC = () => {
         onShare={handleShareJob}
         onApply={handleApplyNow}
         isSaved={selectedJob ? savedJobs.includes(selectedJob.id) : false}
+      />
+      
+      {/* Admin Portal */}
+      <AdminPortal
+        isOpen={showAdminPortal}
+        onClose={() => setShowAdminPortal(false)}
       />
     </section>
   );
