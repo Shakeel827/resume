@@ -198,7 +198,6 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             text-align: center;
             position: relative;
             background: radial-gradient(circle at center, rgba(0,255,65,0.1) 0%, transparent 70%);
-            overflow: hidden;
         }
         
         .hero-content {
@@ -599,6 +598,29 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             border-color: var(--primary);
         }
         
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cyber-timeline::before { left: 30px; }
+            .timeline-item { flex-direction: column !important; }
+            .timeline-content { margin: 1rem 0 1rem 60px; }
+            .timeline-content::before { display: none; }
+            .projects-hex-grid { flex-direction: column; align-items: center; }
+            .project-hex { width: 300px; height: 350px; }
+            .skills-matrix { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        }
+        
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
         /* Terminal Window */
         .terminal {
             background: #000;
@@ -636,290 +658,11 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             0%, 50% { width: 0; }
             100% { width: 100%; }
         }
-        
-        /* Enhanced Animations */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        @keyframes slideInFromBottom {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes rotate3d {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-        
-        /* Enhanced Footer */
-        .cyber-footer {
-            background: linear-gradient(to top, var(--card-bg), var(--bg));
-            padding: 60px 0 30px;
-            position: relative;
-            overflow: hidden;
-            border-top: 2px solid var(--primary);
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-section h3 {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary);
-        }
-        
-        .footer-section p {
-            line-height: 1.6;
-            margin-bottom: 15px;
-            opacity: 0.8;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: var(--text);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-        
-        .footer-links a:hover {
-            color: var(--primary);
-            transform: translateX(5px);
-            text-shadow: 0 0 10px var(--primary);
-        }
-        
-        .social-icons {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            border: 2px solid var(--primary);
-            animation: pulse 2s infinite;
-        }
-        
-        .social-icon:hover {
-            background: var(--primary);
-            color: var(--bg);
-            transform: translateY(-5px) rotate(10deg);
-            box-shadow: 0 5px 15px rgba(0,255,65,0.4);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(0,255,65,0.3);
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            color: var(--bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 1000;
-            box-shadow: 0 0 20px var(--primary);
-        }
-        
-        .back-to-top.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .back-to-top:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 5px 25px var(--primary);
-        }
-        
-        /* Floating shapes animation */
-        .floating-shapes {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .shape {
-            position: absolute;
-            background: var(--primary);
-            opacity: 0.1;
-            animation: floatAround 20s infinite linear;
-        }
-        
-        .shape:nth-child(1) {
-            width: 40px;
-            height: 40px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-            animation-duration: 18s;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        }
-        
-        .shape:nth-child(2) {
-            width: 60px;
-            height: 60px;
-            top: 20%;
-            right: 15%;
-            animation-delay: 2s;
-            animation-duration: 22s;
-            border-radius: 50%;
-        }
-        
-        .shape:nth-child(3) {
-            width: 50px;
-            height: 50px;
-            bottom: 25%;
-            left: 15%;
-            animation-delay: 4s;
-            animation-duration: 20s;
-            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-        }
-        
-        .shape:nth-child(4) {
-            width: 70px;
-            height: 70px;
-            bottom: 15%;
-            right: 10%;
-            animation-delay: 6s;
-            animation-duration: 24s;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        }
-        
-        @keyframes floatAround {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(30px, 50px) rotate(90deg);
-            }
-            50% {
-                transform: translate(0, 100px) rotate(180deg);
-            }
-            75% {
-                transform: translate(-30px, 50px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .cyber-timeline::before { left: 30px; }
-            .timeline-item { flex-direction: column !important; }
-            .timeline-content { margin: 1rem 0 1rem 60px; }
-            .timeline-content::before { display: none; }
-            .projects-hex-grid { flex-direction: column; align-items: center; }
-            .project-hex { width: 300px; height: 350px; }
-            .skills-matrix { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-            .footer-content { grid-template-columns: 1fr; text-align: center; }
-            .social-icons { justify-content: center; }
-        }
-        
-        /* Scroll Animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s ease;
-        }
-        
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .slide-in-left {
-            opacity: 0;
-            transform: translateX(-100px);
-            transition: all 0.8s ease;
-        }
-        
-        .slide-in-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        
-        .slide-in-right {
-            opacity: 0;
-            transform: translateX(100px);
-            transition: all 0.8s ease;
-        }
-        
-        .slide-in-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        
-        .zoom-in {
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.8s ease;
-        }
-        
-        .zoom-in.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
     </style>
 </head>
 <body>
     <div class="cursor"></div>
     <div class="matrix-bg"></div>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
     
     <!-- Hero Section -->
     <section class="hero">
@@ -937,8 +680,8 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
         <div class="container">
             <h2 class="section-title fade-in">SKILL_MATRIX</h2>
             <div class="skills-matrix">
-                ${data.skills.map((skill, index) => `
-                    <div class="skill-node fade-in" style="animation-delay: ${index * 0.1}s">
+                ${data.skills.map(skill => `
+                    <div class="skill-node fade-in">
                         <div class="skill-name">${skill}</div>
                     </div>
                 `).join('')}
@@ -951,8 +694,8 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
         <div class="container">
             <h2 class="section-title fade-in">PROJECT_NEXUS</h2>
             <div class="projects-hex-grid">
-                ${data.projects.map((project, index) => `
-                    <div class="project-hex fade-in" style="animation-delay: ${index * 0.2}s">
+                ${data.projects.map(project => `
+                    <div class="project-hex fade-in">
                         <div class="project-content">
                             <h3>${project.name}</h3>
                             <p>${project.description}</p>
@@ -975,7 +718,7 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             <h2 class="section-title fade-in">EXPERIENCE_LOG</h2>
             <div class="cyber-timeline">
                 ${data.experience.map((exp, index) => `
-                    <div class="timeline-item fade-in" style="animation-delay: ${index * 0.2}s">
+                    <div class="timeline-item fade-in" style="animation-delay: ${index * 0.2}s;">
                         <div class="timeline-content">
                             <h3 style="font-family: 'Orbitron', monospace; color: var(--primary); font-size: 1.5rem; margin-bottom: 0.5rem;">${exp.title}</h3>
                             <p style="color: var(--secondary); font-weight: 600; margin-bottom: 0.5rem;">${exp.company} | ${exp.duration}</p>
@@ -988,24 +731,8 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
         </div>
     </section>
     
-    <!-- Education Section -->
-    <section class="section" id="education">
-        <div class="container">
-            <h2 class="section-title fade-in">EDUCATION_MATRIX</h2>
-            <div class="skills-matrix">
-                ${data.education.map((edu, index) => `
-                    <div class="skill-node fade-in" style="animation-delay: ${index * 0.2}s">
-                        <h3 style="font-family: 'Orbitron', monospace; color: var(--primary); font-size: 1.2rem; margin-bottom: 0.5rem;">${edu.degree}</h3>
-                        <p style="color: var(--secondary); font-weight: 600; margin-bottom: 0.5rem;">${edu.institution} | ${edu.year}</p>
-                        ${edu.gpa ? `<p style="opacity: 0.9;">GPA: ${edu.gpa}</p>` : ''}
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    </section>
-    
     <!-- Terminal Contact -->
-    <section class="section" id="contact">
+    <section class="section">
         <div class="container">
             <div class="terminal fade-in">
                 <div class="terminal-content">
@@ -1013,7 +740,6 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
                     <div>${data.personalInfo.name || 'cyber_warrior'}</div>
                     <div class="typing-animation">$ contact --info</div>
                     <div>Email: ${data.personalInfo.email || 'classified@matrix.net'}</div>
-                    <div>Phone: ${data.personalInfo.phone || 'encrypted'}</div>
                     <div>Location: ${data.personalInfo.location || 'The Grid'}</div>
                     <div class="typing-animation">$ status</div>
                     <div style="color: var(--primary);">READY_FOR_MISSION</div>
@@ -1021,49 +747,6 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             </div>
         </div>
     </section>
-    
-    <!-- Footer -->
-    <footer class="cyber-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section slide-in-left">
-                    <h3>ABOUT_ME</h3>
-                    <p>${data.personalInfo.summary || 'Digital architect building the future one line of code at a time.'}</p>
-                    <div class="social-icons">
-                        ${data.personalInfo.linkedin ? `<a href="${data.personalInfo.linkedin}" class="social-icon"><i class="fab fa-linkedin"></i></a>` : ''}
-                        ${data.personalInfo.github ? `<a href="${data.personalInfo.github}" class="social-icon"><i class="fab fa-github"></i></a>` : ''}
-                        ${data.personalInfo.email ? `<a href="mailto:${data.personalInfo.email}" class="social-icon"><i class="fas fa-envelope"></i></a>` : ''}
-                    </div>
-                </div>
-                
-                <div class="footer-section zoom-in">
-                    <h3>QUICK_LINKS</h3>
-                    <ul class="footer-links">
-                        <li><a href="#skills">Skills</a></li>
-                        <li><a href="#projects">Projects</a></li>
-                        <li><a href="#experience">Experience</a></li>
-                        <li><a href="#education">Education</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section slide-in-right">
-                    <h3>CONTACT_INFO</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> ${data.personalInfo.location || 'Digital Realm'}</p>
-                    <p><i class="fas fa-phone"></i> ${data.personalInfo.phone || 'Encrypted'}</p>
-                    <p><i class="fas fa-envelope"></i> ${data.personalInfo.email || 'contact@matrix.com'}</p>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; ${new Date().getFullYear()} ${data.personalInfo.name || 'Cyber Matrix'}. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--secondary);"></i> in the digital realm</p>
-            </div>
-        </div>
-    </footer>
-    
-    <div class="back-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </div>
 
     <script>
         // Custom Cursor
@@ -1136,27 +819,13 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             });
         }, observerOptions);
         
-        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .zoom-in').forEach(el => {
+        document.querySelectorAll('.fade-in').forEach(el => {
             observer.observe(el);
         });
         
-        // Back to top button
-        const backToTopButton = document.querySelector('.back-to-top');
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('active');
-            } else {
-                backToTopButton.classList.remove('active');
-            }
-        });
-        
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+        // Initialize
+        createMatrixRain();
+        createParticles();
         
         // Glitch effect on hover
         document.querySelectorAll('.glitch').forEach(el => {
@@ -1165,32 +834,1076 @@ export const generateCyberpunkPortfolio = (data: PortfolioData): string => {
             });
         });
         
-        // Enhanced hover effects for cards
-        document.querySelectorAll('.skill-node, .project-hex, .timeline-content').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = card.style.transform + ' rotate(1deg)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = card.style.transform.replace(' rotate(1deg)', '');
-            });
-        });
-        
-        // Initialize
-        createMatrixRain();
-        createParticles();
-        
         console.log('%c🔥 CYBERPUNK PORTFOLIO LOADED 🔥', 'color: #00ff41; font-size: 20px; font-weight: bold;');
-        console.log('%c🚀 ENHANCED WITH ADVANCED ANIMATIONS & FOOTER 🚀', 'color: #00d4ff; font-size: 16px;');
     </script>
 </body>
 </html>`;
 };
 
-// The other template functions (generateHolographicPortfolio, generateQuantumPortfolio) 
-// would follow with similar enhancements but are omitted for brevity
+export const generateHolographicPortfolio = (data: PortfolioData): string => {
+  const theme = portfolioTemplates.holographic;
+  
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${data.personalInfo.name || 'Holographic'} - Nexus Portfolio</title>
+    <meta name="description" content="${data.personalInfo.summary || 'Holographic portfolio showcasing innovative projects and cutting-edge skills'}">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: ${theme.primaryColor};
+            --secondary: ${theme.secondaryColor};
+            --accent: ${theme.accentColor};
+            --bg: ${theme.backgroundColor};
+            --card-bg: ${theme.cardBackground};
+            --text: ${theme.textColor};
+            --glow: ${theme.glowColor};
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Holographic Background */
+        .holo-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: holoShift 10s ease-in-out infinite;
+        }
+        
+        @keyframes holoShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+        }
+        
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary), transparent);
+            animation: orbFloat 8s ease-in-out infinite;
+            filter: blur(1px);
+        }
+        
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+            33% { transform: translateY(-30px) translateX(20px) scale(1.1); }
+            66% { transform: translateY(20px) translateX(-20px) scale(0.9); }
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+        }
+        
+        .hero-content {
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: holoText 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .hero h1::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(45deg, var(--secondary), var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: holoShimmer 2s ease-in-out infinite reverse;
+        }
+        
+        @keyframes holoText {
+            0%, 100% { filter: brightness(1) contrast(1); }
+            50% { filter: brightness(1.2) contrast(1.1); }
+        }
+        
+        @keyframes holoShimmer {
+            0% { opacity: 0; transform: translateX(-10px); }
+            50% { opacity: 0.7; transform: translateX(0px); }
+            100% { opacity: 0; transform: translateX(10px); }
+        }
+        
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Holographic Button */
+        .holo-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .holo-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 50px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            z-index: -1;
+        }
+        
+        .holo-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
+            filter: brightness(1.2);
+        }
+        
+        /* Section Styling */
+        .section {
+            padding: 120px 0;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px var(--primary)); }
+            50% { filter: drop-shadow(0 0 40px var(--secondary)); }
+        }
+        
+        /* Morphing Skills Grid */
+        .skills-morph {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .skill-morph {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .skill-morph::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .skill-morph:hover::before {
+            opacity: 0.1;
+        }
+        
+        .skill-morph:hover {
+            transform: translateY(-15px) rotateX(10deg);
+            box-shadow: 0 30px 60px rgba(139, 92, 246, 0.3);
+        }
+        
+        .skill-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary);
+            animation: skillPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes skillPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Liquid Projects */
+        .projects-liquid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .project-liquid {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .project-liquid::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 30px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            animation: borderFlow 4s linear infinite;
+        }
+        
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .project-liquid:hover {
+            transform: translateY(-20px) scale(1.02);
+            box-shadow: 0 40px 80px rgba(139, 92, 246, 0.4);
+        }
+        
+        .project-liquid h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .project-liquid p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Wave Experience */
+        .experience-wave {
+            position: relative;
+            margin-top: 4rem;
+        }
+        
+        .wave-item {
+            background: var(--card-bg);
+            margin: 3rem 0;
+            padding: 3rem;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: waveFloat 6s ease-in-out infinite;
+        }
+        
+        .wave-item:nth-child(even) {
+            animation-delay: 1s;
+            margin-left: 10%;
+        }
+        
+        .wave-item:nth-child(odd) {
+            animation-delay: 2s;
+            margin-right: 10%;
+        }
+        
+        @keyframes waveFloat {
+            0%, 100% { transform: translateY(0px) rotateY(0deg); }
+            50% { transform: translateY(-10px) rotateY(5deg); }
+        }
+        
+        .wave-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .wave-item:hover::before {
+            left: 100%;
+        }
+        
+        .wave-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .projects-liquid { grid-template-columns: 1fr; }
+            .skills-morph { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+            .wave-item:nth-child(even), .wave-item:nth-child(odd) { margin: 2rem 0; }
+            .hero h1 { font-size: 3rem; }
+        }
+        
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Particle System */
+        .particle-system {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="holo-bg"></div>
+    <div class="particle-system"></div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-text="${data.personalInfo.name || 'HOLOGRAPHIC_NEXUS'}">${data.personalInfo.name || 'HOLOGRAPHIC_NEXUS'}</h1>
+            <p class="subtitle">${data.personalInfo.summary || 'Interdimensional Developer | Reality Architect | Code Alchemist'}</p>
+            <div style="margin-top: 3rem;">
+                ${data.personalInfo.email ? `<a href="mailto:${data.personalInfo.email}" class="holo-button">ESTABLISH_CONNECTION</a>` : ''}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Skills Morphing Grid -->
+    <section class="section" id="skills">
+        <div class="container">
+            <h2 class="section-title reveal">NEURAL_NETWORK</h2>
+            <div class="skills-morph">
+                ${data.skills.map((skill, index) => `
+                    <div class="skill-morph reveal" style="animation-delay: ${index * 0.1}s;">
+                        <div class="skill-name">${skill}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Liquid Projects -->
+    <section class="section" id="projects">
+        <div class="container">
+            <h2 class="section-title reveal">QUANTUM_PROJECTS</h2>
+            <div class="projects-liquid">
+                ${data.projects.map((project, index) => `
+                    <div class="project-liquid reveal" style="animation-delay: ${index * 0.2}s;">
+                        <h3>${project.name}</h3>
+                        <p>${project.description}</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                            ${project.technologies.split(',').map(tech => `
+                                <span style="background: linear-gradient(45deg, var(--secondary), var(--accent)); color: var(--bg); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">${tech.trim()}</span>
+                            `).join('')}
+                        </div>
+                        ${project.link ? `<a href="${project.link}" class="holo-button" style="font-size: 0.9rem; padding: 12px 25px;">EXPLORE_PROJECT</a>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Wave Experience -->
+    <section class="section" id="experience">
+        <div class="container">
+            <h2 class="section-title reveal">EXPERIENCE_MATRIX</h2>
+            <div class="experience-wave">
+                ${data.experience.map((exp, index) => `
+                    <div class="wave-item reveal" style="animation-delay: ${index * 0.3}s;">
+                        <h3 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem; background: linear-gradient(45deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${exp.title}</h3>
+                        <p style="color: var(--accent); font-weight: 600; font-size: 1.2rem; margin-bottom: 1rem;">${exp.company} | ${exp.duration}</p>
+                        <p style="opacity: 0.9; line-height: 1.7; font-size: 1.1rem;">${exp.description}</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
 
-export const generatePortfolioHTML = (data: PortfolioData, template: string = 'cyberpunk'): string => {
+    <script>
+        // Create floating orbs
+        function createOrbs() {
+            for (let i = 0; i < 15; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'orb';
+                orb.style.width = Math.random() * 100 + 50 + 'px';
+                orb.style.height = orb.style.width;
+                orb.style.left = Math.random() * 100 + '%';
+                orb.style.top = Math.random() * 100 + '%';
+                orb.style.animationDelay = Math.random() * 8 + 's';
+                orb.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                document.body.appendChild(orb);
+            }
+        }
+        
+        // Create particle system
+        function createParticles() {
+            const particleSystem = document.querySelector('.particle-system');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                particleSystem.appendChild(particle);
+            }
+        }
+        
+        // Scroll reveal animation
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+        
+        // Mouse movement parallax
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.orb').forEach((orb, index) => {
+                const speed = (index + 1) * 0.5;
+                orb.style.transform = \`translate(\${mouseX * speed}px, \${mouseY * speed}px)\`;
+            });
+        });
+        
+        // Initialize
+        createOrbs();
+        createParticles();
+        
+        console.log('%c🌈 HOLOGRAPHIC PORTFOLIO ACTIVATED 🌈', 'color: #8b5cf6; font-size: 20px; font-weight: bold;');
+    </script>
+</body>
+</html>`;
+};
+
+export const generateQuantumPortfolio = (data: PortfolioData): string => {
+  const theme = portfolioTemplates.quantum;
+  
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${data.personalInfo.name || 'Quantum'} - Dimensional Portfolio</title>
+    <meta name="description" content="${data.personalInfo.summary || 'Quantum-inspired portfolio showcasing multidimensional skills and innovative projects'}">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&family=Audiowide&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: ${theme.primaryColor};
+            --secondary: ${theme.secondaryColor};
+            --accent: ${theme.accentColor};
+            --bg: ${theme.backgroundColor};
+            --card-bg: ${theme.cardBackground};
+            --text: ${theme.textColor};
+            --glow: ${theme.glowColor};
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Quantum Field Background */
+        .quantum-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(78, 205, 196, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 230, 109, 0.2) 0%, transparent 50%);
+            z-index: -2;
+            animation: quantumShift 15s ease-in-out infinite;
+        }
+        
+        @keyframes quantumShift {
+            0%, 100% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+            33% { transform: scale(1.1) rotate(120deg); filter: hue-rotate(120deg); }
+            66% { transform: scale(0.9) rotate(240deg); filter: hue-rotate(240deg); }
+        }
+        
+        /* Geometric Shapes */
+        .geo-shape {
+            position: absolute;
+            border: 2px solid var(--primary);
+            animation: geometricFloat 12s ease-in-out infinite;
+        }
+        
+        .geo-triangle {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 43px solid var(--secondary);
+            animation: triangleSpin 8s linear infinite;
+        }
+        
+        .geo-square {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, var(--accent), transparent);
+            animation: squareMorph 6s ease-in-out infinite;
+        }
+        
+        .geo-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary), transparent);
+            animation: circleExpand 4s ease-in-out infinite;
+        }
+        
+        @keyframes geometricFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            25% { transform: translateY(-50px) translateX(30px); }
+            50% { transform: translateY(-20px) translateX(-30px); }
+            75% { transform: translateY(-40px) translateX(20px); }
+        }
+        
+        @keyframes triangleSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes squareMorph {
+            0%, 100% { border-radius: 0%; }
+            50% { border-radius: 50%; }
+        }
+        
+        @keyframes circleExpand {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
+        }
+        
+        .hero-content {
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-family: 'Audiowide', cursive;
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: quantumGradient 4s ease-in-out infinite;
+            text-shadow: 0 0 50px var(--primary);
+        }
+        
+        @keyframes quantumGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 4vw, 2.5rem);
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            animation: quantumFadeIn 2s ease-out 1s both;
+        }
+        
+        @keyframes quantumFadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.8); }
+            to { opacity: 0.9; transform: translateY(0) scale(1); }
+        }
+        
+        /* Quantum Button */
+        .quantum-button {
+            display: inline-block;
+            padding: 20px 45px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 300% 300%;
+            color: var(--bg);
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            animation: quantumGradient 3s ease-in-out infinite;
+            border: 3px solid transparent;
+        }
+        
+        .quantum-button::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 50px;
+            z-index: -1;
+            animation: quantumGradient 3s ease-in-out infinite reverse;
+        }
+        
+        .quantum-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(255, 107, 107, 0.4);
+            filter: brightness(1.2);
+        }
+        
+        /* Section Styling */
+        .section {
+            padding: 150px 0;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-family: 'Audiowide', cursive;
+            font-size: clamp(2.5rem, 7vw, 6rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 6rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: quantumGradient 4s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 3px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Dimensional Skills */
+        .skills-dimension {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 5rem;
+            perspective: 1000px;
+        }
+        
+        .skill-dimension {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid var(--primary);
+            transform-style: preserve-3d;
+        }
+        
+        .skill-dimension::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: conic-gradient(from 0deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            animation: rotate 8s linear infinite;
+            z-index: -1;
+            border-radius: 30px;
+        }
+        
+        .skill-dimension::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--card-bg);
+            border-radius: 27px;
+            z-index: -1;
+        }
+        
+        .skill-dimension:hover {
+            transform: translateY(-20px) rotateX(15deg) rotateY(15deg);
+            box-shadow: 0 40px 80px rgba(255, 107, 107, 0.4);
+        }
+        
+        .skill-name {
+            font-family: 'Audiowide', cursive;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary);
+            animation: skillQuantumPulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes skillQuantumPulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.3); }
+        }
+        
+        /* Spiral Projects */
+        .projects-spiral {
+            position: relative;
+            margin-top: 5rem;
+            min-height: 800px;
+        }
+        
+        .project-spiral {
+            position: absolute;
+            width: 350px;
+            height: 450px;
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 2.5rem;
+            border: 2px solid var(--secondary);
+            transition: all 0.6s ease;
+            animation: spiralFloat 10s ease-in-out infinite;
+        }
+        
+        .project-spiral:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+        .project-spiral:nth-child(2) { top: 200px; right: 10%; animation-delay: 1s; }
+        .project-spiral:nth-child(3) { top: 400px; left: 10%; animation-delay: 2s; }
+        
+        @keyframes spiralFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(5deg); }
+            66% { transform: translateY(15px) rotate(-5deg); }
+        }
+        
+        .project-spiral:hover {
+            transform: translateY(-25px) scale(1.08) rotate(3deg);
+            box-shadow: 0 35px 70px rgba(78, 205, 196, 0.4);
+            z-index: 10;
+        }
+        
+        .project-spiral h3 {
+            font-family: 'Audiowide', cursive;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .project-spiral p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .skills-dimension { grid-template-columns: 1fr; }
+            .projects-spiral { position: static; }
+            .project-spiral { 
+                position: static !important; 
+                margin: 2rem auto; 
+                width: 100%; 
+                max-width: 350px;
+            }
+            .hero h1 { font-size: 3rem; }
+        }
+        
+        /* Quantum Reveal */
+        .quantum-reveal {
+            opacity: 0;
+            transform: translateY(100px) rotateX(45deg);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .quantum-reveal.active {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg);
+        }
+        
+        /* Energy Waves */
+        .energy-wave {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--primary), transparent);
+            animation: energyRotate 20s linear infinite;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        @keyframes energyRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="quantum-field"></div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="energy-wave"></div>
+        <div class="hero-content">
+            <h1>${data.personalInfo.name || 'QUANTUM_DIMENSION'}</h1>
+            <p class="subtitle">${data.personalInfo.summary || 'Multidimensional Creator | Quantum Developer | Reality Shifter'}</p>
+            <div style="margin-top: 3rem;">
+                ${data.personalInfo.email ? `<a href="mailto:${data.personalInfo.email}" class="quantum-button">ENTER_DIMENSION</a>` : ''}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Dimensional Skills -->
+    <section class="section" id="skills">
+        <div class="container">
+            <h2 class="section-title quantum-reveal">SKILL_DIMENSIONS</h2>
+            <div class="skills-dimension">
+                ${data.skills.map((skill, index) => `
+                    <div class="skill-dimension quantum-reveal" style="animation-delay: ${index * 0.15}s;">
+                        <div class="skill-name">${skill}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Spiral Projects -->
+    <section class="section" id="projects">
+        <div class="container">
+            <h2 class="section-title quantum-reveal">PROJECT_MULTIVERSE</h2>
+            <div class="projects-spiral">
+                ${data.projects.map((project, index) => `
+                    <div class="project-spiral quantum-reveal" style="animation-delay: ${index * 0.4}s;">
+                        <h3>${project.name}</h3>
+                        <p>${project.description}</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2rem;">
+                            ${project.technologies.split(',').map(tech => `
+                                <span style="background: linear-gradient(45deg, var(--accent), var(--primary)); color: var(--bg); padding: 0.6rem 1.2rem; border-radius: 25px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase;">${tech.trim()}</span>
+                            `).join('')}
+                        </div>
+                        ${project.link ? `<a href="${project.link}" class="quantum-button" style="font-size: 0.8rem; padding: 15px 30px;">EXPLORE_UNIVERSE</a>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quantum Experience -->
+    <section class="section" id="experience">
+        <div class="container">
+            <h2 class="section-title quantum-reveal">EXPERIENCE_CONTINUUM</h2>
+            <div style="margin-top: 5rem;">
+                ${data.experience.map((exp, index) => `
+                    <div class="quantum-reveal" style="animation-delay: ${index * 0.3}s; margin-bottom: 4rem;">
+                        <div style="background: var(--card-bg); padding: 3rem; border-radius: 30px; border: 2px solid var(--accent); position: relative; overflow: hidden; transition: all 0.5s ease;">
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent)); animation: pulse 2s ease-in-out infinite;"></div>
+                            <h3 style="font-family: 'Audiowide', cursive; font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; color: var(--primary);">${exp.title}</h3>
+                            <p style="color: var(--accent); font-weight: 600; font-size: 1.3rem; margin-bottom: 1.5rem;">${exp.company} | ${exp.duration}</p>
+                            <p style="opacity: 0.9; line-height: 1.8; font-size: 1.1rem;">${exp.description}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Create geometric shapes
+        function createGeometricShapes() {
+            const shapes = ['geo-triangle', 'geo-square', 'geo-circle'];
+            for (let i = 0; i < 20; i++) {
+                const shape = document.createElement('div');
+                shape.className = \`geo-shape \${shapes[Math.floor(Math.random() * shapes.length)]}\`;
+                shape.style.left = Math.random() * 100 + '%';
+                shape.style.top = Math.random() * 100 + '%';
+                shape.style.animationDelay = Math.random() * 12 + 's';
+                shape.style.animationDuration = (Math.random() * 8 + 8) + 's';
+                document.body.appendChild(shape);
+            }
+        }
+        
+        // Quantum reveal animation
+        const quantumElements = document.querySelectorAll('.quantum-reveal');
+        const quantumObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        quantumElements.forEach(el => quantumObserver.observe(el));
+        
+        // Mouse interaction with quantum field
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            const quantumField = document.querySelector('.quantum-field');
+            quantumField.style.transform = \`translate(\${mouseX * 20}px, \${mouseY * 20}px) scale(1.05)\`;
+            
+            // Interactive shapes
+            document.querySelectorAll('.geo-shape').forEach((shape, index) => {
+                const speed = (index + 1) * 0.8;
+                shape.style.transform = \`translate(\${mouseX * speed}px, \${mouseY * speed}px)\`;
+            });
+        });
+        
+        // Hover effects for cards
+        document.querySelectorAll('.skill-dimension, .project-spiral').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.filter = 'brightness(1.2) saturate(1.3)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.filter = 'brightness(1) saturate(1)';
+            });
+        });
+        
+        // Initialize
+        createGeometricShapes();
+        
+        console.log('%c⚡ QUANTUM PORTFOLIO INITIALIZED ⚡', 'color: #ff6b6b; font-size: 20px; font-weight: bold;');
+    </script>
+</body>
+</html>`;
+};
+
+export const generatePortfolioHTML = (data: PortfolioData, template: string = 'modern'): string => {
   switch (template) {
     case 'cyberpunk':
     case 'modern':
@@ -1206,7 +1919,7 @@ export const generatePortfolioHTML = (data: PortfolioData, template: string = 'c
   }
 };
 
-export const downloadPortfolio = (data: PortfolioData, template: string = 'cyberpunk'): void => {
+export const downloadPortfolio = (data: PortfolioData, template: string = 'modern'): void => {
   const htmlContent = generatePortfolioHTML(data, template);
   const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
   const cleanName = (data.personalInfo.name || 'Portfolio').replace(/[^a-zA-Z0-9]/g, '_');
@@ -1215,6 +1928,6 @@ export const downloadPortfolio = (data: PortfolioData, template: string = 'cyber
   saveAs(blob, fileName);
 };
 
-export const generateGitHubPages = (data: PortfolioData, template: string = 'cyberpunk'): string => {
+export const generateGitHubPages = (data: PortfolioData, template: string = 'modern'): string => {
   return generatePortfolioHTML(data, template);
 };
