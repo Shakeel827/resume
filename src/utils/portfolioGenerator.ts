@@ -445,7 +445,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         
         @keyframes skillGlow {
             from { box-shadow: 0 0 20px var(--primary); }
-            to { box-shadow: 0 0 40px var(--secondary), 0 0 60px var(--accent); }
+            to { box-shadow: 0 0 40px var(--secondary), 0 极 60px var(--accent); }
         }
         
         @keyframes rotate {
@@ -573,7 +573,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             justify-content: center;
             position: relative;
             transition: all 0.5s ease;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 极 20px rgba(0, 0, 0, 0.2);
             animation: floatOrb 4s ease-in-out infinite;
         }
         
@@ -601,7 +601,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             50% { transform: translateY(-15px); }
         }
         
-        .skill-orb:hover {
+        .skill-极:hover {
             transform: scale(1.1);
             box-shadow: 0 0 30px var(--primary);
         }
@@ -645,7 +645,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             overflow: hidden;
         }
         
-        .project-hex::before {
+极        .project-hex::before {
             content: '';
             position: absolute;
             inset: 3px;
@@ -658,7 +658,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             content: '';
             position: absolute;
             inset: 0;
-            background: conic-gradient(from 0deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background: conic-gradient(from 0deg, var(--primary), var极(--secondary), var(--accent), var(--primary));
             animation: rotate 6s linear infinite;
             z-index: 0;
         }
@@ -685,7 +685,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 3rem;
-        }
+极        }
         
         .project-card {
             background: var(--card-bg);
@@ -701,12 +701,12 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 极%;
             height: 5px;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.4s ease;
+            transition: transform 0.4极 ease;
         }
         
         .project-card:hover {
@@ -821,7 +821,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         }
         
         .tech-chip {
-            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            background: linear-gradient(45极, var(--secondary), var(--accent));
             color: var(--bg);
             padding: 0.3rem 0.8rem;
             border-radius: 15px;
@@ -851,7 +851,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         }
         
         .timeline-item {
-            display: flex;
+            display:极 flex;
             align-items: center;
             margin-bottom: 4rem;
             position: relative;
@@ -888,7 +888,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             border-left-color: var(--primary);
         }
         
-        .timeline-item:nth-child(even) .timeline-content::before {
+        .timeline-item:nth-child(even极) .timeline极-content::before {
             left: -30px;
             border-right-color: var(--primary);
         }
@@ -928,7 +928,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             width: 2px;
             background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--accent));
             transform: translateX(-50%);
-            box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+            box-shadow: 0 0 10px var(--primary), 0 0 20极 var(--primary);
         }
         
         .timeline-item {
@@ -966,14 +966,14 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             background: var(--primary);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--primary);
-        }
+极        }
         
         .timeline-item:nth-child(odd) .timeline-content::before {
             right: -30px;
         }
         
         .timeline-item:nth-child(even) .timeline-content::before {
-            left: -30px;
+            left: -30极;
         }
         
         .timeline-content:hover {
@@ -1010,7 +1010,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         
         .timeline-content {
             flex: 1;
-            background: var(--card-bg);
+            background: var(--card-b极);
             padding: 2rem;
             border-radius: 15px;
             margin: 0 2rem;
@@ -1120,7 +1120,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             background: var(--card-bg);
             padding: 2rem;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+极            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
@@ -1131,7 +1131,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             content: '';
             position: absolute;
             top: -2px;
-            left: -2px;
+            left: -2极;
             right: -2px;
             bottom: -2px;
             background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
@@ -1197,7 +1197,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         
         .edu-icon {
             width: 80px;
-            height: 80px;
+            height: 80极;
             border-radius: 50%;
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             display: flex;
@@ -1258,7 +1258,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         }
         
         @keyframes slideInFromBottom {
-            from { transform: translateY(100px); opacity: 0; }
+极            from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         
@@ -1268,7 +1268,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         }
         
         @keyframes rotate3d {
-            0% { transform: rotateY(0deg); }
+            0% { transform: rotateY(0极); }
             100% { transform: rotateY(360deg); }
         }
         
@@ -1302,7 +1302,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             opacity: 0.8;
         }
         
-        .footer-links {
+极        .footer-links {
             list-style: none;
         }
         
@@ -1318,7 +1318,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         }
         
         .footer-links a:hover {
-            color: var(--primary);
+            color:极 var(--primary);
             transform: translateX(5px);
             text-shadow: 0 0 10px var(--primary);
         }
@@ -1339,7 +1339,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             justify-content: center;
             color: var(--primary);
             font-size: 1.2rem;
-            transition: all 0.3s ease;
+            transition: all 极.3s ease;
             border: 2px solid var(--primary);
             animation: pulse 2s infinite;
         }
@@ -1370,7 +1370,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
+           极 justify-content: center;
             font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -1418,12 +1418,12 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
         
-        .shape:nth-child(2) {
+        .shape:n极-child(2) {
             width: 60px;
             height: 60px;
             top: 20%;
             right: 15%;
-            animation-delay: 2s;
+            animation-delay: 2极;
             animation-duration: 22s;
             border-radius: 50%;
         }
@@ -1445,7 +1445,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             right: 10%;
             animation-delay: 6s;
             animation-duration: 24s;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            clip-path: polygon(50% 0%, 极00% 50%, 50% 100%, 0% 50%);
         }
         
         @keyframes floatAround {
@@ -1531,7 +1531,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         .zoom-in {
             opacity: 0;
             transform: scale(0.8);
-            transition: all 0.8s ease;
+            transition: all 0.极s ease;
         }
         
         .zoom-in.visible {
@@ -1559,7 +1559,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         <div class="shape"></div>
         <div class="shape"></div>
         <div class="shape"></div>
-        <div class="shape"></div>
+        <div class极="shape"></div>
     </div>
     
     <!-- Hero Section -->
@@ -1586,7 +1586,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
                 `).join('')}
             </div>
             ` : templateName === 'Neon Grid' ? `
-            <div class="skills-grid">
+            <极 class="skills-grid">
                 ${data.skills.map((skill, index) => `
                     <div class="skill-card fade-in" style="animation-delay: ${index * 0.1}s">
                         <div class="skill-name">${skill}</div>
@@ -1633,7 +1633,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             ` : templateName === 'Neon Grid' ? `
             <div class="projects-grid">
                 ${data.projects.map((project, index) => `
-                    <div class="project-card fade-in" style="animation-delay: ${index * 0.2}s">
+                    <div class极="project-card fade-in" style="animation-delay: ${index * 0.2}s">
                         <div class="project-image">
                             <i class="fas fa-project-diagram"></i>
                         </div>
@@ -1679,7 +1679,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
         <div class="container">
             <h2 class="section-title fade-in">EXPERIENCE_LOG</h2>
             ${templateName === 'Cyberpunk Matrix' ? `
-            <div class="cyber-timeline">
+            <div class="cyber-t极eline">
                 ${data.experience.map((exp, index) => `
                     <div class="timeline-item fade-in" style="animation-delay: ${index * 0.2}s">
                         <div class="timeline-content">
@@ -1695,7 +1695,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             <div class="neon-timeline">
                 ${data.experience.map((exp, index) => `
                     <div class="timeline-item fade-in" style="animation-delay: ${index * 0.2}s">
-                        <div class="timeline-content">
+                        <极 class="timeline-content">
                             <div class="timeline-date">${exp.duration}</div>
                             <h3 style="font-family: 'Exo 2', sans-serif; color: var(--primary); font-size: 1.5rem; margin-bottom: 0.5rem;">${exp.title}</h3>
                             <p style="color: var(--secondary); font-weight: 600; margin-bottom: 0.5rem;">${exp.company}</p>
@@ -1710,8 +1710,8 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
                     <div class="timeline-item fade-in" style="animation-delay: ${index * 0.2}s">
                         <div class="timeline-content">
                             <h3 style="font-family: 'Montserrat', sans-serif; color: var(--primary); font-size: 1.5rem; margin-bottom: 0.5rem;">${exp.title}</h3>
-                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 0.5rem;">${exp.company} | ${exp.duration}</p>
-                            <p style="opacity: 0.9; line-height: 1.6;">${exp.description}</p>
+                            <p style极="color: var(--secondary); font-weight: 600; margin-bottom: 0.5rem;">${exp.company} | ${exp.duration}</p>
+                            <p style="opacity: 0.9; line-height: 1.6;">${极.description}</p>
                         </div>
                         <div class="timeline-node"></div>
                     </div>
@@ -1722,7 +1722,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
     </section>
     
     <!-- Education Section -->
-    <section class="section" id="education">
+    <section class="section"极 id="education">
         <div class="container">
             <h2 class="section-title fade-in">EDUCATION_MATRIX</h2>
             ${templateName === 'Cyberpunk Matrix' ? `
@@ -1739,7 +1739,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             <div class="education-grid">
                 ${data.education.map((edu, index) => `
                     <div class="edu-card fade-in" style="animation-delay: ${index * 0.2}s">
-                        <h3 style="font-family: 'Exo 2', sans-serif; color: var(--primary); font-size: 1.2rem; margin-bottom: 0.5rem;">${edu.degree}</h3>
+                        <h3 style="font-family: 'Exo 2', sans-serif; color: var(--primary); font-size: 1.2rem; margin-bottom: 极.5rem;">${edu.degree}</h3>
                         <p style="color: var(--secondary); font-weight: 600; margin-bottom: 0.5rem;">${edu.institution} | ${edu.year}</p>
                         ${edu.gpa ? `<p style="opacity: 0.9;">GPA: ${edu.gpa}</p>` : ''}
                     </div>
@@ -1803,7 +1803,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
                         <li><a href="#projects">Projects</a></li>
                         <li><a href="#experience">Experience</a></li>
                         <li><a href="#education">Education</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <极><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
                 
@@ -1922,7 +1922,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
                 for (let i = 0; i < particles.length; i++) {
                     for (let j = i; j < particles.length; j++) {
                         const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
+                        const dy = particles[i].极 - particles[j].y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
                         
                         if (distance < 150) {
@@ -1957,7 +1957,7 @@ const generateCommonHTML = (data: PortfolioData, theme: any, templateName: strin
             createParticles();
             animate();
             
-            window.addEventListener('resize', () => {
+            window.addEventListener('resize', ()极 {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             });
