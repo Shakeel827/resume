@@ -37,90 +37,86 @@ export interface PortfolioTemplate {
 }
 
 export const portfolioTemplates: PortfolioTemplate[] = [
-  // ------------------------- Template 1: Minimal Developer -------------------------
+  // ... existing templates ...
+
+  // ------------------------- Template 4: Modern Minimal -------------------------
   {
-    id: 'minimal-dev',
-    name: 'Minimal Developer',
-    category: 'minimal',
-    preview:
-      'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop',
-    description:
-      'A clean, minimal portfolio focused on code and projects. Uses a monospace typography and subtle animations to highlight technical skills.',
+    id: 'modern-minimal',
+    name: 'Modern Minimal',
+    category: 'modern',
+    preview: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
+    description: 'A clean, professional portfolio with elegant typography and spacious layout. Focuses on content hierarchy and readability.',
     features: [
-      'Code-inspired Design',
-      'Syntax Highlighting Effects',
-      'Minimal Navigation',
-      'Project Showcase Grid',
       'Dark/Light Mode Toggle',
+      'Smooth Scroll Navigation',
+      'Content-Focused Layout',
+      'Elegant Typography',
+      'Mobile-First Responsive Design'
     ],
-    technologies: ['React', 'TypeScript', 'CSS3', 'Framer Motion'],
+    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
     colors: {
-      primary: '#2D5BFF',
-      secondary: '#6C757D',
-      accent: '#FF6B6B',
+      primary: '#2563EB',
+      secondary: '#64748B',
+      accent: '#0EA5E9',
       background: '#FFFFFF',
-      text: '#212529',
+      text: '#1E293B'
     },
-    layout: 'grid',
-    animations: ['Typewriter Effect', 'Code Fade-in', 'Subtle Hover'],
+    layout: 'single-page',
+    animations: ['Smooth Scroll', 'Fade-in Sections', 'Subtle Transitions'],
     seoOptimized: true,
   },
 
-  // ------------------------- Template 2: Creative Showcase -------------------------
+  // ------------------------- Template 5: Creative Canvas -------------------------
   {
-    id: 'creative-showcase',
-    name: 'Creative Showcase',
-    category: 'creative',
-    preview:
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-    description:
-      'A visually striking portfolio with asymmetrical layouts and bold color transitions. Perfect for designers and artists.',
+    id: 'creative-canvas',
+    name: 'Creative Canvas',
+    category: 'artistic',
+    preview: 'https://images.unsplash.com/photo-1545235617-9465d2a55698?w=400&h=300&fit=crop',
+    description: 'An artistic portfolio with bold visual elements and interactive experiences. Perfect for designers and creatives.',
     features: [
-      'Asymmetrical Layout',
-      'Color Transition Effects',
-      'Interactive Project Previews',
-      'Custom Cursor Interactions',
-      'Micro-interactions Throughout',
+      'Interactive Canvas Elements',
+      'Scroll-Triggered Animations',
+      'Custom Cursor Design',
+      'Dynamic Color Transitions',
+      'Immersive Project Showcase'
     ],
-    technologies: ['GSAP', 'WebGL', 'Sass', 'React Spring'],
+    technologies: ['React', 'Three.js', 'GSAP', 'Styled Components'],
     colors: {
-      primary: '#FF5E5B',
-      secondary: '#00CECB',
-      accent: '#FFED66',
-      background: '#F7F7F7',
-      text: '#2E2E2E',
+      primary: '#FF3B30',
+      secondary: '#5856D6',
+      accent: '#FFCC00',
+      background: '#000000',
+      text: '#FFFFFF'
     },
-    layout: 'masonry',
-    animations: ['Color Morph', 'Shape Transformation', 'Staggered Reveal'],
+    layout: 'parallax',
+    animations: ['Parallax Scrolling', 'Element Transformations', 'Path Animations'],
     seoOptimized: true,
   },
 
-  // ------------------------- Template 3: Corporate Professional -------------------------
+  // ------------------------- Template 6: CodeCraft Developer -------------------------
   {
-    id: 'corporate-pro',
-    name: 'Corporate Professional',
-    category: 'corporate',
-    preview:
-      'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
-    description:
-      'A sophisticated portfolio with a focus on professionalism and clean data presentation. Ideal for consultants and executives.',
+    id: 'codecraft-dev',
+    name: 'CodeCraft Developer',
+    category: 'developer',
+    preview: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=300&fit=crop',
+    description: 'A technical portfolio showcasing code expertise with interactive elements and live code demonstrations.',
     features: [
-      'Professional Layout',
-      'Data Visualization Integration',
-      'Testimonial Sections',
-      'Case Study Format',
-      'Printable Resume Option',
+      'Live Code Demos',
+      'Interactive Terminal',
+      'GitHub Integration',
+      'Technical Blog Section',
+      'Skill Proficiency Charts'
     ],
-    technologies: ['Vue.js', 'D3.js', 'Tailwind CSS', 'Chart.js'],
+    technologies: ['React', 'MDX', 'Prism.js', 'Chart.js'],
     colors: {
-      primary: '#1A1A40',
-      secondary: '#7B0D1E',
-      accent: '#270082',
-      background: '#FAFAFA',
-      text: '#333333',
+      primary: '#00C2A8',
+      secondary: '#6A57A5',
+      accent: '#FF6B6B',
+      background: '#0D1117',
+      text: '#E6EDF3'
     },
-    layout: 'card-based',
-    animations: ['Smooth Scroll', 'Fade-up Elements', 'Progress Bars'],
+    layout: 'split-screen',
+    animations: ['Terminal Typing', 'Code Highlighting', 'Graph Animations'],
     seoOptimized: true,
   },
 ];
