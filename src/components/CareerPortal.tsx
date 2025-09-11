@@ -32,10 +32,20 @@ import {
   Layers,
   Settings,
   Wifi,
-  WifiOff
+  WifiOff,
+  Sync,
+  Database,
+  Cloud,
+  Server
 } from 'lucide-react';
-import { searchJobs, getJobMarketAnalytics, Job } from '../services/jobService';
-import { JobStorageService } from '../services/jobStorageService';
+import { 
+  centralizedJobService, 
+  searchCentralizedJobs, 
+  getJobStats, 
+  incrementJobView, 
+  incrementJobApplication,
+  CentralizedJob as Job 
+} from '../services/centralizedJobService';
 import AdminPortal from './AdminPortal';
 import toast from 'react-hot-toast';
 
@@ -313,6 +323,7 @@ const JobViewModal: React.FC<JobViewModalProps> = ({
 const CareerPortal: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
@@ -326,23 +337,27 @@ const CareerPortal: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'search' | 'saved'>('search');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showJobModal, setShowJobModal] = useState(false);
-  const [marketAnalytics, setMarketAnalytics] = useState<any>(null);
+  const [jobStats, setJobStats] = useState<any>(null);
   const [showAdminPortal, setShowAdminPortal] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<number>(0);
 
   useEffect(() => {
     loadJobs();
     loadSavedJobs();
-    loadMarketAnalytics();
+    loadJobStats();
     
     // Listen for online/offline events
     const handleOnline = () => {
       setIsOnline(true);
-      loadJobs(); // Refresh jobs when back online
+      handleForceSync(); // Sync when back online
     };
     const handleOffline = () => setIsOnline(false);
     
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    
+    // Update last sync time
+    setLastSyncTime(centralizedJobService.getLastSyncTime());
     
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -353,57 +368,57 @@ const CareerPortal: React.FC = () => {
   const loadJobs = async () => {
     setLoading(true);
     try {
-      if (isOnline) {
-        // Try to fetch from API
-        const apiResults = await searchJobs(searchQuery, filters);
-        if (apiResults.length > 0) {
-          // Merge with stored jobs and save
-          const mergedJobs = JobStorageService.mergeWithApiJobs(apiResults);
-          setJobs(mergedJobs);
-        } else {
-          // If API returns empty, use stored jobs
-          const storedJobs = JobStorageService.getStoredJobs();
-          setJobs(storedJobs);
-        }
-      } else {
-        // Offline: use stored jobs only
-        const storedJobs = JobStorageService.getStoredJobs();
-        setJobs(storedJobs);
-        if (storedJobs.length === 0) {
-          toast.error('No cached jobs available. Please connect to internet.');
-        }
+      // Use centralized job service
+      const centralizedJobs = searchCentralizedJobs(searchQuery, filters);
+      setJobs(centralizedJobs);
+      
+      if (centralizedJobs.length === 0 && !isOnline) {
+        toast.info('Showing cached jobs. Connect to internet for latest updates.');
       }
     } catch (error) {
       console.error('Error loading jobs:', error);
-      // On error, fallback to stored jobs
-      const storedJobs = JobStorageService.getStoredJobs();
-      setJobs(storedJobs);
-      if (storedJobs.length === 0) {
-        toast.error('Unable to load jobs. Please check your connection.');
-      } else {
-        toast.info('Showing cached jobs. Some listings may be outdated.');
-      }
+      toast.error('Error loading jobs. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const loadMarketAnalytics = async () => {
+  const loadJobStats = () => {
     try {
-      const analytics = await getJobMarketAnalytics();
-      setMarketAnalytics(analytics);
+      const stats = getJobStats();
+      setJobStats(stats);
     } catch (error) {
-      console.error('Failed to load market analytics:', error);
-      setMarketAnalytics({
+      console.error('Failed to load job stats:', error);
+      setJobStats({
         totalJobs: 0,
-        trendingSkills: ['JavaScript', 'React', 'Python', 'Node.js'],
+        activeJobs: 0,
+        topSkills: ['JavaScript', 'React', 'Python', 'Node.js'],
         topCompanies: ['Google', 'Microsoft', 'Amazon', 'Flipkart'],
         averageSalary: '₹12-25 LPA',
-        growthRate: '15%'
+        totalViews: 0,
+        totalApplications: 0
       });
     }
   };
 
+  const handleForceSync = async () => {
+    setSyncing(true);
+    try {
+      const success = await centralizedJobService.forceSyncWithAPI();
+      if (success) {
+        toast.success('Jobs synced successfully!');
+        loadJobs();
+        loadJobStats();
+        setLastSyncTime(centralizedJobService.getLastSyncTime());
+      } else {
+        toast.error('Sync failed. Using cached jobs.');
+      }
+    } catch (error) {
+      toast.error('Sync failed. Using cached jobs.');
+    } finally {
+      setSyncing(false);
+    }
+  };
   const loadSavedJobs = () => {
     const saved = localStorage.getItem('savedJobs');
     if (saved) {
@@ -442,6 +457,9 @@ const CareerPortal: React.FC = () => {
   };
 
   const handleApplyNow = (job: Job) => {
+    // Increment application count
+    incrementJobApplication(job.id);
+    
     if (job.application_link || job.url) {
       const applyUrl = job.application_link || job.url;
       if (applyUrl && applyUrl !== '#') {
@@ -547,6 +565,8 @@ const CareerPortal: React.FC = () => {
   };
 
   const handleViewJob = (job: Job) => {
+    // Increment view count
+    incrementJobView(job.id);
     setSelectedJob(job);
     setShowJobModal(true);
   };
@@ -752,8 +772,11 @@ const CareerPortal: React.FC = () => {
                 : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200'
             }`}
           >
-            {isOnline ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
-            <span>{isOnline ? 'Online - Live Jobs' : 'Offline - Cached Jobs'}</span>
+            {isOnline ? <Database className="w-4 h-4" /> : <Server className="w-4 h-4" />}
+            <span>{isOnline ? 'Centralized Database Active' : 'Local Cache Active'}</span>
+            <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">
+              {jobs.length} Jobs Available
+            </span>
           </motion.div>
         </motion.div>
 
@@ -765,10 +788,10 @@ const CareerPortal: React.FC = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12"
         >
           {[
-            { icon: Briefcase, label: 'Active Jobs', value: marketAnalytics?.totalJobs || jobs.length || '0', color: 'from-blue-500 to-blue-600', bgColor: 'from-blue-50 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50' },
-            { icon: Building, label: 'Companies', value: marketAnalytics?.topCompanies?.length || '10+', color: 'from-green-500 to-green-600', bgColor: 'from-green-50 to-green-100 dark:from-green-900/50 dark:to-green-800/50' },
-            { icon: Users, label: 'Applications', value: '500+', color: 'from-purple-500 to-purple-600', bgColor: 'from-purple-50 to-purple-100 dark:from-purple-900/50 dark:to-purple-800/50' },
-            { icon: Heart, label: 'Success Rate', value: '85%', color: 'from-red-500 to-red-600', bgColor: 'from-red-50 to-red-100 dark:from-red-900/50 dark:to-red-800/50' }
+            { icon: Briefcase, label: 'Active Jobs', value: jobStats?.activeJobs || jobs.length || '0', color: 'from-blue-500 to-blue-600', bgColor: 'from-blue-50 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50' },
+            { icon: Building, label: 'Companies', value: jobStats?.topCompanies?.length || '10+', color: 'from-green-500 to-green-600', bgColor: 'from-green-50 to-green-100 dark:from-green-900/50 dark:to-green-800/50' },
+            { icon: Eye, label: 'Total Views', value: jobStats?.totalViews || '0', color: 'from-purple-500 to-purple-600', bgColor: 'from-purple-50 to-purple-100 dark:from-purple-900/50 dark:to-purple-800/50' },
+            { icon: ExternalLink, label: 'Applications', value: jobStats?.totalApplications || '0', color: 'from-red-500 to-red-600', bgColor: 'from-red-50 to-red-100 dark:from-red-900/50 dark:to-red-800/50' }
           ].map((stat, index) => (
             <motion.div
               key={index}
@@ -798,6 +821,35 @@ const CareerPortal: React.FC = () => {
           transition={{ delay: 0.2 }}
           className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl p-4 sm:p-6 mb-8 border border-white/50 dark:border-gray-700/50"
         >
+          {/* Sync Status */}
+          <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+            <div className="flex items-center space-x-3">
+              <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></div>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {isOnline ? 'Online - Live Jobs' : 'Offline - Cached Jobs'}
+              </span>
+              {lastSyncTime > 0 && (
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Last sync: {new Date(lastSyncTime).toLocaleTimeString()}
+                </span>
+              )}
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleForceSync}
+              disabled={syncing || !isOnline}
+              className="flex items-center space-x-2 bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 text-sm"
+            >
+              {syncing ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              ) : (
+                <Sync className="w-4 h-4" />
+              )}
+              <span>{syncing ? 'Syncing...' : 'Sync Now'}</span>
+            </motion.button>
+          </div>
+          
           <div className="flex flex-col gap-3 sm:gap-4">
             {/* Search */}
             <div className="relative">
