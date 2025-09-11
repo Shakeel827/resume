@@ -18,14 +18,7 @@ import {
   Search,
   Filter
 } from 'lucide-react';
-import { 
-  centralizedJobService, 
-  addCentralizedJob, 
-  updateCentralizedJob, 
-  deleteCentralizedJob, 
-  getAllJobs,
-  CentralizedJob as StoredJob 
-} from '../services/centralizedJobService';
+import { JobStorageService, StoredJob } from '../services/jobStorageService';
 import toast from 'react-hot-toast';
 
 interface AdminPortalProps {
@@ -51,7 +44,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
   }, [isAuthenticated, isOpen]);
 
   const loadJobs = () => {
-    const storedJobs = getAllJobs();
+    const storedJobs = JobStorageService.getStoredJobs();
     setJobs(storedJobs);
   };
 
@@ -74,18 +67,14 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleAddJob = (jobData: Omit<StoredJob, 'id'>) => {
-    const newJob = addCentralizedJob({
-      ...jobData,
-      source: 'admin',
-      isActive: true
-    });
+    const newJob = JobStorageService.addJob(jobData);
     setJobs(prev => [newJob, ...prev]);
     setShowAddForm(false);
     toast.success('Job added successfully!');
   };
 
   const handleUpdateJob = (jobId: string, updates: Partial<StoredJob>) => {
-    if (updateCentralizedJob(jobId, updates)) {
+    if (JobStorageService.updateJob(jobId, updates)) {
       setJobs(prev => prev.map(job => 
         job.id === jobId ? { ...job, ...updates } : job
       ));
@@ -98,7 +87,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
 
   const handleDeleteJob = (jobId: string) => {
     if (window.confirm('Are you sure you want to delete this job?')) {
-      if (deleteCentralizedJob(jobId)) {
+      if (JobStorageService.deleteJob(jobId)) {
         setJobs(prev => prev.filter(job => job.id !== jobId));
         toast.success('Job deleted successfully!');
       } else {
@@ -184,7 +173,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold">Job Management Portal</h2>
-                      <p className="text-blue-100">Centralized job management for all users</p>
+                      <p className="text-blue-100">Manage job listings and content</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -238,7 +227,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => {
                   </select>
                 </div>
                 <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                  Total Jobs: {jobs.length} | Filtered: {filteredJobs.length} | Admin: {jobs.filter(j => j.source === 'admin').length} | API: {jobs.filter(j => j.source === 'api').length}
+                  Total Jobs: {jobs.length} | Filtered: {filteredJobs.length} | Local: {jobs.filter(j => j.isLocal).length}
                 </div>
               </div>
 
@@ -316,16 +305,9 @@ const JobCard: React.FC<{
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <span className={`text-xs px-2 py-1 rounded-full ${
-          job.source === 'admin' ? 'bg-blue-100 text-blue-800' :
-          job.source === 'api' ? 'bg-green-100 text-green-800' :
-          'bg-gray-100 text-gray-800'
-        }`}>
-          {job.source === 'admin' ? 'Admin' : job.source === 'api' ? 'API' : 'Default'}
-        </span>
-        {job.views > 0 && (
-          <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
-            {job.views} views
+        {job.isLocal && (
+          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+            Local
           </span>
         )}
         <motion.button
