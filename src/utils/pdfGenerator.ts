@@ -1,4 +1,3 @@
-
 export interface ResumeTemplate {
   id: string;
   name: string;
