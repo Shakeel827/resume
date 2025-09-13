@@ -98,10 +98,10 @@ const addSectionHeader = (
   return y + 20;
 };
 
-// Main PDF generator
+// Main PDF generator - FIXED to use the selected template
 export const generateResumePDF = (
   data: ResumeData,
-  templateId: string = "career-catalyst"
+  templateId: string
 ) => {
   const template = getTemplateById(templateId);
   if (!template) {
