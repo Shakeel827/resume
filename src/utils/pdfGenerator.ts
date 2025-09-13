@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import { getTemplateById } from '../data/resumeTemplates';
+import { getTemplateById, ResumeTemplate } from '../data/resumeTemplates';
 
 export interface ResumeData {
   personalInfo: {
@@ -34,6 +34,11 @@ export interface ResumeData {
 
 export const generateResumePDF = (data: ResumeData, templateId: string = 'career-catalyst'): void => {
   const template = getTemplateById(templateId);
+  if (!template) {
+    console.error('Template not found');
+    return;
+  }
+
   const pdf = new jsPDF('p', 'pt', 'a4');
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
@@ -59,11 +64,13 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     maxWidth: number, 
     fontSize: number = 11,
     lineHeight: number = 1.4,
-    fontStyle: string = 'normal'
+    fontStyle: string = 'normal',
+    textColor: {r: number, g: number, b: number} = {r: 0, g: 0, b: 0}
   ): number => {
     if (!text || text.trim() === '') return y;
     
     pdf.setFontSize(fontSize);
+    pdf.setTextColor(textColor.r, textColor.g, textColor.b);
     pdf.setFont('helvetica', fontStyle);
     const lines = pdf.splitTextToSize(text.trim(), maxWidth);
     const lineSpacing = fontSize * lineHeight;
@@ -104,29 +111,35 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
   };
 
   // Set template colors
-  const primaryColor = template?.colors.primary || '#1E40AF';
-  const secondaryColor = template?.colors.secondary || '#3B82F6';
-  const accentColor = template?.colors.accent || '#10B981';
-  const primaryRgb = hexToRgb(primaryColor);
-  const secondaryRgb = hexToRgb(secondaryColor);
-  const accentRgb = hexToRgb(accentColor);
+  const primaryRgb = hexToRgb(template.colors.primary);
+  const secondaryRgb = hexToRgb(template.colors.secondary);
+  const accentRgb = hexToRgb(template.colors.accent);
+  const textRgb = hexToRgb(template.colors.text);
+  const backgroundRgb = hexToRgb(template.colors.background);
 
-  // Generate PDF based on template layout
-  switch (template?.layout) {
-    case 'two-column':
-      generateTwoColumnLayout();
-      break;
-    case 'sidebar':
-      generateSidebarLayout();
-      break;
-    case 'header-focus':
-      generateHeaderFocusLayout();
-      break;
-    default:
-      generateSingleColumnLayout();
+  // Set background color if not white
+  if (template.colors.background !== '#FFFFFF') {
+    pdf.setFillColor(backgroundRgb.r, backgroundRgb.g, backgroundRgb.b);
+    pdf.rect(0, 0, pageWidth, pageHeight, 'F');
   }
 
-  function generateSingleColumnLayout() {
+  // Generate PDF based on template layout
+  switch (template.layout) {
+    case 'two-column':
+      generateTwoColumnLayout(template);
+      break;
+    case 'sidebar':
+      generateSidebarLayout(template);
+      break;
+    case 'header-focus':
+      generateHeaderFocusLayout(template);
+      break;
+    case 'single-column':
+    default:
+      generateSingleColumnLayout(template);
+  }
+
+  function generateSingleColumnLayout(template: ResumeTemplate) {
     // HEADER - Name and Contact
     pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
     pdf.setFontSize(32);
@@ -135,7 +148,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     yPosition += 40;
 
     // Contact information in a clean line
-    pdf.setTextColor(80, 80, 80);
+    pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
     pdf.setFontSize(11);
     pdf.setFont('helvetica', 'normal');
     
@@ -168,7 +181,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     // PROFESSIONAL SUMMARY
     if (data.personalInfo.summary && data.personalInfo.summary.trim()) {
       yPosition = addSectionHeader('Professional Summary', primaryRgb, 14);
-      pdf.setTextColor(40, 40, 40);
+      pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
       yPosition = addWrappedText(data.personalInfo.summary, margin, yPosition, contentWidth, 11, 1.5);
       yPosition += 10;
     }
@@ -189,7 +202,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         // Duration on the right
         if (exp.duration) {
           const durationWidth = pdf.getTextWidth(exp.duration);
-          pdf.setTextColor(100, 100, 100);
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(11);
           pdf.setFont('helvetica', 'normal');
           pdf.text(exp.duration, pageWidth - margin - durationWidth, yPosition);
@@ -198,7 +211,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         yPosition += 18;
 
         // Company
-        pdf.setTextColor(80, 80, 80);
+        pdf.setTextColor(secondaryRgb.r, secondaryRgb.g, secondaryRgb.b);
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'bold');
         pdf.text(exp.company || 'Company Name', margin, yPosition);
@@ -206,7 +219,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
 
         // Description
         if (exp.description && exp.description.trim()) {
-          pdf.setTextColor(60, 60, 60);
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(10);
           pdf.setFont('helvetica', 'normal');
           yPosition = addWrappedText(exp.description, margin, yPosition, contentWidth, 10, 1.4);
@@ -231,7 +244,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         yPosition += 16;
 
         // Institution and details
-        pdf.setTextColor(80, 80, 80);
+        pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
         pdf.setFontSize(11);
         pdf.setFont('helvetica', 'normal');
         const eduDetails = `${edu.institution || 'Institution'} | ${edu.year || 'Year'}${edu.gpa ? ` | GPA: ${edu.gpa}` : ''}`;
@@ -244,7 +257,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     if (data.skills && data.skills.length > 0) {
       yPosition = addSectionHeader('Technical Skills', primaryRgb, 14);
 
-      pdf.setTextColor(60, 60, 60);
+      pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
       pdf.setFontSize(11);
       pdf.setFont('helvetica', 'normal');
       
@@ -270,7 +283,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
 
         // Description
         if (project.description && project.description.trim()) {
-          pdf.setTextColor(60, 60, 60);
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(10);
           pdf.setFont('helvetica', 'normal');
           yPosition = addWrappedText(project.description, margin, yPosition, contentWidth, 10, 1.4);
@@ -278,7 +291,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
 
         // Technologies
         if (project.technologies && project.technologies.trim()) {
-          pdf.setTextColor(100, 100, 100);
+          pdf.setTextColor(secondaryRgb.r, secondaryRgb.g, secondaryRgb.b);
           pdf.setFontSize(9);
           pdf.setFont('helvetica', 'italic');
           yPosition = addWrappedText(`Technologies: ${project.technologies}`, margin, yPosition + 5, contentWidth, 9, 1.3);
@@ -286,7 +299,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
 
         // Project link
         if (project.link && project.link.trim()) {
-          pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
+          pdf.setTextColor(accentRgb.r, accentRgb.g, accentRgb.b);
           pdf.setFontSize(9);
           pdf.setFont('helvetica', 'normal');
           pdf.text(`Link: ${project.link}`, margin, yPosition + 8);
@@ -298,7 +311,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     }
   }
 
-  function generateTwoColumnLayout() {
+  function generateTwoColumnLayout(template: ResumeTemplate) {
     const leftColumnWidth = 200;
     const rightColumnWidth = contentWidth - leftColumnWidth - 20;
     const rightColumnX = margin + leftColumnWidth + 20;
@@ -344,6 +357,24 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
       leftY += 15;
     }
 
+    // Social links in left column
+    if (data.personalInfo.linkedin || data.personalInfo.github) {
+      pdf.text('SOCIAL', 20, leftY);
+      leftY += 12;
+      
+      if (data.personalInfo.linkedin) {
+        pdf.text(`LinkedIn: ${data.personalInfo.linkedin}`, 20, leftY);
+        leftY += 15;
+      }
+      
+      if (data.personalInfo.github) {
+        pdf.text(`GitHub: ${data.personalInfo.github}`, 20, leftY);
+        leftY += 15;
+      }
+      
+      leftY += 10;
+    }
+
     // Skills in left column
     if (data.skills && data.skills.length > 0) {
       pdf.setTextColor(255, 255, 255);
@@ -373,7 +404,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
       pdf.text('PROFESSIONAL SUMMARY', rightColumnX, rightY);
       rightY += 20;
       
-      pdf.setTextColor(40, 40, 40);
+      pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
       pdf.setFontSize(10);
       pdf.setFont('helvetica', 'normal');
       rightY = addWrappedText(data.personalInfo.summary, rightColumnX, rightY, rightColumnWidth, 10, 1.5);
@@ -400,7 +431,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         rightY += 15;
 
         // Company and duration
-        pdf.setTextColor(80, 80, 80);
+        pdf.setTextColor(secondaryRgb.r, secondaryRgb.g, secondaryRgb.b);
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'bold');
         pdf.text(exp.company || 'Company Name', rightColumnX, rightY);
@@ -413,7 +444,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
 
         // Description
         if (exp.description && exp.description.trim()) {
-          pdf.setTextColor(60, 60, 60);
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(9);
           pdf.setFont('helvetica', 'normal');
           rightY = addWrappedText(exp.description, rightColumnX, rightY, rightColumnWidth, 9, 1.4);
@@ -441,7 +472,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         pdf.text(edu.degree || 'Degree', rightColumnX, rightY);
         rightY += 15;
 
-        pdf.setTextColor(80, 80, 80);
+        pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'normal');
         const eduDetails = `${edu.institution || 'Institution'} | ${edu.year || 'Year'}${edu.gpa ? ` | GPA: ${edu.gpa}` : ''}`;
@@ -472,14 +503,14 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         rightY += 15;
 
         if (project.description) {
-          pdf.setTextColor(60, 60, 60);
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(9);
           pdf.setFont('helvetica', 'normal');
           rightY = addWrappedText(project.description, rightColumnX, rightY, rightColumnWidth, 9, 1.4);
         }
 
         if (project.technologies) {
-          pdf.setTextColor(100, 100, 100);
+          pdf.setTextColor(secondaryRgb.r, secondaryRgb.g, secondaryRgb.b);
           pdf.setFontSize(8);
           pdf.setFont('helvetica', 'italic');
           rightY = addWrappedText(`Technologies: ${project.technologies}`, rightColumnX, rightY + 3, rightColumnWidth, 8, 1.3);
@@ -490,120 +521,118 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     }
   }
 
-  function generateTwoColumnLayout() {
-    const leftWidth = 250;
+  function generateSidebarLayout(template: ResumeTemplate) {
+    const leftWidth = 200;
     const rightWidth = contentWidth - leftWidth - 20;
     const rightX = margin + leftWidth + 20;
 
-    // Header spanning full width
-    pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-    pdf.setFontSize(28);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(data.personalInfo.name || 'Your Name', margin, yPosition);
-    yPosition += 35;
+    // LEFT SIDEBAR with background color
+    pdf.setFillColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
+    pdf.rect(0, 0, leftWidth + margin, pageHeight, 'F');
 
-    // Contact line
-    pdf.setTextColor(80, 80, 80);
+    // Name in sidebar
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(24);
+    pdf.setFont('helvetica', 'bold');
+    const nameLines = pdf.splitTextToSize(data.personalInfo.name || 'Your Name', leftWidth - 20);
+    let leftY = 60;
+    nameLines.forEach((line: string, index: number) => {
+      pdf.text(line, 20, leftY + (index * 30));
+    });
+    leftY += nameLines.length * 30 + 30;
+
+    // Contact info in sidebar
+    pdf.setTextColor(255, 255, 255);
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'normal');
-    const contactLine = [data.personalInfo.email, data.personalInfo.phone, data.personalInfo.location]
-      .filter(Boolean).join(' • ');
-    if (contactLine) {
-      pdf.text(contactLine, margin, yPosition);
-      yPosition += 20;
+    
+    if (data.personalInfo.email) {
+      pdf.text('EMAIL', 20, leftY);
+      leftY += 12;
+      pdf.text(data.personalInfo.email, 20, leftY);
+      leftY += 25;
+    }
+    
+    if (data.personalInfo.phone) {
+      pdf.text('PHONE', 20, leftY);
+      leftY += 12;
+      pdf.text(data.personalInfo.phone, 20, leftY);
+      leftY += 25;
+    }
+    
+    if (data.personalInfo.location) {
+      pdf.text('LOCATION', 20, leftY);
+      leftY += 12;
+      leftY = addWrappedText(data.personalInfo.location, 20, leftY, leftWidth - 40, 10, 1.3);
+      leftY += 15;
     }
 
-    // Separator
-    pdf.setDrawColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-    pdf.setLineWidth(1);
-    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
-    yPosition += 25;
-
-    const startY = yPosition;
-    let leftY = startY;
-    let rightY = startY;
-
-    // LEFT COLUMN
-    // Skills
+    // Skills in sidebar
     if (data.skills && data.skills.length > 0) {
-      pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
+      pdf.setTextColor(255, 255, 255);
       pdf.setFontSize(12);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('SKILLS', margin, leftY);
+      pdf.text('SKILLS', 20, leftY);
       leftY += 20;
       
-      pdf.setTextColor(60, 60, 60);
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'normal');
       data.skills.forEach(skill => {
-        pdf.text(`• ${skill}`, margin, leftY);
+        leftY = checkPageBreak(15);
+        if (leftY < 60) leftY = 60;
+        pdf.text(`• ${skill}`, 20, leftY);
         leftY += 12;
       });
       leftY += 20;
     }
 
-    // Education in left column
-    if (data.education && data.education.length > 0) {
-      pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('EDUCATION', margin, leftY);
-      leftY += 20;
+    // RIGHT COLUMN - Main content
+    let rightY = 60;
 
-      data.education.forEach((edu) => {
-        pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-        pdf.setFontSize(10);
-        pdf.setFont('helvetica', 'bold');
-        leftY = addWrappedText(edu.degree || 'Degree', margin, leftY, leftWidth, 10, 1.3);
-        
-        pdf.setTextColor(80, 80, 80);
-        pdf.setFontSize(9);
-        pdf.setFont('helvetica', 'normal');
-        leftY = addWrappedText(edu.institution || 'Institution', margin, leftY, leftWidth, 9, 1.3);
-        leftY = addWrappedText(edu.year || 'Year', margin, leftY, leftWidth, 9, 1.3);
-        leftY += 15;
-      });
-    }
-
-    // RIGHT COLUMN
     // Professional Summary
     if (data.personalInfo.summary && data.personalInfo.summary.trim()) {
       pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-      pdf.setFontSize(12);
+      pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('PROFESSIONAL SUMMARY', rightX, rightY);
       rightY += 20;
       
-      pdf.setTextColor(40, 40, 40);
+      pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
       pdf.setFontSize(10);
       pdf.setFont('helvetica', 'normal');
       rightY = addWrappedText(data.personalInfo.summary, rightX, rightY, rightWidth, 10, 1.5);
       rightY += 20;
     }
 
-    // Experience in right column
+    // Work Experience
     if (data.experience && data.experience.length > 0) {
       pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-      pdf.setFontSize(12);
+      pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('WORK EXPERIENCE', rightX, rightY);
       rightY += 25;
 
       data.experience.forEach((exp) => {
+        rightY = checkPageBreak(80);
+        if (rightY < 60) rightY = 60;
+        
+        // Job title
         pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-        pdf.setFontSize(11);
+        pdf.setFontSize(12);
         pdf.setFont('helvetica', 'bold');
         pdf.text(exp.title || 'Position Title', rightX, rightY);
         rightY += 15;
 
-        pdf.setTextColor(80, 80, 80);
+        // Company and duration
+        pdf.setTextColor(secondaryRgb.r, secondaryRgb.g, secondaryRgb.b);
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'bold');
         pdf.text(`${exp.company || 'Company'} | ${exp.duration || 'Duration'}`, rightX, rightY);
         rightY += 15;
 
-        if (exp.description) {
-          pdf.setTextColor(60, 60, 60);
+        // Description
+        if (exp.description && exp.description.trim()) {
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(9);
           pdf.setFont('helvetica', 'normal');
           rightY = addWrappedText(exp.description, rightX, rightY, rightWidth, 9, 1.4);
@@ -613,15 +642,48 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
       });
     }
 
-    // Projects in right column
-    if (data.projects && data.projects.length > 0) {
+    // Education
+    if (data.education && data.education.length > 0) {
+      rightY = checkPageBreak(60);
+      if (rightY < 60) rightY = 60;
+      
       pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-      pdf.setFontSize(12);
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('EDUCATION', rightX, rightY);
+      rightY += 25;
+
+      data.education.forEach((edu) => {
+        pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
+        pdf.setFontSize(11);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(edu.degree || 'Degree', rightX, rightY);
+        rightY += 15;
+
+        pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        const eduDetails = `${edu.institution || 'Institution'} | ${edu.year || 'Year'}${edu.gpa ? ` | GPA: ${edu.gpa}` : ''}`;
+        pdf.text(eduDetails, rightX, rightY);
+        rightY += 20;
+      });
+    }
+
+    // Projects
+    if (data.projects && data.projects.length > 0) {
+      rightY = checkPageBreak(60);
+      if (rightY < 60) rightY = 60;
+      
+      pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
+      pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('PROJECTS', rightX, rightY);
       rightY += 25;
 
       data.projects.forEach((project) => {
+        rightY = checkPageBreak(60);
+        if (rightY < 60) rightY = 60;
+        
         pdf.setTextColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'bold');
@@ -629,7 +691,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
         rightY += 15;
 
         if (project.description) {
-          pdf.setTextColor(60, 60, 60);
+          pdf.setTextColor(textRgb.r, textRgb.g, textRgb.b);
           pdf.setFontSize(9);
           pdf.setFont('helvetica', 'normal');
           rightY = addWrappedText(project.description, rightX, rightY, rightWidth, 9, 1.4);
@@ -640,11 +702,7 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     }
   }
 
-  function generateSidebarLayout() {
-    generateTwoColumnLayout(); // Use two-column as base for sidebar
-  }
-
-  function generateHeaderFocusLayout() {
+  function generateHeaderFocusLayout(template: ResumeTemplate) {
     // Large header section
     pdf.setFillColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
     pdf.rect(0, 0, pageWidth, 120, 'F');
@@ -666,12 +724,12 @@ export const generateResumePDF = (data: ResumeData, templateId: string = 'career
     }
 
     yPosition = 140;
-    generateSingleColumnLayout();
+    generateSingleColumnLayout(template);
   }
 
   // Save the PDF
   const cleanName = (data.personalInfo.name || 'Resume').replace(/[^a-zA-Z0-9]/g, '_');
-  const templateName = (template?.name || 'Professional').replace(/[^a-zA-Z0-9]/g, '_');
+  const templateName = template.name.replace(/[^a-zA-Z0-9]/g, '_');
   const fileName = `${cleanName}_Resume_${templateName}.pdf`;
   pdf.save(fileName);
 };
