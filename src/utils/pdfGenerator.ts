@@ -1,129 +1,132 @@
-import jsPDF from 'jspdf';
-import { getTemplateById, ResumeTemplate } from '../data/resumeTemplates';
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { ResumeTemplate } from "./resumeTemplates";
 
-export interface ResumeData {
-  personalInfo: {
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-    summary: string;
-    linkedin?: string;
-    github?: string;
-  };
-  experience: Array<{
-    title: string;
-    company: string;
-    duration: string;
-    description: string;
-  }>;
-  education: Array<{
-    degree: string;
-    institution: string;
-    year: string;
-    gpa?: string;
-  }>;
-  skills: string[];
-  projects?: Array<{
-    name: string;
-    description: string;
-    technologies: string;
-    link?: string;
-  }>;
+export function generateResumePDF(template: ResumeTemplate) {
+  const doc = new jsPDF();
+
+  // --- Title / Header ---
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.setFontSize(22);
+  doc.setTextColor(template.colors.primary || "#000000");
+  doc.text(template.name, 105, 20, { align: "center" });
+
+  // Category & ATS Score
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  doc.setFontSize(12);
+  doc.setTextColor(template.colors.text || "#111111");
+  doc.text(`Category: ${template.category}`, 20, 35);
+  doc.text(`ATS Score: ${template.atsScore}%`, 150, 35);
+
+  // Overall Rating
+  doc.text(`Overall Rating: ${template.overallRating}/10`, 20, 45);
+
+  // --- Description ---
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.setTextColor(template.colors.secondary || "#333333");
+  doc.text("Description", 20, 60);
+
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  doc.setTextColor(template.colors.text || "#111111");
+  doc.setFontSize(11);
+  doc.text(doc.splitTextToSize(template.description, 170), 20, 68);
+
+  // --- Features ---
+  autoTable(doc, {
+    startY: 85,
+    head: [["Features"]],
+    body: template.features.map((f) => [f]),
+    theme: "grid",
+    styles: { fontSize: 10, textColor: template.colors.text },
+    headStyles: { fillColor: template.colors.primary, textColor: "#fff" },
+  });
+
+  let y = (doc as any).lastAutoTable.finalY + 10;
+
+  // --- Strengths ---
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.setTextColor(template.colors.secondary || "#333333");
+  doc.text("Strengths", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  template.strengths.forEach((s) => {
+    doc.text(`• ${s}`, 25, y);
+    y += 6;
+  });
+
+  // --- Weaknesses ---
+  y += 6;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Weaknesses", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  template.weaknesses.forEach((w) => {
+    doc.text(`• ${w}`, 25, y);
+    y += 6;
+  });
+
+  // --- Suggestions ---
+  y += 6;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Suggestions", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  template.suggestions.forEach((s) => {
+    doc.text(`• ${s}`, 25, y);
+    y += 6;
+  });
+
+  // --- Job Matches ---
+  y += 6;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Job Matches", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  template.jobMatches.forEach((j) => {
+    doc.text(`• ${j}`, 25, y);
+    y += 6;
+  });
+
+  // --- Skill Gaps ---
+  y += 6;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Skill Gaps", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  template.skillGaps.forEach((sg) => {
+    doc.text(`• ${sg}`, 25, y);
+    y += 6;
+  });
+
+  // --- Industry Trends ---
+  y += 6;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Industry Trends", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  template.industryTrends.forEach((trend) => {
+    doc.text(`• ${trend}`, 25, y);
+    y += 6;
+  });
+
+  // --- Salary Insights ---
+  y += 6;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Salary Insights", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  const salaryText = doc.splitTextToSize(template.salaryInsights, 170);
+  doc.text(salaryText, 25, y);
+  y += salaryText.length * 6;
+
+  // --- Keywords ---
+  y += 10;
+  doc.setFont(template.typography.headingFont || "helvetica", "bold");
+  doc.text("Keywords", 20, y);
+  y += 8;
+  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
+  doc.text(template.keywords.join(", "), 25, y);
+
+  // --- Save PDF ---
+  doc.save(`${template.id}-resume.pdf`);
 }
-
-export const generateResumePDF = (data: ResumeData, templateId: string): void => {
-  // Require explicit templateId
-  if (!templateId) {
-    console.error('❌ No templateId provided');
-    return;
-  }
-
-  const template = getTemplateById(templateId);
-  if (!template) {
-    console.error(`❌ Template with ID "${templateId}" not found`);
-    return;
-  }
-
-  // Create PDF with A4 size
-  const pdf = new jsPDF('p', 'pt', 'a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 40;
-  const contentWidth = pageWidth - (margin * 2);
-  let yPosition = margin;
-
-  // Helper: convert hex to RGB
-  const hexToRgb = (hex: string) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
-      : { r: 37, g: 99, b: 235 };
-  };
-
-  // ✅ Set template colors
-  const primaryRgb = hexToRgb(template.colors.primary);
-  const secondaryRgb = hexToRgb(template.colors.secondary);
-  const accentRgb = hexToRgb(template.colors.accent);
-  const textRgb = hexToRgb(template.colors.text);
-
-  // Generate all content
-  generateResumeContent();
-
-  // ✅ Unique filename: Name + Template Name
-  const cleanName = (data.personalInfo.name || 'Resume').replace(/[^a-zA-Z0-9]/g, '_');
-  const cleanTemplate = template.name.replace(/[^a-zA-Z0-9]/g, '_');
-  const fileName = `${cleanName}_${cleanTemplate}.pdf`;
-  pdf.save(fileName);
-
-  // -----------------------------
-  // Resume content generator
-  // -----------------------------
-  function generateResumeContent() {
-    // HEADER
-    pdf.setFillColor(primaryRgb.r, primaryRgb.g, primaryRgb.b);
-    pdf.rect(0, 0, pageWidth, 100, 'F');
-
-    pdf.setTextColor(255, 255, 255);
-    pdf.setFontSize(28);
-    pdf.setFont('helvetica', 'bold');
-    const nameText = data.personalInfo.name || 'Your Name';
-    const nameWidth = pdf.getTextWidth(nameText);
-    pdf.text(nameText, (pageWidth - nameWidth) / 2, 45);
-
-    // Contact info
-    pdf.setFontSize(11);
-    pdf.setFont('helvetica', 'normal');
-
-    const contactItems = [];
-    if (data.personalInfo.email) contactItems.push(`📧 ${data.personalInfo.email}`);
-    if (data.personalInfo.phone) contactItems.push(`📱 ${data.personalInfo.phone}`);
-    if (data.personalInfo.location) contactItems.push(`📍 ${data.personalInfo.location}`);
-
-    if (contactItems.length > 0) {
-      const contactText = contactItems.join('  •  ');
-      const contactWidth = pdf.getTextWidth(contactText);
-      pdf.text(contactText, (pageWidth - contactWidth) / 2, 70);
-    }
-
-    // Socials
-    const socialItems = [];
-    if (data.personalInfo.linkedin) socialItems.push(`🔗 ${data.personalInfo.linkedin}`);
-    if (data.personalInfo.github) socialItems.push(`💻 ${data.personalInfo.github}`);
-
-    if (socialItems.length > 0) {
-      const socialText = socialItems.join('  •  ');
-      const socialWidth = pdf.getTextWidth(socialText);
-      pdf.text(socialText, (pageWidth - socialWidth) / 2, 85);
-    }
-
-    yPosition = 120;
-
-    // TODO: Add summary, work, education, skills, projects 
-    // (I kept your existing helpers – just omitted them here for brevity)
-  }
-};
