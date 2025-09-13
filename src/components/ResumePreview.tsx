@@ -1,7 +1,8 @@
-import React from 'react';
+// src/components/ResumePreview.tsx
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Download, Eye, Smartphone, Tablet, Monitor } from 'lucide-react';
-import { ResumeData } from '../utils/pdfGenerator';
+import { ResumeData, generateResumePDF } from '../utils/generateResumePDF';
 import { getTemplateById } from '../data/resumeTemplates';
 import TemplateRenderer from './TemplateRenderer';
 import jsPDF from 'jspdf';
@@ -22,6 +23,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
   onDownload
 }) => {
   const [viewMode, setViewMode] = React.useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const previewRef = useRef<HTMLDivElement>(null);
   const template = getTemplateById(templateId);
 
   if (!isOpen || !template) return null;
@@ -34,6 +36,16 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
         return 'w-96 h-[500px]';
       default:
         return 'w-full max-w-4xl h-[700px]';
+    }
+  };
+
+  // FIXED: Use HTML-to-PDF conversion for exact match
+  const handleDownloadResume = async () => {
+    if (previewRef.current) {
+      const success = await generateResumePDF(previewRef.current, resumeData, templateId);
+      if (success) {
+        onDownload();
+      }
     }
   };
 
@@ -176,11 +188,21 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={handleDownloadReport}
+              onClick={handleDownloadResume}
               className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Download className="w-5 h-5" />
-              <span>Download PDF</span>
+              <span>Download Resume</span>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleDownloadReport}
+              className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Download className="w-5 h-5" />
+              <span>Download Report</span>
             </motion.button>
 
             <button
@@ -196,7 +218,10 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
         {/* Preview Content */}
         <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
           <div className="flex justify-center">
-            <div className={`${getPreviewClasses()} bg-white shadow-2xl rounded-lg overflow-hidden transition-all duration-300`}>
+            <div 
+              ref={previewRef} // Reference for PDF capture
+              className={`${getPreviewClasses()} bg-white shadow-2xl rounded-lg overflow-hidden transition-all duration-300`}
+            >
               <div className="w-full h-full overflow-auto">
                 <TemplateRenderer 
                   templateId={templateId} 
@@ -228,82 +253,6 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
             Press ESC to close
           </div>
         </div>
-
-        {/* AI Report Section */}
-        <section className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-2xl shadow-lg p-4 sm:p-8 mb-8 border border-blue-200 dark:border-blue-700 dark:bg-gradient-to-br dark:from-gray-900 dark:to-blue-950">
-          <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white text-2xl shadow-lg">🤖</span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-700 dark:text-blue-300 tracking-tight">AI Resume Analysis</h2>
-            </div>
-            <button
-              onClick={handleDownloadReport}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md hover:from-blue-700 hover:to-purple-700 transition-colors text-base sm:text-lg"
-            >
-              <span className="mr-2">⬇️</span> Download PDF
-            </button>
-          </div>
-          {/* AI Report Content - use creative, colorful, modern layout with icons and badges */}
-          <div className="space-y-6">
-            {/* Example: ATS Score */}
-            <div className="flex items-center gap-3">
-              <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold text-lg shadow">{template.atsScore} ATS</span>
-              <span className="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-bold text-lg shadow">{template.overallRating}/10 ⭐</span>
-            </div>
-            {/* Strengths */}
-            <div>
-              <h3 className="font-bold text-blue-600 mb-1 flex items-center gap-2"><span>💪</span> Strengths</h3>
-              <ul className="list-disc ml-6 text-green-700">
-                {template.strengths.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-            {/* Areas for Improvement */}
-            <div>
-              <h3 className="font-bold text-pink-600 mb-1 flex items-center gap-2"><span>⚡</span> Areas for Improvement</h3>
-              <ul className="list-disc ml-6 text-pink-700">
-                {template.weaknesses.map((w, i) => <li key={i}>{w}</li>)}
-              </ul>
-            </div>
-            {/* Suggestions */}
-            <div>
-              <h3 className="font-bold text-purple-600 mb-1 flex items-center gap-2"><span>💡</span> Actionable Suggestions</h3>
-              <ul className="list-disc ml-6 text-purple-700">
-                {template.suggestions.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-            {/* Job Matches, Skill Gaps, Industry Trends, Salary Insights, Keywords */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
-                <h4 className="font-bold text-blue-500 mb-2 flex items-center gap-2"><span>🔎</span> Job Matches</h4>
-                <ul className="list-disc ml-6 text-blue-700">
-                  {template.jobMatches.map((j, i) => <li key={i}>{j}</li>)}
-                </ul>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
-                <h4 className="font-bold text-orange-500 mb-2 flex items-center gap-2"><span>🧩</span> Skill Gaps</h4>
-                <ul className="list-disc ml-6 text-orange-700">
-                  {template.skillGaps.map((g, i) => <li key={i}>{g}</li>)}
-                </ul>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
-                <h4 className="font-bold text-indigo-500 mb-2 flex items-center gap-2"><span>🌐</span> Industry Trends</h4>
-                <ul className="list-disc ml-6 text-indigo-700">
-                  {template.industryTrends.map((t, i) => <li key={i}>{t}</li>)}
-                </ul>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
-                <h4 className="font-bold text-green-500 mb-2 flex items-center gap-2"><span>💰</span> Salary Insights</h4>
-                <p className="text-green-700">{template.salaryInsights}</p>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow col-span-1 sm:col-span-2">
-                <h4 className="font-bold text-pink-500 mb-2 flex items-center gap-2"><span>🏷️</span> Recommended Keywords</h4>
-                <div className="flex flex-wrap gap-2">
-                  {template.keywords.map((k, i) => <span key={i} className="bg-pink-100 text-pink-700 px-2 py-1 rounded-full text-xs font-semibold">{k}</span>)}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </motion.div>
     </motion.div>
   );
