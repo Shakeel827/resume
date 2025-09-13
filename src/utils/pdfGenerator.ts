@@ -1,4 +1,4 @@
-// src/utils/generateResumePDF.ts
+// src/utils/pdfGenerator.ts
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
