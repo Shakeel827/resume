@@ -1,132 +1,118 @@
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
-import { ResumeTemplate } from "./resumeTemplates";
+// install first: npm install pdfkit @types/pdfkit
 
-export function generateResumePDF(template: ResumeTemplate) {
-  const doc = new jsPDF();
+import PDFDocument from "pdfkit";
+import fs from "fs";
+import { resumeTemplates } from "./resumeTemplates"; // your provided data
 
-  // --- Title / Header ---
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.setFontSize(22);
-  doc.setTextColor(template.colors.primary || "#000000");
-  doc.text(template.name, 105, 20, { align: "center" });
+function generateResumePDF(templateId: string) {
+  const template = resumeTemplates.find(t => t.id === templateId);
 
-  // Category & ATS Score
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  doc.setFontSize(12);
-  doc.setTextColor(template.colors.text || "#111111");
-  doc.text(`Category: ${template.category}`, 20, 35);
-  doc.text(`ATS Score: ${template.atsScore}%`, 150, 35);
+  if (!template) {
+    throw new Error(`Template with ID ${templateId} not found`);
+  }
 
-  // Overall Rating
-  doc.text(`Overall Rating: ${template.overallRating}/10`, 20, 45);
+  const doc = new PDFDocument({ margin: 50 });
+  const fileName = `${templateId}.pdf`;
+  doc.pipe(fs.createWriteStream(fileName));
 
-  // --- Description ---
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.setTextColor(template.colors.secondary || "#333333");
-  doc.text("Description", 20, 60);
+  // ------------------- HEADER -------------------
+  doc
+    .fontSize(24)
+    .fillColor(template.colors.primary)
+    .font(template.typography.headingFont || "Helvetica-Bold")
+    .text(template.name, { align: "center" });
 
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  doc.setTextColor(template.colors.text || "#111111");
-  doc.setFontSize(11);
-  doc.text(doc.splitTextToSize(template.description, 170), 20, 68);
+  doc
+    .moveDown()
+    .fontSize(12)
+    .fillColor(template.colors.text)
+    .font(template.typography.bodyFont || "Helvetica")
+    .text(template.description, { align: "center" });
 
-  // --- Features ---
-  autoTable(doc, {
-    startY: 85,
-    head: [["Features"]],
-    body: template.features.map((f) => [f]),
-    theme: "grid",
-    styles: { fontSize: 10, textColor: template.colors.text },
-    headStyles: { fillColor: template.colors.primary, textColor: "#fff" },
+  doc.moveDown(2);
+
+  // ------------------- SECTION: TEMPLATE INFO -------------------
+  doc
+    .fontSize(14)
+    .fillColor(template.colors.secondary)
+    .text("Template Information", { underline: true });
+
+  doc
+    .moveDown(0.5)
+    .fontSize(12)
+    .fillColor(template.colors.text)
+    .text(`Category: ${template.category}`)
+    .text(`Layout: ${template.layout}`)
+    .text(`Typography: ${template.typography.headingFont} (Headings), ${template.typography.bodyFont} (Body)`)
+    .text(`ATS Score: ${template.atsScore}%`)
+    .text(`Overall Rating: ${template.overallRating}/10`);
+
+  doc.moveDown();
+
+  // ------------------- SECTION: FEATURES -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Features", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.features.forEach((feature) => {
+    doc.text(`• ${feature}`);
   });
+  doc.moveDown();
 
-  let y = (doc as any).lastAutoTable.finalY + 10;
+  // ------------------- SECTION: STRENGTHS / WEAKNESSES -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Strengths", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.strengths.forEach((s) => doc.text(`✔ ${s}`));
+  doc.moveDown();
 
-  // --- Strengths ---
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.setTextColor(template.colors.secondary || "#333333");
-  doc.text("Strengths", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  template.strengths.forEach((s) => {
-    doc.text(`• ${s}`, 25, y);
-    y += 6;
-  });
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Weaknesses", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.weaknesses.forEach((w) => doc.text(`✘ ${w}`));
+  doc.moveDown();
 
-  // --- Weaknesses ---
-  y += 6;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Weaknesses", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  template.weaknesses.forEach((w) => {
-    doc.text(`• ${w}`, 25, y);
-    y += 6;
-  });
+  // ------------------- SECTION: SUGGESTIONS -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Suggestions", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.suggestions.forEach((s) => doc.text(`👉 ${s}`));
+  doc.moveDown();
 
-  // --- Suggestions ---
-  y += 6;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Suggestions", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  template.suggestions.forEach((s) => {
-    doc.text(`• ${s}`, 25, y);
-    y += 6;
-  });
+  // ------------------- SECTION: JOB MATCHES -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Best Job Matches", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.jobMatches.forEach((job) => doc.text(`• ${job}`));
+  doc.moveDown();
 
-  // --- Job Matches ---
-  y += 6;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Job Matches", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  template.jobMatches.forEach((j) => {
-    doc.text(`• ${j}`, 25, y);
-    y += 6;
-  });
+  // ------------------- SECTION: SKILL GAPS -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Skill Gaps", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.skillGaps.forEach((gap) => doc.text(`⚠ ${gap}`));
+  doc.moveDown();
 
-  // --- Skill Gaps ---
-  y += 6;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Skill Gaps", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  template.skillGaps.forEach((sg) => {
-    doc.text(`• ${sg}`, 25, y);
-    y += 6;
-  });
+  // ------------------- SECTION: TRENDS + INSIGHTS -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Industry Trends", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12);
+  template.industryTrends.forEach((trend) => doc.text(`• ${trend}`));
+  doc.moveDown();
 
-  // --- Industry Trends ---
-  y += 6;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Industry Trends", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  template.industryTrends.forEach((trend) => {
-    doc.text(`• ${trend}`, 25, y);
-    y += 6;
-  });
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Salary Insights", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12).text(template.salaryInsights);
+  doc.moveDown();
 
-  // --- Salary Insights ---
-  y += 6;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Salary Insights", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  const salaryText = doc.splitTextToSize(template.salaryInsights, 170);
-  doc.text(salaryText, 25, y);
-  y += salaryText.length * 6;
+  // ------------------- SECTION: KEYWORDS -------------------
+  doc.fillColor(template.colors.secondary).fontSize(14).text("Keywords", { underline: true });
+  doc.fillColor(template.colors.text).fontSize(12).text(template.keywords.join(", "));
+  doc.moveDown(2);
 
-  // --- Keywords ---
-  y += 10;
-  doc.setFont(template.typography.headingFont || "helvetica", "bold");
-  doc.text("Keywords", 20, y);
-  y += 8;
-  doc.setFont(template.typography.bodyFont || "helvetica", "normal");
-  doc.text(template.keywords.join(", "), 25, y);
+  // ------------------- FOOTER -------------------
+  doc
+    .fontSize(10)
+    .fillColor(template.colors.accent)
+    .text(`Generated Resume Template: ${template.name}`, { align: "center" });
 
-  // --- Save PDF ---
-  doc.save(`${template.id}-resume.pdf`);
+  doc.end();
+  console.log(`✅ PDF generated: ${fileName}`);
 }
+
+// Example usage: generate PDF for one template
+generateResumePDF("career-catalyst");
+
+// Or loop to generate all templates
+// resumeTemplates.forEach(t => generateResumePDF(t.id));
