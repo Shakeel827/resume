@@ -13,12 +13,13 @@ export interface ResumeTemplate {
     text: string;
     background: string;
   };
-  layout: 'single-column' | 'two-column' | 'three-column' | 'sidebar' | 'header-focus' | 'timeline' | 'grid' | 'asymmetric' | 'modular' | 'circular' | 'zigzag' | 'overlap';
+  layout: 'single-column' | 'two-column' | 'three-column' | 'sidebar' | 'header-focus' | 'timeline' | 'grid' | 'asymmetric';
   typography: {
     headingFont: string;
     bodyFont: string;
     fontSize: string;
   };
+  // AI Analysis properties
   overallRating: number;
   strengths: string[];
   weaknesses: string[];
@@ -31,515 +32,362 @@ export interface ResumeTemplate {
 }
 
 export const resumeTemplates: ResumeTemplate[] = [
+  // Modern Templates with Unique Designs
   {
-    id: 'career-catalyst',
-    name: 'CareerCatalyst Resume',
+    id: 'modern-1',
+    name: 'Executive Pro',
     category: 'modern',
     atsScore: 98,
-    preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Two-column layout with left sidebar for contact and skills, right section for experience in navy blue, light grey, and white accents',
-    features: ['Two-Column Layout', 'Sidebar Design', 'Professional Colors', 'ATS Optimized', 'Clean Typography'],
+    preview: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Clean, professional design perfect for executives and senior roles',
+    features: ['ATS Optimized', 'Clean Layout', 'Professional Typography', 'Skills Section'],
     colors: {
-      primary: '#1E3A8A',
-      secondary: '#3B82F6',
-      accent: '#10B981',
+      primary: '#2563EB',
+      secondary: '#1E40AF',
+      accent: '#3B82F6',
       text: '#1F2937',
-      background: '#F8FAFC'
-    },
-    layout: 'two-column',
-    typography: {
-      headingFont: 'Inter',
-      bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.8,
-    strengths: ['Excellent ATS compatibility', 'Professional appearance', 'Clear information hierarchy', 'Modern design'],
-    weaknesses: ['May be too conservative for creative roles'],
-    suggestions: ['Perfect for corporate and tech roles', 'Highlight quantifiable achievements'],
-    jobMatches: ['Software Engineer', 'Project Manager', 'Business Analyst', 'Consultant'],
-    skillGaps: ['Industry-specific certifications', 'Leadership experience'],
-    industryTrends: ['Clean professional design', 'ATS-first approach', 'Skills-focused layout'],
-    salaryInsights: 'Corporate roles: ₹12-35 LPA depending on experience and location',
-    keywords: ['Professional', 'Corporate', 'Technical', 'Modern', 'Clean']
-  },
-  {
-    id: 'nextstep-profile',
-    name: 'NextStep Profile',
-    category: 'minimalist',
-    atsScore: 99,
-    preview: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Single-column stacked layout in teal, white, and black text with maximum readability',
-    features: ['Single Column', 'Stacked Sections', 'Maximum Readability', 'Teal Accents', 'Minimal Design'],
-    colors: {
-      primary: '#0D9488',
-      secondary: '#14B8A6',
-      accent: '#06B6D4',
-      text: '#000000',
       background: '#FFFFFF'
     },
     layout: 'single-column',
     typography: {
-      headingFont: 'Poppins',
-      bodyFont: 'Poppins',
-      fontSize: 'medium'
-    },
-    overallRating: 9.9,
-    strengths: ['Perfect ATS score', 'Universal compatibility', 'Excellent readability', 'Clean structure'],
-    weaknesses: ['May lack visual personality for creative fields'],
-    suggestions: ['Ideal for any industry', 'Focus on strong content and achievements'],
-    jobMatches: ['Any Role', 'Entry Level', 'Mid-Level', 'Senior Positions'],
-    skillGaps: ['None - universally applicable'],
-    industryTrends: ['Minimalist design', 'Content-first approach', 'Universal appeal'],
-    salaryInsights: 'Universal template: ₹8-50 LPA depending on role and experience',
-    keywords: ['Universal', 'Clean', 'Professional', 'Readable', 'ATS-Friendly']
-  },
-  {
-    id: 'visionpath-cv',
-    name: 'VisionPath CV',
-    category: 'executive',
-    atsScore: 96,
-    preview: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Bold header and two-column design in dark green, beige, and white for leadership roles',
-    features: ['Bold Header', 'Executive Focus', 'Two-Column Layout', 'Leadership Emphasis', 'Premium Colors'],
-    colors: {
-      primary: '#064E3B',
-      secondary: '#059669',
-      accent: '#10B981',
-      text: '#1F2937',
-      background: '#F5F5DC'
-    },
-    layout: 'header-focus',
-    typography: {
-      headingFont: 'Playfair Display',
-      bodyFont: 'Lato',
-      fontSize: 'large'
-    },
-    overallRating: 9.6,
-    strengths: ['Executive presence', 'Leadership focus', 'Premium appearance', 'Strategic emphasis'],
-    weaknesses: ['May be too formal for junior roles', 'Not suitable for creative industries'],
-    suggestions: ['Perfect for C-level and VP positions', 'Highlight strategic achievements and leadership impact'],
-    jobMatches: ['CEO', 'CTO', 'VP Engineering', 'Director', 'Senior Manager'],
-    skillGaps: ['Operational details', 'Technical implementation'],
-    industryTrends: ['Executive branding', 'Leadership emphasis', 'Strategic presentation'],
-    salaryInsights: 'Executive roles: ₹25-100+ LPA depending on company size and industry',
-    keywords: ['Executive', 'Leadership', 'Strategy', 'Vision', 'Management']
-  },
-  {
-    id: 'talentedge-resume',
-    name: 'TalentEdge Resume',
-    category: 'modern',
-    atsScore: 97,
-    preview: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Modern card-style boxed layout with royal blue, soft grey, and white for contemporary professionals',
-    features: ['Card-Style Layout', 'Boxed Sections', 'Modern Design', 'Royal Blue Theme', 'Contemporary Feel'],
-    colors: {
-      primary: '#1E40AF',
-      secondary: '#3B82F6',
-      accent: '#60A5FA',
-      text: '#1F2937',
-      background: '#F1F5F9'
-    },
-    layout: 'modular',
-    typography: {
       headingFont: 'Inter',
       bodyFont: 'Inter',
       fontSize: 'medium'
     },
-    overallRating: 9.7,
-    strengths: ['Modern professional appearance', 'Excellent structure', 'High ATS compatibility', 'Versatile design'],
-    weaknesses: ['May be too structured for creative roles'],
-    suggestions: ['Great for tech and business roles', 'Emphasize achievements and metrics'],
-    jobMatches: ['Product Manager', 'Software Engineer', 'Data Analyst', 'Marketing Manager'],
-    skillGaps: ['Creative presentation', 'Artistic elements'],
-    industryTrends: ['Modern professionalism', 'Structured presentation', 'Tech-forward design'],
-    salaryInsights: 'Modern professional roles: ₹15-40 LPA in tech and business sectors',
-    keywords: ['Modern', 'Professional', 'Structured', 'Tech-Forward', 'Business']
+    overallRating: 9.2,
+    strengths: ['Excellent ATS compatibility', 'Clean professional layout', 'Strong visual hierarchy', 'Optimized for scanning'],
+    weaknesses: ['May be too traditional for creative roles', 'Limited color options'],
+    suggestions: ['Add more quantifiable achievements', 'Include industry-specific keywords', 'Consider adding a skills matrix'],
+    jobMatches: ['Senior Software Engineer', 'Product Manager', 'Technical Lead', 'Engineering Manager'],
+    skillGaps: ['Cloud Architecture', 'DevOps Practices', 'Agile Leadership'],
+    industryTrends: ['Remote work optimization', 'AI/ML integration', 'Cloud-first approach'],
+    salaryInsights: 'Average salary range: $120K - $180K for senior positions',
+    keywords: ['Leadership', 'Strategy', 'Innovation', 'Team Management', 'Technical Excellence']
   },
   {
-    id: 'futureready-profile',
-    name: 'FutureReady Profile',
-    category: 'startup',
-    atsScore: 94,
-    preview: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Single-column timeline-style design in orange, charcoal grey, and white for innovative professionals',
-    features: ['Timeline Design', 'Innovation Focus', 'Single Column', 'Orange Accents', 'Future-Forward'],
+    id: 'pixelport-1',
+    name: 'PixelPort Creative',
+    category: 'creative',
+    atsScore: 92,
+    preview: 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Pixel-perfect design with modern aesthetics for digital creators',
+    features: ['Pixel Grid Layout', 'Digital Portfolio', 'Interactive Elements', 'Modern Typography'],
     colors: {
-      primary: '#EA580C',
-      secondary: '#FB923C',
-      accent: '#FDBA74',
-      text: '#374151',
+      primary: '#FF6B6B',
+      secondary: '#4ECDC4',
+      accent: '#45B7D1',
+      text: '#2C3E50',
+      background: '#F8F9FA'
+    },
+    layout: 'grid',
+    typography: {
+      headingFont: 'Poppins',
+      bodyFont: 'Open Sans',
+      fontSize: 'medium'
+    },
+    overallRating: 8.8,
+    strengths: ['Visually striking design', 'Perfect for creative portfolios', 'Modern aesthetic appeal', 'Excellent for digital roles'],
+    weaknesses: ['Lower ATS score due to creative layout', 'May not work for traditional industries'],
+    suggestions: ['Balance creativity with readability', 'Ensure all text is easily scannable', 'Add more structured content sections'],
+    jobMatches: ['UI/UX Designer', 'Creative Director', 'Digital Artist', 'Frontend Developer'],
+    skillGaps: ['User Research', 'Design Systems', 'Prototyping Tools'],
+    industryTrends: ['Design thinking', 'User-centered design', 'Digital transformation'],
+    salaryInsights: 'Average salary range: $80K - $130K for creative roles',
+    keywords: ['Design', 'Creativity', 'User Experience', 'Visual Design', 'Digital Media']
+  },
+  {
+    id: 'neowave-1',
+    name: 'NeoWave Futuristic',
+    category: 'modern',
+    atsScore: 95,
+    preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Futuristic wave-inspired design for forward-thinking professionals',
+    features: ['Wave Patterns', 'Gradient Backgrounds', 'Modern Icons', 'Fluid Layout'],
+    colors: {
+      primary: '#667EEA',
+      secondary: '#764BA2',
+      accent: '#F093FB',
+      text: '#2D3748',
+      background: '#FFFFFF'
+    },
+    layout: 'sidebar',
+    typography: {
+      headingFont: 'Montserrat',
+      bodyFont: 'Source Sans Pro',
+      fontSize: 'medium'
+    },
+    overallRating: 9.0,
+    strengths: ['Modern and innovative design', 'Excellent for tech-forward companies', 'Strong visual impact', 'Professional yet creative'],
+    weaknesses: ['May be too bold for conservative industries', 'Requires careful content organization'],
+    suggestions: ['Focus on technical achievements', 'Include innovation metrics', 'Highlight future-thinking projects'],
+    jobMatches: ['Innovation Manager', 'Technology Consultant', 'Startup Founder', 'R&D Engineer'],
+    skillGaps: ['Emerging Technologies', 'Innovation Management', 'Strategic Planning'],
+    industryTrends: ['Digital transformation', 'Innovation culture', 'Future of work'],
+    salaryInsights: 'Average salary range: $100K - $160K for innovation roles',
+    keywords: ['Innovation', 'Technology', 'Future', 'Strategy', 'Digital Transformation']
+  },
+  {
+    id: 'aurastack-1',
+    name: 'AuraStack Dynamic',
+    category: 'modern',
+    atsScore: 94,
+    preview: 'https://images.pexels.com/photos/590045/pexels-photo-590045.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Layered design with glowing aura effects for tech professionals',
+    features: ['Layered Sections', 'Glow Effects', 'Tech Stack Display', 'Modern Cards'],
+    colors: {
+      primary: '#00D4FF',
+      secondary: '#5B73FF',
+      accent: '#9F7AEA',
+      text: '#1A202C',
+      background: '#F7FAFC'
+    },
+    layout: 'three-column',
+    typography: {
+      headingFont: 'Roboto',
+      bodyFont: 'Lato',
+      fontSize: 'medium'
+    },
+    overallRating: 8.9,
+    strengths: ['Perfect for tech professionals', 'Excellent skill visualization', 'Modern and professional', 'Great for complex skill sets'],
+    weaknesses: ['May be overwhelming for non-tech roles', 'Requires careful content organization'],
+    suggestions: ['Organize skills by proficiency level', 'Include project impact metrics', 'Add technology stack details'],
+    jobMatches: ['Full Stack Developer', 'DevOps Engineer', 'Technical Architect', 'Software Engineer'],
+    skillGaps: ['Cloud Platforms', 'Containerization', 'CI/CD Pipelines'],
+    industryTrends: ['Cloud-native development', 'Microservices architecture', 'DevOps culture'],
+    salaryInsights: 'Average salary range: $110K - $170K for senior tech roles',
+    keywords: ['Full Stack', 'Technology', 'Development', 'Architecture', 'DevOps']
+  },
+  {
+    id: 'glintlab-1',
+    name: 'GlintLab Research',
+    category: 'technical',
+    atsScore: 97,
+    preview: 'https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Laboratory-inspired design with metallic accents for researchers',
+    features: ['Lab Theme', 'Metallic Accents', 'Research Focus', 'Publication List'],
+    colors: {
+      primary: '#718096',
+      secondary: '#4A5568',
+      accent: '#ED8936',
+      text: '#2D3748',
+      background: '#FFFFFF'
+    },
+    layout: 'two-column',
+    typography: {
+      headingFont: 'IBM Plex Sans',
+      bodyFont: 'IBM Plex Sans',
+      fontSize: 'medium'
+    },
+    overallRating: 9.3,
+    strengths: ['Excellent for research roles', 'High ATS compatibility', 'Professional academic appearance', 'Perfect for publications'],
+    weaknesses: ['May be too formal for industry roles', 'Limited creative expression'],
+    suggestions: ['Include research impact metrics', 'Add collaboration details', 'Highlight innovation in research'],
+    jobMatches: ['Research Scientist', 'Data Scientist', 'Academic Researcher', 'R&D Engineer'],
+    skillGaps: ['Industry Applications', 'Commercialization', 'Cross-functional Collaboration'],
+    industryTrends: ['AI/ML research', 'Data-driven decision making', 'Interdisciplinary research'],
+    salaryInsights: 'Average salary range: $90K - $150K for research positions',
+    keywords: ['Research', 'Analysis', 'Data', 'Innovation', 'Publications']
+  },
+  {
+    id: 'craftfolio-1',
+    name: 'Craftfolio Artisan',
+    category: 'artistic',
+    atsScore: 90,
+    preview: 'https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Handcrafted aesthetic for artists and creative professionals',
+    features: ['Handcrafted Look', 'Artistic Elements', 'Portfolio Gallery', 'Creative Typography'],
+    colors: {
+      primary: '#D69E2E',
+      secondary: '#B7791F',
+      accent: '#F6E05E',
+      text: '#2D3748',
+      background: '#FFFAF0'
+    },
+    layout: 'asymmetric',
+    typography: {
+      headingFont: 'Crimson Text',
+      bodyFont: 'Libre Baskerville',
+      fontSize: 'medium'
+    },
+    overallRating: 8.5,
+    strengths: ['Unique artistic appeal', 'Perfect for creative portfolios', 'Handcrafted aesthetic', 'Excellent for artistic roles'],
+    weaknesses: ['Lower ATS score', 'May not work for corporate roles', 'Limited professional appeal'],
+    suggestions: ['Balance artistry with professionalism', 'Include business impact of creative work', 'Add measurable achievements'],
+    jobMatches: ['Art Director', 'Creative Designer', 'Visual Artist', 'Brand Designer'],
+    skillGaps: ['Business Strategy', 'Client Management', 'Project Management'],
+    industryTrends: ['Creative technology', 'Digital art', 'Brand storytelling'],
+    salaryInsights: 'Average salary range: $70K - $120K for creative roles',
+    keywords: ['Creativity', 'Design', 'Art', 'Visual', 'Portfolio']
+  },
+  {
+    id: 'skytrail-1',
+    name: 'SkyTrail Explorer',
+    category: 'modern',
+    atsScore: 93,
+    preview: 'https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Sky-inspired design with cloud patterns for aviation and travel industry',
+    features: ['Sky Theme', 'Cloud Patterns', 'Travel Icons', 'Horizon Layout'],
+    colors: {
+      primary: '#3182CE',
+      secondary: '#2C5282',
+      accent: '#63B3ED',
+      text: '#2D3748',
+      background: '#EBF8FF'
+    },
+    layout: 'header-focus',
+    typography: {
+      headingFont: 'Nunito',
+      bodyFont: 'Nunito Sans',
+      fontSize: 'medium'
+    },
+    overallRating: 8.7,
+    strengths: ['Perfect for travel/aviation industry', 'Professional yet approachable', 'Good ATS compatibility', 'Clean layout'],
+    weaknesses: ['Industry-specific design', 'May not work for other sectors'],
+    suggestions: ['Include global experience', 'Add language skills', 'Highlight cross-cultural competencies'],
+    jobMatches: ['Travel Manager', 'Aviation Professional', 'International Business', 'Tourism Director'],
+    skillGaps: ['Digital Marketing', 'Customer Experience', 'Data Analytics'],
+    industryTrends: ['Sustainable tourism', 'Digital transformation', 'Customer experience'],
+    salaryInsights: 'Average salary range: $75K - $130K for travel/aviation roles',
+    keywords: ['Travel', 'Aviation', 'International', 'Customer Service', 'Global']
+  },
+  {
+    id: 'vantaport-1',
+    name: 'VantaPort Dynamic',
+    category: 'modern',
+    atsScore: 95,
+    preview: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Dynamic animated background effects for modern professionals',
+    features: ['Animated Backgrounds', 'Dynamic Effects', 'Modern Layout', 'Interactive Elements'],
+    colors: {
+      primary: '#805AD5',
+      secondary: '#6B46C1',
+      accent: '#9F7AEA',
+      text: '#1A202C',
+      background: '#F7FAFC'
+    },
+    layout: 'sidebar',
+    typography: {
+      headingFont: 'Space Grotesk',
+      bodyFont: 'Inter',
+      fontSize: 'medium'
+    },
+    overallRating: 8.9,
+    strengths: ['Dynamic and engaging design', 'Perfect for modern tech companies', 'Interactive elements', 'Professional yet creative'],
+    weaknesses: ['May be too flashy for conservative industries', 'Requires careful content balance'],
+    suggestions: ['Focus on technical achievements', 'Include innovation metrics', 'Highlight dynamic projects'],
+    jobMatches: ['Frontend Developer', 'UI/UX Designer', 'Creative Technologist', 'Digital Product Manager'],
+    skillGaps: ['Animation Libraries', 'Interactive Design', 'Performance Optimization'],
+    industryTrends: ['Interactive experiences', 'Digital innovation', 'User engagement'],
+    salaryInsights: 'Average salary range: $90K - $150K for interactive roles',
+    keywords: ['Interactive', 'Dynamic', 'Animation', 'User Experience', 'Digital Innovation']
+  },
+  {
+    id: 'codexgrid-1',
+    name: 'CodexGrid Developer',
+    category: 'technical',
+    atsScore: 98,
+    preview: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Grid-based layout perfect for developers and engineers',
+    features: ['Grid Layout', 'Code Snippets', 'Tech Stack', 'Project Grid'],
+    colors: {
+      primary: '#1A202C',
+      secondary: '#2D3748',
+      accent: '#4FD1C7',
+      text: '#E2E8F0',
+      background: '#171923'
+    },
+    layout: 'grid',
+    typography: {
+      headingFont: 'Fira Code',
+      bodyFont: 'Source Code Pro',
+      fontSize: 'medium'
+    },
+    overallRating: 9.4,
+    strengths: ['Perfect for developers', 'Excellent code visualization', 'High ATS compatibility', 'Professional tech appearance'],
+    weaknesses: ['May be too technical for non-tech roles', 'Dark theme may not work for all industries'],
+    suggestions: ['Include code snippets', 'Add project impact metrics', 'Highlight technical achievements'],
+    jobMatches: ['Software Engineer', 'Full Stack Developer', 'DevOps Engineer', 'Technical Lead'],
+    skillGaps: ['Cloud Platforms', 'Containerization', 'CI/CD Pipelines'],
+    industryTrends: ['Cloud-native development', 'Microservices', 'DevOps culture'],
+    salaryInsights: 'Average salary range: $100K - $180K for senior developers',
+    keywords: ['Development', 'Programming', 'Technology', 'Code', 'Software Engineering']
+  },
+  {
+    id: 'devloom-1',
+    name: 'DevLoom Weaver',
+    category: 'technical',
+    atsScore: 96,
+    preview: 'https://images.pexels.com/photos/1181676/pexels-photo-1181676.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Woven pattern design for full-stack developers',
+    features: ['Woven Patterns', 'Full-Stack Focus', 'Technology Weave', 'Modern Cards'],
+    colors: {
+      primary: '#38B2AC',
+      secondary: '#319795',
+      accent: '#4FD1C7',
+      text: '#2D3748',
+      background: '#F0FFF4'
+    },
+    layout: 'two-column',
+    typography: {
+      headingFont: 'Ubuntu',
+      bodyFont: 'Ubuntu',
+      fontSize: 'medium'
+    },
+    overallRating: 9.1,
+    strengths: ['Perfect for full-stack developers', 'Excellent skill organization', 'Professional appearance', 'Good ATS compatibility'],
+    weaknesses: ['May be overwhelming for junior developers', 'Requires careful content organization'],
+    suggestions: ['Organize skills by stack', 'Include project impact metrics', 'Add technology proficiency levels'],
+    jobMatches: ['Full Stack Developer', 'Software Architect', 'Technical Lead', 'Senior Developer'],
+    skillGaps: ['Cloud Architecture', 'System Design', 'Performance Optimization'],
+    industryTrends: ['Full-stack development', 'Microservices', 'Cloud platforms'],
+    salaryInsights: 'Average salary range: $110K - $170K for full-stack roles',
+    keywords: ['Full Stack', 'Development', 'Architecture', 'Technology', 'Software']
+  },
+  {
+    id: 'coderipple-1',
+    name: 'CodeRipple Innovation',
+    category: 'technical',
+    atsScore: 94,
+    preview: 'https://images.pexels.com/photos/1181679/pexels-photo-1181679.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Ripple effect design for innovative developers',
+    features: ['Ripple Effects', 'Code Animations', 'Dynamic Layout', 'Tech Showcase'],
+    colors: {
+      primary: '#667EEA',
+      secondary: '#764BA2',
+      accent: '#A78BFA',
+      text: '#1A202C',
       background: '#FFFFFF'
     },
     layout: 'timeline',
     typography: {
-      headingFont: 'Space Grotesk',
-      bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.4,
-    strengths: ['Innovation-focused design', 'Timeline visualization', 'Modern appeal', 'Startup-friendly'],
-    weaknesses: ['May be too casual for traditional industries', 'Timeline may not suit all career paths'],
-    suggestions: ['Perfect for startups and tech companies', 'Highlight growth and innovation'],
-    jobMatches: ['Startup Founder', 'Product Designer', 'Growth Hacker', 'Innovation Manager'],
-    skillGaps: ['Traditional corporate experience', 'Formal business presentation'],
-    industryTrends: ['Startup culture', 'Innovation emphasis', 'Growth mindset'],
-    salaryInsights: 'Startup roles: ₹12-30 LPA plus equity opportunities',
-    keywords: ['Innovation', 'Startup', 'Growth', 'Future', 'Dynamic']
-  },
-  {
-    id: 'projourney-resume',
-    name: 'ProJourney Resume',
-    category: 'corporate',
-    atsScore: 98,
-    preview: 'https://images.pexels.com/photos/3184394/pexels-photo-3184394.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Clean two-column layout with top banner in purple, light lavender, and white for career progression',
-    features: ['Top Banner', 'Two-Column Layout', 'Career Progression Focus', 'Purple Theme', 'Professional Journey'],
-    colors: {
-      primary: '#7C3AED',
-      secondary: '#A855F7',
-      accent: '#C084FC',
-      text: '#1F2937',
-      background: '#FAF5FF'
-    },
-    layout: 'two-column',
-    typography: {
-      headingFont: 'Montserrat',
-      bodyFont: 'Lato',
-      fontSize: 'medium'
-    },
-    overallRating: 9.8,
-    strengths: ['Excellent career progression display', 'Professional corporate appeal', 'High ATS score', 'Clear structure'],
-    weaknesses: ['May be too formal for creative startups'],
-    suggestions: ['Ideal for corporate advancement', 'Highlight career progression and achievements'],
-    jobMatches: ['Senior Manager', 'Director', 'VP', 'Corporate Executive'],
-    skillGaps: ['Startup experience', 'Entrepreneurial skills'],
-    industryTrends: ['Corporate advancement', 'Professional development', 'Career progression'],
-    salaryInsights: 'Corporate progression roles: ₹20-60 LPA depending on level and industry',
-    keywords: ['Corporate', 'Progression', 'Management', 'Leadership', 'Professional']
-  },
-  {
-    id: 'skillsphere-cv',
-    name: 'SkillSphere CV',
-    category: 'technical',
-    atsScore: 95,
-    preview: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Sidebar with skills visualization and main content on the right in cyan, dark navy, and white',
-    features: ['Skills Visualization', 'Sidebar Layout', 'Technical Focus', 'Cyan Theme', 'Data Presentation'],
-    colors: {
-      primary: '#0891B2',
-      secondary: '#0E7490',
-      accent: '#06B6D4',
-      text: '#1E293B',
-      background: '#FFFFFF'
-    },
-    layout: 'sidebar',
-    typography: {
-      headingFont: 'Exo 2',
-      bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.5,
-    strengths: ['Excellent skills presentation', 'Technical appeal', 'Data-focused design', 'Modern tech aesthetic'],
-    weaknesses: ['Too technical for non-tech roles', 'Complex for simple positions'],
-    suggestions: ['Perfect for technical and engineering roles', 'Highlight technical achievements and certifications'],
-    jobMatches: ['Software Engineer', 'Data Engineer', 'DevOps Engineer', 'Technical Lead'],
-    skillGaps: ['Business communication', 'Non-technical presentation'],
-    industryTrends: ['Technical specialization', 'Skills-based hiring', 'Data visualization'],
-    salaryInsights: 'Technical roles: ₹18-45 LPA depending on specialization and experience',
-    keywords: ['Technical', 'Engineering', 'Data', 'Skills', 'Innovation']
-  },
-  {
-    id: 'opportune-profile',
-    name: 'Opportune Profile',
-    category: 'minimalist',
-    atsScore: 99,
-    preview: 'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Minimal single-column design with section dividers in black, white, and gold accents',
-    features: ['Minimal Design', 'Section Dividers', 'Single Column', 'Gold Accents', 'Clean Typography'],
-    colors: {
-      primary: '#000000',
-      secondary: '#374151',
-      accent: '#F59E0B',
-      text: '#000000',
-      background: '#FFFFFF'
-    },
-    layout: 'single-column',
-    typography: {
-      headingFont: 'Helvetica',
-      bodyFont: 'Helvetica',
-      fontSize: 'medium'
-    },
-    overallRating: 9.9,
-    strengths: ['Perfect ATS compatibility', 'Universal appeal', 'Timeless design', 'Maximum readability'],
-    weaknesses: ['May lack personality for creative roles'],
-    suggestions: ['Ideal for any professional role', 'Focus on strong content and clear achievements'],
-    jobMatches: ['Any Professional Role', 'Consultant', 'Analyst', 'Manager'],
-    skillGaps: ['Creative expression', 'Visual storytelling'],
-    industryTrends: ['Minimalist professionalism', 'Content-first approach', 'Universal design'],
-    salaryInsights: 'Universal appeal: ₹10-50 LPA across all industries',
-    keywords: ['Universal', 'Professional', 'Clean', 'Timeless', 'Minimal']
-  },
-  {
-    id: 'elevatecareer-resume',
-    name: 'ElevateCareer Resume',
-    category: 'modern',
-    atsScore: 97,
-    preview: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Bold header with two-column structure and icons in emerald green, light grey, and white',
-    features: ['Bold Header', 'Icon Integration', 'Two-Column Structure', 'Emerald Theme', 'Modern Icons'],
-    colors: {
-      primary: '#047857',
-      secondary: '#059669',
-      accent: '#10B981',
-      text: '#1F2937',
-      background: '#F0FDF4'
-    },
-    layout: 'header-focus',
-    typography: {
-      headingFont: 'Poppins',
-      bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.7,
-    strengths: ['Strong visual hierarchy', 'Modern professional appeal', 'Icon-enhanced readability', 'Excellent structure'],
-    weaknesses: ['Icons may not translate well in all ATS systems'],
-    suggestions: ['Great for modern companies', 'Emphasize growth and achievements'],
-    jobMatches: ['Marketing Manager', 'Sales Director', 'Business Development', 'Operations Manager'],
-    skillGaps: ['Traditional presentation', 'Conservative industry knowledge'],
-    industryTrends: ['Modern business presentation', 'Visual enhancement', 'Growth-focused design'],
-    salaryInsights: 'Business growth roles: ₹15-40 LPA depending on industry and experience',
-    keywords: ['Growth', 'Modern', 'Business', 'Achievement', 'Success']
-  },
-  {
-    id: 'growthtrack-cv',
-    name: 'GrowthTrack CV',
-    category: 'startup',
-    atsScore: 93,
-    preview: 'https://images.pexels.com/photos/3184357/pexels-photo-3184357.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Sidebar with vertical name and contact details, content on the right in red, white, and soft black',
-    features: ['Vertical Sidebar', 'Growth Metrics', 'Red Theme', 'Dynamic Layout', 'Performance Focus'],
-    colors: {
-      primary: '#DC2626',
-      secondary: '#EF4444',
-      accent: '#F87171',
-      text: '#1F2937',
-      background: '#FFFFFF'
-    },
-    layout: 'sidebar',
-    typography: {
-      headingFont: 'Montserrat',
-      bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.3,
-    strengths: ['Dynamic growth presentation', 'Performance-focused design', 'Modern startup appeal', 'Metrics emphasis'],
-    weaknesses: ['Too aggressive for conservative industries', 'Red may be overwhelming'],
-    suggestions: ['Perfect for sales and growth roles', 'Highlight metrics and performance achievements'],
-    jobMatches: ['Sales Manager', 'Growth Hacker', 'Performance Marketer', 'Business Developer'],
-    skillGaps: ['Conservative presentation', 'Traditional business approach'],
-    industryTrends: ['Performance metrics', 'Growth hacking', 'Results-driven presentation'],
-    salaryInsights: 'Growth-focused roles: ₹12-35 LPA plus performance bonuses',
-    keywords: ['Growth', 'Performance', 'Sales', 'Results', 'Dynamic']
-  },
-  {
-    id: 'jobquest-profile',
-    name: 'JobQuest Profile',
-    category: 'classic',
-    atsScore: 99,
-    preview: 'https://images.pexels.com/photos/3184340/pexels-photo-3184340.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Clean single-column layout with left-aligned headers in sky blue, white, and dark grey',
-    features: ['Left-Aligned Headers', 'Single Column', 'Sky Blue Theme', 'Classic Structure', 'Professional Clean'],
-    colors: {
-      primary: '#0EA5E9',
-      secondary: '#38BDF8',
-      accent: '#7DD3FC',
-      text: '#374151',
-      background: '#FFFFFF'
-    },
-    layout: 'single-column',
-    typography: {
-      headingFont: 'Lato',
-      bodyFont: 'Lato',
-      fontSize: 'medium'
-    },
-    overallRating: 9.9,
-    strengths: ['Perfect ATS compatibility', 'Classic professional appeal', 'Excellent readability', 'Industry standard'],
-    weaknesses: ['May lack modern appeal for tech startups'],
-    suggestions: ['Ideal for traditional industries and established companies', 'Focus on proven experience'],
-    jobMatches: ['Business Analyst', 'Operations Manager', 'Finance Professional', 'HR Manager'],
-    skillGaps: ['Modern tech presentation', 'Startup experience'],
-    industryTrends: ['Classic professionalism', 'Proven experience emphasis', 'Traditional values'],
-    salaryInsights: 'Traditional professional roles: ₹12-30 LPA in established companies',
-    keywords: ['Classic', 'Professional', 'Traditional', 'Reliable', 'Established']
-  },
-  {
-    id: 'dreamhire-resume',
-    name: 'DreamHire Resume',
-    category: 'creative',
-    atsScore: 91,
-    preview: 'https://images.pexels.com/photos/3184421/pexels-photo-3184421.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Creative two-column design with diagonal header in gradient blue-to-purple with white',
-    features: ['Diagonal Header', 'Gradient Design', 'Creative Layout', 'Blue-Purple Gradient', 'Artistic Elements'],
-    colors: {
-      primary: '#3B82F6',
-      secondary: '#8B5CF6',
-      accent: '#A855F7',
-      text: '#1F2937',
-      background: '#FFFFFF'
-    },
-    layout: 'asymmetric',
-    typography: {
-      headingFont: 'Poppins',
-      bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.1,
-    strengths: ['Creative visual appeal', 'Memorable design', 'Modern gradient aesthetics', 'Artistic presentation'],
-    weaknesses: ['Lower ATS compatibility due to creative elements', 'Not suitable for conservative industries'],
-    suggestions: ['Perfect for creative and design roles', 'Use for portfolio applications'],
-    jobMatches: ['UX Designer', 'Creative Director', 'Brand Manager', 'Digital Artist'],
-    skillGaps: ['Traditional business presentation', 'Conservative industry knowledge'],
-    industryTrends: ['Creative personal branding', 'Visual storytelling', 'Design-forward applications'],
-    salaryInsights: 'Creative roles: ₹10-25 LPA depending on portfolio and experience',
-    keywords: ['Creative', 'Design', 'Artistic', 'Visual', 'Brand']
-  },
-  {
-    id: 'techpioneer-cv',
-    name: 'TechPioneer CV',
-    category: 'technical',
-    atsScore: 96,
-    preview: 'https://images.pexels.com/photos/3184394/pexels-photo-3184394.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Code-inspired layout with terminal aesthetics in dark theme with green accents',
-    features: ['Terminal Aesthetics', 'Code-Inspired', 'Dark Theme', 'Green Accents', 'Developer Focus'],
-    colors: {
-      primary: '#22C55E',
-      secondary: '#16A34A',
-      accent: '#4ADE80',
-      text: '#E5E7EB',
-      background: '#111827'
-    },
-    layout: 'grid',
-    typography: {
       headingFont: 'JetBrains Mono',
-      bodyFont: 'JetBrains Mono',
-      fontSize: 'small'
-    },
-    overallRating: 9.6,
-    strengths: ['Perfect for developers', 'Code-inspired design', 'Technical appeal', 'Modern developer aesthetic'],
-    weaknesses: ['Too technical for non-dev roles', 'Dark theme may not print well'],
-    suggestions: ['Ideal for software engineering roles', 'Highlight coding projects and technical achievements'],
-    jobMatches: ['Software Developer', 'Full Stack Engineer', 'Backend Developer', 'DevOps Engineer'],
-    skillGaps: ['Business communication', 'Non-technical presentation'],
-    industryTrends: ['Developer-focused design', 'Technical specialization', 'Code-first approach'],
-    salaryInsights: 'Software engineering: ₹15-50 LPA depending on skills and experience',
-    keywords: ['Developer', 'Technical', 'Code', 'Engineering', 'Software']
-  },
-  {
-    id: 'innovate-profile',
-    name: 'Innovate Profile',
-    category: 'modern',
-    atsScore: 95,
-    preview: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Innovation-focused design with geometric elements in electric blue and white',
-    features: ['Geometric Elements', 'Innovation Focus', 'Electric Blue', 'Modern Geometry', 'Future Design'],
-    colors: {
-      primary: '#2563EB',
-      secondary: '#3B82F6',
-      accent: '#60A5FA',
-      text: '#1F2937',
-      background: '#FFFFFF'
-    },
-    layout: 'modular',
-    typography: {
-      headingFont: 'Space Grotesk',
       bodyFont: 'Inter',
-      fontSize: 'medium'
-    },
-    overallRating: 9.5,
-    strengths: ['Innovation-focused presentation', 'Modern geometric design', 'Tech-forward appeal', 'Strong visual hierarchy'],
-    weaknesses: ['May be too modern for traditional roles'],
-    suggestions: ['Great for innovation and tech roles', 'Highlight creative problem-solving and innovation'],
-    jobMatches: ['Innovation Manager', 'Product Designer', 'Tech Lead', 'R&D Specialist'],
-    skillGaps: ['Traditional business experience', 'Conservative presentation'],
-    industryTrends: ['Innovation emphasis', 'Geometric design', 'Tech-forward presentation'],
-    salaryInsights: 'Innovation roles: ₹18-40 LPA in tech and R&D sectors',
-    keywords: ['Innovation', 'Modern', 'Tech', 'Creative', 'Future']
-  },
-  {
-    id: 'executive-platinum',
-    name: 'Executive Platinum',
-    category: 'executive',
-    atsScore: 98,
-    preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Premium executive template with platinum accents and luxury design elements',
-    features: ['Platinum Accents', 'Luxury Design', 'Executive Focus', 'Premium Elements', 'Leadership Emphasis'],
-    colors: {
-      primary: '#1F2937',
-      secondary: '#374151',
-      accent: '#D1D5DB',
-      text: '#111827',
-      background: '#FFFFFF'
-    },
-    layout: 'header-focus',
-    typography: {
-      headingFont: 'Playfair Display',
-      bodyFont: 'Lato',
-      fontSize: 'large'
-    },
-    overallRating: 9.8,
-    strengths: ['Premium executive presence', 'Luxury appeal', 'Leadership focus', 'High-end professional design'],
-    weaknesses: ['Too premium for entry-level roles', 'May appear overqualified'],
-    suggestions: ['Perfect for C-suite and senior executive positions', 'Highlight strategic leadership and board experience'],
-    jobMatches: ['CEO', 'President', 'Board Member', 'Senior Executive'],
-    skillGaps: ['Operational experience', 'Hands-on technical skills'],
-    industryTrends: ['Executive luxury branding', 'Premium professional presentation', 'Leadership emphasis'],
-    salaryInsights: 'Executive positions: ₹50-200+ LPA depending on company size and industry',
-    keywords: ['Executive', 'Premium', 'Leadership', 'Strategic', 'Luxury']
-  },
-  {
-    id: 'creative-canvas',
-    name: 'Creative Canvas',
-    category: 'artistic',
-    atsScore: 88,
-    preview: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Artistic canvas-style layout with creative elements and vibrant color palette',
-    features: ['Canvas Layout', 'Artistic Elements', 'Vibrant Colors', 'Creative Expression', 'Portfolio Focus'],
-    colors: {
-      primary: '#EC4899',
-      secondary: '#F472B6',
-      accent: '#FBBF24',
-      text: '#1F2937',
-      background: '#FFFBEB'
-    },
-    layout: 'asymmetric',
-    typography: {
-      headingFont: 'Comfortaa',
-      bodyFont: 'Nunito',
       fontSize: 'medium'
     },
     overallRating: 8.8,
-    strengths: ['Exceptional creative appeal', 'Artistic expression', 'Portfolio-focused design', 'Memorable presentation'],
-    weaknesses: ['Poor ATS performance', 'Not suitable for traditional industries'],
-    suggestions: ['Use for creative portfolio applications', 'Supplement with traditional resume for ATS'],
-    jobMatches: ['Graphic Designer', 'Artist', 'Creative Director', 'Brand Designer'],
-    skillGaps: ['Business presentation', 'Corporate communication'],
-    industryTrends: ['Creative personal branding', 'Artistic expression', 'Portfolio-first approach'],
-    salaryInsights: 'Creative arts: ₹8-20 LPA depending on portfolio and reputation',
-    keywords: ['Creative', 'Artistic', 'Design', 'Portfolio', 'Expression']
+    strengths: ['Innovative design', 'Perfect for creative developers', 'Dynamic layout', 'Modern aesthetic'],
+    weaknesses: ['Lower ATS score due to creative layout', 'May not work for conservative companies'],
+    suggestions: ['Balance creativity with professionalism', 'Include innovation metrics', 'Highlight creative solutions'],
+    jobMatches: ['Creative Developer', 'Innovation Engineer', 'R&D Developer', 'Startup Developer'],
+    skillGaps: ['Innovation Management', 'Creative Problem Solving', 'Emerging Technologies'],
+    industryTrends: ['Creative technology', 'Innovation culture', 'Emerging tech'],
+    salaryInsights: 'Average salary range: $95K - $150K for innovative roles',
+    keywords: ['Innovation', 'Creative', 'Development', 'Technology', 'Emerging Tech']
   },
+  // Classic Templates
   {
-    id: 'academic-scholar',
-    name: 'Academic Scholar',
-    category: 'academic',
-    atsScore: 99,
-    preview: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=400',
-    description: 'Research-focused template with publication emphasis and academic structure',
-    features: ['Publication Focus', 'Academic Structure', 'Research Emphasis', 'Scholar Design', 'Citation Ready'],
+    id: 'classic-1',
+    name: 'Traditional Elite',
+    category: 'classic',
+    atsScore: 95,
+    preview: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Time-tested format preferred by traditional industries',
+    features: ['Conservative Design', 'Standard Layout', 'Professional Fonts', 'Industry Standard'],
     colors: {
-      primary: '#1E40AF',
-      secondary: '#3B82F6',
-      accent: '#93C5FD',
-      text: '#1F2937',
+      primary: '#1F2937',
+      secondary: '#374151',
+      accent: '#4B5563',
+      text: '#111827',
       background: '#FFFFFF'
     },
     layout: 'single-column',
@@ -548,15 +396,549 @@ export const resumeTemplates: ResumeTemplate[] = [
       bodyFont: 'Times New Roman',
       fontSize: 'medium'
     },
-    overallRating: 9.9,
-    strengths: ['Perfect for academic applications', 'Research-focused design', 'Publication emphasis', 'Academic standard'],
-    weaknesses: ['Too formal for industry roles', 'Limited commercial appeal'],
-    suggestions: ['Ideal for academic and research positions', 'Highlight publications and research achievements'],
-    jobMatches: ['Professor', 'Research Scientist', 'Academic Researcher', 'Postdoc'],
-    skillGaps: ['Industry application', 'Commercial experience'],
-    industryTrends: ['Academic research focus', 'Publication emphasis', 'Research impact'],
-    salaryInsights: 'Academic positions: ₹8-25 LPA depending on institution and field',
-    keywords: ['Academic', 'Research', 'Scholar', 'Publication', 'Science']
+    overallRating: 9.0,
+    strengths: ['Excellent for traditional industries', 'High ATS compatibility', 'Professional appearance', 'Industry standard'],
+    weaknesses: ['May be too conservative for creative roles', 'Limited visual appeal'],
+    suggestions: ['Focus on achievements', 'Include industry-specific keywords', 'Add quantifiable results'],
+    jobMatches: ['Finance Professional', 'Legal Professional', 'Healthcare Professional', 'Government Employee'],
+    skillGaps: ['Digital Skills', 'Modern Tools', 'Innovation'],
+    industryTrends: ['Digital transformation', 'Modernization', 'Technology adoption'],
+    salaryInsights: 'Average salary range: $80K - $140K for traditional roles',
+    keywords: ['Professional', 'Traditional', 'Industry', 'Experience', 'Leadership']
+  },
+  {
+    id: 'classic-2',
+    name: 'Corporate Standard',
+    category: 'classic',
+    atsScore: 93,
+    preview: 'https://images.pexels.com/photos/1181407/pexels-photo-1181407.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Perfect for corporate environments and formal applications',
+    features: ['Corporate Style', 'Formal Layout', 'Conservative Colors', 'Professional Appeal'],
+    colors: {
+      primary: '#1E40AF',
+      secondary: '#1D4ED8',
+      accent: '#3B82F6',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'single-column',
+    typography: {
+      headingFont: 'Arial',
+      bodyFont: 'Arial',
+      fontSize: 'medium'
+    },
+    overallRating: 8.7,
+    strengths: ['Perfect for corporate roles', 'Professional appearance', 'Good ATS compatibility', 'Conservative design'],
+    weaknesses: ['May be too formal for creative roles', 'Limited visual appeal'],
+    suggestions: ['Focus on corporate achievements', 'Include business impact', 'Add leadership examples'],
+    jobMatches: ['Business Analyst', 'Project Manager', 'Corporate Manager', 'Consultant'],
+    skillGaps: ['Digital Transformation', 'Innovation', 'Modern Tools'],
+    industryTrends: ['Digital transformation', 'Agile methodologies', 'Data-driven decisions'],
+    salaryInsights: 'Average salary range: $85K - $140K for corporate roles',
+    keywords: ['Corporate', 'Business', 'Management', 'Leadership', 'Strategy']
+  },
+  // Executive Templates
+  {
+    id: 'executive-1',
+    name: 'Leadership Excellence',
+    category: 'executive',
+    atsScore: 97,
+    preview: 'https://images.pexels.com/photos/590471/pexels-photo-590471.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Designed for C-level executives and senior management',
+    features: ['Executive Summary', 'Board Experience', 'Strategic Achievements', 'Leadership Focus'],
+    colors: {
+      primary: '#7C2D12',
+      secondary: '#92400E',
+      accent: '#D97706',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'header-focus',
+    typography: {
+      headingFont: 'Merriweather',
+      bodyFont: 'Source Sans Pro',
+      fontSize: 'large'
+    },
+    overallRating: 9.5,
+    strengths: ['Perfect for executives', 'Excellent leadership focus', 'High ATS compatibility', 'Professional appearance'],
+    weaknesses: ['May be too formal for startup roles', 'Requires extensive experience'],
+    suggestions: ['Focus on strategic achievements', 'Include board experience', 'Highlight leadership impact'],
+    jobMatches: ['CEO', 'CTO', 'CFO', 'VP of Engineering', 'Board Member'],
+    skillGaps: ['Digital Innovation', 'Modern Leadership', 'Agile Transformation'],
+    industryTrends: ['Digital leadership', 'Innovation culture', 'Agile transformation'],
+    salaryInsights: 'Average salary range: $150K - $300K+ for executive roles',
+    keywords: ['Leadership', 'Strategy', 'Executive', 'Board', 'Management']
+  },
+  {
+    id: 'executive-2',
+    name: 'Board Member Elite',
+    category: 'executive',
+    atsScore: 98,
+    preview: 'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Distinguished template for board positions',
+    features: ['Board Experience', 'Governance Skills', 'Strategic Vision', 'Industry Expertise'],
+    colors: {
+      primary: '#1E40AF',
+      secondary: '#1D4ED8',
+      accent: '#60A5FA',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'two-column',
+    typography: {
+      headingFont: 'Playfair Display',
+      bodyFont: 'Lora',
+      fontSize: 'large'
+    },
+    overallRating: 9.6,
+    strengths: ['Perfect for board positions', 'Excellent governance focus', 'Highest ATS compatibility', 'Distinguished appearance'],
+    weaknesses: ['Requires extensive board experience', 'May be too formal for other roles'],
+    suggestions: ['Focus on governance experience', 'Include board achievements', 'Highlight strategic vision'],
+    jobMatches: ['Board Member', 'Board Chair', 'Governance Expert', 'Strategic Advisor'],
+    skillGaps: ['Digital Governance', 'Modern Board Practices', 'Innovation Leadership'],
+    industryTrends: ['Digital governance', 'Modern board practices', 'Innovation leadership'],
+    salaryInsights: 'Average compensation: $50K - $200K+ for board positions',
+    keywords: ['Board', 'Governance', 'Strategy', 'Leadership', 'Advisory']
+  },
+  // Minimalist Templates
+  {
+    id: 'minimalist-1',
+    name: 'Clean Slate Pro',
+    category: 'minimalist',
+    atsScore: 98,
+    preview: 'https://images.pexels.com/photos/590024/pexels-photo-590024.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Ultra-minimal design focusing on content',
+    features: ['Maximum Readability', 'Clean Lines', 'Perfect Spacing', 'Content Focus'],
+    colors: {
+      primary: '#000000',
+      secondary: '#374151',
+      accent: '#6B7280',
+      text: '#111827',
+      background: '#FFFFFF'
+    },
+    layout: 'single-column',
+    typography: {
+      headingFont: 'Helvetica',
+      bodyFont: 'Helvetica',
+      fontSize: 'medium'
+    },
+    overallRating: 9.3,
+    strengths: ['Maximum readability', 'Perfect ATS compatibility', 'Clean design', 'Content-focused'],
+    weaknesses: ['May be too plain for creative roles', 'Limited visual appeal'],
+    suggestions: ['Focus on content quality', 'Include quantifiable achievements', 'Ensure perfect formatting'],
+    jobMatches: ['Content Writer', 'Editor', 'Researcher', 'Analyst'],
+    skillGaps: ['Visual Design', 'Creative Skills', 'Digital Tools'],
+    industryTrends: ['Content creation', 'Digital publishing', 'Information design'],
+    salaryInsights: 'Average salary range: $60K - $120K for content roles',
+    keywords: ['Content', 'Writing', 'Analysis', 'Research', 'Communication']
+  },
+  {
+    id: 'minimalist-2',
+    name: 'Essential Minimal',
+    category: 'minimalist',
+    atsScore: 96,
+    preview: 'https://images.pexels.com/photos/590025/pexels-photo-590025.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Essential information with clean, minimal design',
+    features: ['Essential Information', 'Clean Design', 'Perfect Spacing', 'Readable Typography'],
+    colors: {
+      primary: '#374151',
+      secondary: '#6B7280',
+      accent: '#9CA3AF',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'single-column',
+    typography: {
+      headingFont: 'Arial',
+      bodyFont: 'Arial',
+      fontSize: 'medium'
+    },
+    overallRating: 8.9,
+    strengths: ['Excellent readability', 'Good ATS compatibility', 'Clean design', 'Professional appearance'],
+    weaknesses: ['May be too simple for complex roles', 'Limited visual impact'],
+    suggestions: ['Focus on essential information', 'Include key achievements', 'Ensure perfect formatting'],
+    jobMatches: ['Administrative Professional', 'Coordinator', 'Assistant', 'Entry-level Professional'],
+    skillGaps: ['Advanced Skills', 'Specialized Knowledge', 'Leadership'],
+    industryTrends: ['Administrative efficiency', 'Digital tools', 'Process optimization'],
+    salaryInsights: 'Average salary range: $45K - $80K for administrative roles',
+    keywords: ['Administrative', 'Coordination', 'Organization', 'Communication', 'Support']
+  },
+  // Creative Templates
+  {
+    id: 'creative-1',
+    name: 'Creative Genius',
+    category: 'creative',
+    atsScore: 88,
+    preview: 'https://images.pexels.com/photos/590050/pexels-photo-590050.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Artistic template for creative professionals',
+    features: ['Artistic Layout', 'Creative Typography', 'Portfolio Integration', 'Visual Elements'],
+    colors: {
+      primary: '#EC4899',
+      secondary: '#DB2777',
+      accent: '#FBCFE8',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'asymmetric',
+    typography: {
+      headingFont: 'Dancing Script',
+      bodyFont: 'Lato',
+      fontSize: 'medium'
+    },
+    overallRating: 8.3,
+    strengths: ['Unique artistic design', 'Perfect for creative portfolios', 'Visual impact', 'Creative expression'],
+    weaknesses: ['Lower ATS score', 'May not work for corporate roles', 'Limited professional appeal'],
+    suggestions: ['Balance creativity with readability', 'Include business impact', 'Add measurable achievements'],
+    jobMatches: ['Creative Director', 'Art Director', 'Visual Designer', 'Brand Designer'],
+    skillGaps: ['Business Strategy', 'Client Management', 'Project Management'],
+    industryTrends: ['Creative technology', 'Digital art', 'Brand storytelling'],
+    salaryInsights: 'Average salary range: $70K - $130K for creative roles',
+    keywords: ['Creativity', 'Design', 'Art', 'Visual', 'Portfolio']
+  },
+  {
+    id: 'creative-2',
+    name: 'Visual Artist Pro',
+    category: 'creative',
+    atsScore: 87,
+    preview: 'https://images.pexels.com/photos/1117132/pexels-photo-1117132.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Visual-focused template for artists and designers',
+    features: ['Visual Portfolio', 'Artistic Elements', 'Creative Sections', 'Gallery Layout'],
+    colors: {
+      primary: '#8B5CF6',
+      secondary: '#7C3AED',
+      accent: '#DDD6FE',
+      text: '#374151',
+      background: '#FEFEFE'
+    },
+    layout: 'grid',
+    typography: {
+      headingFont: 'Abril Fatface',
+      bodyFont: 'Source Sans Pro',
+      fontSize: 'medium'
+    },
+    overallRating: 8.1,
+    strengths: ['Excellent visual appeal', 'Perfect for artists', 'Creative layout', 'Portfolio showcase'],
+    weaknesses: ['Low ATS score', 'May not work for business roles', 'Limited text focus'],
+    suggestions: ['Include business impact', 'Add measurable achievements', 'Balance visuals with content'],
+    jobMatches: ['Visual Artist', 'Graphic Designer', 'Illustrator', 'Digital Artist'],
+    skillGaps: ['Business Skills', 'Client Management', 'Marketing'],
+    industryTrends: ['Digital art', 'NFTs', 'Creative technology'],
+    salaryInsights: 'Average salary range: $60K - $110K for visual artists',
+    keywords: ['Visual', 'Art', 'Design', 'Creative', 'Portfolio']
+  },
+  // Startup Templates
+  {
+    id: 'startup-1',
+    name: 'Startup Founder',
+    category: 'startup',
+    atsScore: 95,
+    preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Dynamic template for entrepreneurs and startup founders',
+    features: ['Innovation Focus', 'Venture Highlights', 'Growth Metrics', 'Vision Statement'],
+    colors: {
+      primary: '#F59E0B',
+      secondary: '#D97706',
+      accent: '#FBBF24',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'asymmetric',
+    typography: {
+      headingFont: 'Poppins',
+      bodyFont: 'Inter',
+      fontSize: 'medium'
+    },
+    overallRating: 9.0,
+    strengths: ['Perfect for entrepreneurs', 'Innovation focus', 'High ATS compatibility', 'Dynamic design'],
+    weaknesses: ['May be too bold for corporate roles', 'Requires entrepreneurial experience'],
+    suggestions: ['Focus on growth metrics', 'Include innovation achievements', 'Highlight leadership'],
+    jobMatches: ['Startup Founder', 'Entrepreneur', 'Innovation Manager', 'Product Manager'],
+    skillGaps: ['Corporate Experience', 'Large-scale Management', 'Traditional Business'],
+    industryTrends: ['Startup culture', 'Innovation', 'Digital transformation'],
+    salaryInsights: 'Variable compensation: equity + salary for startup roles',
+    keywords: ['Entrepreneurship', 'Innovation', 'Startup', 'Growth', 'Leadership']
+  },
+  {
+    id: 'startup-2',
+    name: 'Disruptor Elite',
+    category: 'startup',
+    atsScore: 93,
+    preview: 'https://images.pexels.com/photos/3184298/pexels-photo-3184298.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Bold design for industry disruptors and innovators',
+    features: ['Disruptive Design', 'Innovation Metrics', 'Bold Typography', 'Future Focus'],
+    colors: {
+      primary: '#EF4444',
+      secondary: '#DC2626',
+      accent: '#F87171',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'grid',
+    typography: {
+      headingFont: 'Space Grotesk',
+      bodyFont: 'Inter',
+      fontSize: 'medium'
+    },
+    overallRating: 8.8,
+    strengths: ['Bold and innovative design', 'Perfect for disruptors', 'High impact', 'Future-focused'],
+    weaknesses: ['May be too bold for conservative companies', 'Requires innovation experience'],
+    suggestions: ['Focus on disruption metrics', 'Include innovation impact', 'Highlight future vision'],
+    jobMatches: ['Innovation Leader', 'Disruptor', 'Change Agent', 'Strategic Innovator'],
+    skillGaps: ['Traditional Business', 'Corporate Culture', 'Risk Management'],
+    industryTrends: ['Digital disruption', 'Innovation culture', 'Future of work'],
+    salaryInsights: 'Average salary range: $100K - $200K for innovation leaders',
+    keywords: ['Disruption', 'Innovation', 'Change', 'Future', 'Strategy']
+  },
+  // Academic Templates
+  {
+    id: 'academic-1',
+    name: 'Research Scholar',
+    category: 'academic',
+    atsScore: 97,
+    preview: 'https://images.pexels.com/photos/590038/pexels-photo-590038.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Perfect for academic and research positions',
+    features: ['Publications List', 'Research Focus', 'Academic Achievements', 'Conference Presentations'],
+    colors: {
+      primary: '#374151',
+      secondary: '#1F2937',
+      accent: '#9CA3AF',
+      text: '#111827',
+      background: '#FFFFFF'
+    },
+    layout: 'two-column',
+    typography: {
+      headingFont: 'Crimson Text',
+      bodyFont: 'Crimson Text',
+      fontSize: 'medium'
+    },
+    overallRating: 9.4,
+    strengths: ['Perfect for academic roles', 'Excellent publication display', 'High ATS compatibility', 'Professional academic appearance'],
+    weaknesses: ['May be too formal for industry roles', 'Limited creative expression'],
+    suggestions: ['Include research impact', 'Add collaboration details', 'Highlight innovation'],
+    jobMatches: ['Research Scientist', 'Academic Researcher', 'Postdoctoral Fellow', 'Research Associate'],
+    skillGaps: ['Industry Applications', 'Commercialization', 'Cross-functional Collaboration'],
+    industryTrends: ['Interdisciplinary research', 'Data-driven research', 'Collaborative research'],
+    salaryInsights: 'Average salary range: $70K - $120K for research positions',
+    keywords: ['Research', 'Publications', 'Academic', 'Analysis', 'Innovation']
+  },
+  {
+    id: 'academic-2',
+    name: 'Professor Elite',
+    category: 'academic',
+    atsScore: 96,
+    preview: 'https://images.pexels.com/photos/4386375/pexels-photo-4386375.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Distinguished template for academic professionals',
+    features: ['Teaching Experience', 'Research Publications', 'Academic Honors', 'Grant History'],
+    colors: {
+      primary: '#1E40AF',
+      secondary: '#1D4ED8',
+      accent: '#DBEAFE',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'single-column',
+    typography: {
+      headingFont: 'Libre Baskerville',
+      bodyFont: 'Libre Baskerville',
+      fontSize: 'medium'
+    },
+    overallRating: 9.2,
+    strengths: ['Perfect for professors', 'Excellent teaching focus', 'High ATS compatibility', 'Distinguished appearance'],
+    weaknesses: ['May be too formal for industry roles', 'Requires extensive academic experience'],
+    suggestions: ['Focus on teaching impact', 'Include research achievements', 'Highlight leadership'],
+    jobMatches: ['Professor', 'Associate Professor', 'Assistant Professor', 'Academic Dean'],
+    skillGaps: ['Industry Experience', 'Commercial Applications', 'Entrepreneurial Skills'],
+    industryTrends: ['Online education', 'Interdisciplinary teaching', 'Research-based teaching'],
+    salaryInsights: 'Average salary range: $80K - $150K for professorial positions',
+    keywords: ['Teaching', 'Research', 'Academic', 'Leadership', 'Education']
+  },
+  // Corporate Templates
+  {
+    id: 'corporate-1',
+    name: 'Fortune 500 Elite',
+    category: 'corporate',
+    atsScore: 96,
+    preview: 'https://images.pexels.com/photos/590044/pexels-photo-590044.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Premium template for Fortune 500 companies',
+    features: ['Corporate Branding', 'Executive Summary', 'Performance Metrics', 'Leadership Skills'],
+    colors: {
+      primary: '#1F2937',
+      secondary: '#374151',
+      accent: '#6B7280',
+      text: '#111827',
+      background: '#FFFFFF'
+    },
+    layout: 'header-focus',
+    typography: {
+      headingFont: 'Roboto',
+      bodyFont: 'Roboto',
+      fontSize: 'medium'
+    },
+    overallRating: 9.1,
+    strengths: ['Perfect for Fortune 500', 'Professional appearance', 'High ATS compatibility', 'Corporate focus'],
+    weaknesses: ['May be too formal for startups', 'Limited creative expression'],
+    suggestions: ['Focus on corporate achievements', 'Include leadership metrics', 'Highlight business impact'],
+    jobMatches: ['Corporate Executive', 'Business Leader', 'Senior Manager', 'Corporate Director'],
+    skillGaps: ['Startup Experience', 'Innovation Culture', 'Agile Methods'],
+    industryTrends: ['Digital transformation', 'Agile leadership', 'Innovation culture'],
+    salaryInsights: 'Average salary range: $120K - $250K for corporate executives',
+    keywords: ['Corporate', 'Leadership', 'Business', 'Management', 'Strategy']
+  },
+  {
+    id: 'corporate-2',
+    name: 'Global Enterprise',
+    category: 'corporate',
+    atsScore: 95,
+    preview: 'https://images.pexels.com/photos/590048/pexels-photo-590048.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'International corporate template with global appeal',
+    features: ['Global Experience', 'Multi-cultural Skills', 'International Projects', 'Language Skills'],
+    colors: {
+      primary: '#059669',
+      secondary: '#047857',
+      accent: '#A7F3D0',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'two-column',
+    typography: {
+      headingFont: 'Open Sans',
+      bodyFont: 'Open Sans',
+      fontSize: 'medium'
+    },
+    overallRating: 8.9,
+    strengths: ['Perfect for global roles', 'International focus', 'Good ATS compatibility', 'Professional appearance'],
+    weaknesses: ['May be too formal for local roles', 'Requires international experience'],
+    suggestions: ['Focus on global achievements', 'Include cultural competencies', 'Highlight international impact'],
+    jobMatches: ['Global Manager', 'International Business', 'Multinational Executive', 'Global Consultant'],
+    skillGaps: ['Local Market Knowledge', 'Cultural Specificity', 'Regional Expertise'],
+    industryTrends: ['Globalization', 'Cross-cultural leadership', 'International business'],
+    salaryInsights: 'Average salary range: $100K - $200K for global roles',
+    keywords: ['Global', 'International', 'Multicultural', 'Business', 'Leadership']
+  },
+  // Additional Modern Templates with Unique Styles
+  {
+    id: 'modern-quantum',
+    name: 'Quantum Pro',
+    category: 'modern',
+    atsScore: 92,
+    preview: 'https://images.pexels.com/photos/590068/pexels-photo-590068.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Quantum-inspired design for cutting-edge professionals',
+    features: ['Quantum Effects', 'Particle Animations', 'Scientific Layout', 'Research Focus'],
+    colors: {
+      primary: '#6366F1',
+      secondary: '#4F46E5',
+      accent: '#C7D2FE',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'timeline',
+    typography: {
+      headingFont: 'Orbitron',
+      bodyFont: 'Roboto',
+      fontSize: 'medium'
+    },
+    overallRating: 8.6,
+    strengths: ['Unique quantum design', 'Perfect for scientific roles', 'Modern aesthetic', 'Research focus'],
+    weaknesses: ['May be too scientific for business roles', 'Lower ATS score due to creative layout'],
+    suggestions: ['Focus on scientific achievements', 'Include research impact', 'Highlight innovation'],
+    jobMatches: ['Quantum Researcher', 'Scientific Professional', 'Research Scientist', 'Innovation Engineer'],
+    skillGaps: ['Business Applications', 'Commercialization', 'Market Knowledge'],
+    industryTrends: ['Quantum computing', 'Scientific innovation', 'Research commercialization'],
+    salaryInsights: 'Average salary range: $90K - $160K for scientific roles',
+    keywords: ['Quantum', 'Science', 'Research', 'Innovation', 'Technology']
+  },
+  {
+    id: 'modern-holographic',
+    name: 'Holographic Elite',
+    category: 'modern',
+    atsScore: 91,
+    preview: 'https://images.pexels.com/photos/590070/pexels-photo-590070.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Holographic effects for futuristic professionals',
+    features: ['Holographic Design', 'Iridescent Colors', 'Future Tech', '3D Elements'],
+    colors: {
+      primary: '#EC4899',
+      secondary: '#DB2777',
+      accent: '#FCE7F3',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'asymmetric',
+    typography: {
+      headingFont: 'Exo 2',
+      bodyFont: 'Inter',
+      fontSize: 'medium'
+    },
+    overallRating: 8.4,
+    strengths: ['Futuristic design', 'Perfect for tech-forward roles', 'Visual impact', 'Modern aesthetic'],
+    weaknesses: ['Low ATS score', 'May not work for traditional roles', 'Limited professional appeal'],
+    suggestions: ['Balance futuristic with professional', 'Include business impact', 'Add measurable achievements'],
+    jobMatches: ['Futuristic Designer', 'Tech Innovator', 'Creative Technologist', 'Future-focused Professional'],
+    skillGaps: ['Traditional Business', 'Conservative Industries', 'Risk Management'],
+    industryTrends: ['Future technology', 'Innovation culture', 'Digital transformation'],
+    salaryInsights: 'Average salary range: $80K - $140K for futuristic roles',
+    keywords: ['Futuristic', 'Technology', 'Innovation', 'Design', 'Future']
+  },
+  {
+    id: 'modern-digital-native',
+    name: 'Digital Native Pro',
+    category: 'modern',
+    atsScore: 94,
+    preview: 'https://images.pexels.com/photos/590062/pexels-photo-590062.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Born-digital template for modern professionals',
+    features: ['Digital Focus', 'Social Media Integration', 'Online Portfolio', 'Tech Savvy'],
+    colors: {
+      primary: '#8B5CF6',
+      secondary: '#7C3AED',
+      accent: '#DDD6FE',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'grid',
+    typography: {
+      headingFont: 'Inter',
+      bodyFont: 'Inter',
+      fontSize: 'medium'
+    },
+    overallRating: 8.9,
+    strengths: ['Perfect for digital roles', 'Modern design', 'Good ATS compatibility', 'Tech-savvy appearance'],
+    weaknesses: ['May be too modern for traditional roles', 'Requires digital experience'],
+    suggestions: ['Focus on digital achievements', 'Include online presence', 'Highlight tech skills'],
+    jobMatches: ['Digital Marketer', 'Social Media Manager', 'Digital Product Manager', 'Tech Professional'],
+    skillGaps: ['Traditional Marketing', 'Offline Business', 'Conservative Industries'],
+    industryTrends: ['Digital transformation', 'Social media', 'Online business'],
+    salaryInsights: 'Average salary range: $70K - $130K for digital roles',
+    keywords: ['Digital', 'Technology', 'Online', 'Social Media', 'Modern']
+  },
+  {
+    id: 'modern-future-ready',
+    name: 'Future Ready Elite',
+    category: 'modern',
+    atsScore: 93,
+    preview: 'https://images.pexels.com/photos/590066/pexels-photo-590066.jpeg?auto=compress&cs=tinysrgb&w=400',
+    description: 'Future-focused design for next-gen professionals',
+    features: ['Future Design', 'AI Integration', 'Automation Focus', 'Innovation Metrics'],
+    colors: {
+      primary: '#0891B2',
+      secondary: '#0E7490',
+      accent: '#CFFAFE',
+      text: '#1F2937',
+      background: '#FFFFFF'
+    },
+    layout: 'three-column',
+    typography: {
+      headingFont: 'Space Grotesk',
+      bodyFont: 'Inter',
+      fontSize: 'medium'
+    },
+    overallRating: 8.7,
+    strengths: ['Future-focused design', 'Perfect for AI/automation roles', 'Modern aesthetic', 'Innovation focus'],
+    weaknesses: ['May be too futuristic for traditional roles', 'Requires future-tech experience'],
+    suggestions: ['Focus on AI/automation achievements', 'Include innovation metrics', 'Highlight future vision'],
+    jobMatches: ['AI Engineer', 'Automation Specialist', 'Future Technology Leader', 'Innovation Manager'],
+    skillGaps: ['Traditional Business', 'Legacy Systems', 'Conservative Industries'],
+    industryTrends: ['AI/ML integration', 'Automation', 'Future technology'],
+    salaryInsights: 'Average salary range: $100K - $180K for future-tech roles',
+    keywords: ['AI', 'Automation', 'Future', 'Innovation', 'Technology']
   }
 ];
 
