@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { X, Download, Eye, Smartphone, Tablet, Monitor } from 'lucide-react';
-import { ResumeData, generateResumePDF } from '../utils/generateResumePDF';
+import { ResumeData } from '../utils/pdfGenerator';
 import { getTemplateById } from '../data/resumeTemplates';
 import TemplateRenderer from './TemplateRenderer';
 import jsPDF from 'jspdf';
@@ -39,13 +39,18 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
     }
   };
 
-  // FIXED: Use HTML-to-PDF conversion for exact match
+  // Updated download handler for Vercel compatibility
   const handleDownloadResume = async () => {
-    if (previewRef.current) {
-      const success = await generateResumePDF(previewRef.current, resumeData, templateId);
-      if (success) {
-        onDownload();
-      }
+    try {
+      // Dynamically import the PDF generator (client-side only)
+      const { generateResumePDF } = await import('../utils/pdfGenerator');
+      const pdfGenerator = generateResumePDF(resumeData, templateId);
+      
+      // Generate PDF on client side
+      await pdfGenerator.generate();
+      onDownload();
+    } catch (error) {
+      console.error('Error generating PDF:', error);
     }
   };
 
@@ -219,7 +224,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
         <div className="p-6 overflow-auto max-h-[calc(90vh-120px)]">
           <div className="flex justify-center">
             <div 
-              ref={previewRef} // Reference for PDF capture
+              ref={previewRef}
               className={`${getPreviewClasses()} bg-white shadow-2xl rounded-lg overflow-hidden transition-all duration-300`}
             >
               <div className="w-full h-full overflow-auto">
@@ -257,5 +262,4 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
     </motion.div>
   );
 };
-
 export default ResumePreview;
